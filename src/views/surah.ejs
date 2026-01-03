@@ -65,14 +65,14 @@
                     <input type="radio" class="btn-check" name="audioType" id="audioArabic" value="arabic" checked>
                     <label class="btn btn-outline-success btn-sm" for="audioArabic">আরবি (Arabic)</label>
                     
-                    <input type="radio" class="btn-check" name="audioType" id="audioBangla" value="bangla">
-                    <label class="btn btn-outline-success btn-sm" for="audioBangla">বাংলা (Bangla)</label>
+                    <input type="radio" class="btn-check" name="audioType" id="audioUrdu" value="urdu">
+                    <label class="btn btn-outline-success btn-sm" for="audioUrdu">উর্দু (Urdu)</label>
                     
                     <input type="radio" class="btn-check" name="audioType" id="audioEnglish" value="english">
                     <label class="btn btn-outline-success btn-sm" for="audioEnglish">English</label>
                     
                     <input type="radio" class="btn-check" name="audioType" id="audioBoth" value="both">
-                    <label class="btn btn-outline-success btn-sm" for="audioBoth">Arabic + Translation</label>
+                    <label class="btn btn-outline-success btn-sm" for="audioBoth">Arabic + English</label>
                 </div>
             </div>
             
@@ -93,26 +93,16 @@
                 </select>
             </div>
             
-            <!-- Bangla Translation Selection -->
-            <div class="d-flex align-items-center gap-2 flex-wrap" id="banglaReciterSection" style="display: none;">
-                <label class="form-label mb-0"><i class="bi bi-person-circle"></i> বাংলা অনুবাদ:</label>
-                <select class="form-select form-select-sm" id="banglaReciterSelect" style="max-width: 300px;">
-                    <option value="bn.bengali">মুহিউদ্দীন খান</option>
-                    <option value="bn.hoque">জহুরুল হক</option>
-                </select>
+            <!-- Urdu Translation Selection -->
+            <div class="d-flex align-items-center gap-2 flex-wrap" id="urduReciterSection" style="display: none;">
+                <label class="form-label mb-0"><i class="bi bi-person-circle"></i> উর্দু কারী:</label>
+                <span class="badge bg-success">Shamshad Ali Khan</span>
             </div>
             
             <!-- English Translation Selection -->
             <div class="d-flex align-items-center gap-2 flex-wrap" id="englishReciterSection" style="display: none;">
-                <label class="form-label mb-0"><i class="bi bi-person-circle"></i> English Translator:</label>
-                <select class="form-select form-select-sm" id="englishReciterSelect" style="max-width: 300px;">
-                    <option value="en.sahih">Sahih International</option>
-                    <option value="en.pickthall">Pickthall</option>
-                    <option value="en.yusufali">Yusuf Ali</option>
-                    <option value="en.arberry">Arberry</option>
-                    <option value="en.sarwar">Muhammad Sarwar</option>
-                    <option value="en.shakir">Shakir</option>
-                </select>
+                <label class="form-label mb-0"><i class="bi bi-person-circle"></i> English Reciter:</label>
+                <span class="badge bg-primary">Sahih International (Ibrahim Walk)</span>
             </div>
             
             <!-- Full Surah Player -->
@@ -365,12 +355,10 @@
         return `https://everyayah.com/data/${reciterFolder}/${paddedSurah}${paddedAyah}.mp3`;
     }
     
-    // Get Bangla translation audio URL
-    // Note: Bangla Quran audio is limited, using Urdu translation as fallback
-    function getBanglaAyahAudioUrl(surahId, ayahNumber, translationId) {
+    // Get Urdu translation audio URL
+    function getUrduAyahAudioUrl(surahId, ayahNumber, translationId) {
         const paddedSurah = String(surahId).padStart(3, '0');
         const paddedAyah = String(ayahNumber).padStart(3, '0');
-        // Urdu translation is closest available to Bangla
         return `https://everyayah.com/data/translations/urdu_shamshad_ali_khan_46kbps/${paddedSurah}${paddedAyah}.mp3`;
     }
     
@@ -401,13 +389,11 @@
     const surahAudio = document.getElementById('surahAudio');
     const ayahAudio = document.getElementById('ayahAudio');
     const reciterSelect = document.getElementById('reciterSelect');
-    const banglaReciterSelect = document.getElementById('banglaReciterSelect');
-    const englishReciterSelect = document.getElementById('englishReciterSelect');
     const playSurahBtn = document.getElementById('playSurahBtn');
     const stopSurahBtn = document.getElementById('stopSurahBtn');
     const nowPlaying = document.getElementById('nowPlaying');
     const arabicReciterSection = document.getElementById('arabicReciterSection');
-    const banglaReciterSection = document.getElementById('banglaReciterSection');
+    const urduReciterSection = document.getElementById('urduReciterSection');
     const englishReciterSection = document.getElementById('englishReciterSection');
     
     // Audio type radio buttons
@@ -441,19 +427,19 @@
             
             // Show/hide reciter sections based on selection
             arabicReciterSection.style.display = 'none';
-            banglaReciterSection.style.display = 'none';
+            urduReciterSection.style.display = 'none';
             englishReciterSection.style.display = 'none';
             
             if (currentAudioType === 'arabic') {
                 arabicReciterSection.style.display = 'flex';
-            } else if (currentAudioType === 'bangla') {
-                banglaReciterSection.style.display = 'flex';
+            } else if (currentAudioType === 'urdu') {
+                urduReciterSection.style.display = 'flex';
             } else if (currentAudioType === 'english') {
                 englishReciterSection.style.display = 'flex';
             } else { // both - Arabic + selected translation
                 arabicReciterSection.style.display = 'flex';
                 englishReciterSection.style.display = 'flex';
-                banglaReciterSection.style.display = 'flex';
+                urduReciterSection.style.display = 'flex';
             }
             
             // Save preference
@@ -505,7 +491,7 @@
     playSurahBtn.addEventListener('click', () => {
         const audioType = getAudioType();
         
-        if (audioType === 'bangla' || audioType === 'english') {
+        if (audioType === 'urdu' || audioType === 'english') {
             // For translations, play ayah by ayah starting from first
             const firstAyahBtn = document.querySelector('.play-ayah-btn[data-ayah-number="1"]');
             if (firstAyahBtn) {
@@ -550,8 +536,6 @@
             const ayahNumber = parseInt(btn.dataset.ayahNumber);
             const audioType = getAudioType();
             const arabicReciterId = reciterSelect.value || 'Alafasy_128kbps';
-            const banglaTranslationId = banglaReciterSelect.value;
-            const englishTranslationId = englishReciterSelect.value;
             
             console.log('Playing ayah:', ayahNumber, 'Reciter:', arabicReciterId, 'Type:', audioType);
             
@@ -596,10 +580,10 @@
             let audioUrl;
             if (audioType === 'arabic' || audioType === 'both') {
                 audioUrl = getArabicAyahAudioUrl(surahId, ayahNumber, arabicReciterId);
-            } else if (audioType === 'bangla') {
-                audioUrl = getBanglaAyahAudioUrl(surahId, ayahNumber, banglaTranslationId);
+            } else if (audioType === 'urdu') {
+                audioUrl = getUrduAyahAudioUrl(surahId, ayahNumber, 'ur.khan');
             } else if (audioType === 'english') {
-                audioUrl = getEnglishAyahAudioUrl(surahId, ayahNumber, englishTranslationId);
+                audioUrl = getEnglishAyahAudioUrl(surahId, ayahNumber, 'en.sahih');
             }
             
             console.log('Audio URL:', audioUrl);
@@ -616,8 +600,8 @@
             // Set status text based on audio type
             if (audioType === 'both') {
                 nowPlaying.textContent = `আয়াত ${ayahNumber} - আরবি তেলাওয়াত`;
-            } else if (audioType === 'bangla') {
-                nowPlaying.textContent = `আয়াত ${ayahNumber} - বাংলা অনুবাদ`;
+            } else if (audioType === 'urdu') {
+                nowPlaying.textContent = `আয়াত ${ayahNumber} - উর্দু অনুবাদ`;
             } else if (audioType === 'english') {
                 nowPlaying.textContent = `Ayah ${ayahNumber} - English Translation`;
             } else {
@@ -1000,7 +984,7 @@
         if (ayahNumber) {
             const audioType = getAudioType();
             let audioTypeText = 'আরবি';
-            if (audioType === 'bangla') audioTypeText = 'বাংলা';
+            if (audioType === 'urdu') audioTypeText = 'উর্দু';
             else if (audioType === 'english') audioTypeText = 'English';
             else if (audioType === 'both') audioTypeText = 'Arabic + Translation';
             
@@ -1026,12 +1010,11 @@
     ayahAudio.removeEventListener('ended', () => {});
     ayahAudio.addEventListener('ended', () => {
         const audioType = getAudioType();
-        const englishTranslationId = englishReciterSelect.value;
         
         // If in "both" mode and Arabic just finished, play English translation
         if (audioType === 'both' && !isPlayingTranslationAfterArabic) {
             isPlayingTranslationAfterArabic = true;
-            const translationUrl = getEnglishAyahAudioUrl(surahId, currentlyPlayingAyah, englishTranslationId);
+            const translationUrl = getEnglishAyahAudioUrl(surahId, currentlyPlayingAyah, 'en.sahih');
             translationAudio.src = translationUrl;
             translationAudio.playbackRate = playbackSpeed;
             translationAudio.play();
@@ -1229,7 +1212,8 @@
     
     /* Sound wave indicator */
     .ayah-card.playing::after {
-        content: '🔊';
+        /* content: '🔊'; */
+        content: '';
         position: absolute;
         top: 10px;
         right: 10px;
