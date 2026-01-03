@@ -287,9 +287,17 @@
         <div class="controls-section">
             <!-- Left Controls -->
             <div class="controls-left">
-                <button class="player-btn speed-btn" id="speedBtn" title="Playback Speed">
-                    <span id="speedValue">1x</span>
-                </button>
+                <div class="speed-dropdown">
+                    <select class="speed-select" id="speedSelect" title="Playback Speed">
+                        <option value="0.5">0.5x</option>
+                        <option value="0.75">0.75x</option>
+                        <option value="1" selected>1x</option>
+                        <option value="1.25">1.25x</option>
+                        <option value="1.5">1.5x</option>
+                        <option value="1.75">1.75x</option>
+                        <option value="2">2x</option>
+                    </select>
+                </div>
                 <button class="player-btn" id="repeatBtn" title="Repeat Mode">
                     <i class="bi bi-repeat"></i>
                 </button>
@@ -740,8 +748,7 @@
     const playPauseIcon = document.getElementById('playPauseIcon');
     const prevAyahBtn = document.getElementById('prevAyahBtn');
     const nextAyahBtn = document.getElementById('nextAyahBtn');
-    const speedBtn = document.getElementById('speedBtn');
-    const speedValue = document.getElementById('speedValue');
+    const speedSelect = document.getElementById('speedSelect');
     const repeatBtn = document.getElementById('repeatBtn');
     const volumeBtn = document.getElementById('volumeBtn');
     const volumeIcon = document.getElementById('volumeIcon');
@@ -757,8 +764,6 @@
     let isAutoPlayEnabled = true;
     let repeatMode = 'none'; // 'none', 'one', 'all'
     let playbackSpeed = 1;
-    const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
-    let speedIndex = 2; // Start at 1x
     
     // Load saved preferences
     const savedAutoPlay = localStorage.getItem('autoPlayEnabled');
@@ -783,14 +788,10 @@
     
     const savedSpeed = localStorage.getItem('playbackSpeed');
     if (savedSpeed) {
-        const savedSpeedIndex = speeds.indexOf(parseFloat(savedSpeed));
-        if (savedSpeedIndex !== -1) {
-            speedIndex = savedSpeedIndex;
-            playbackSpeed = speeds[speedIndex];
-            speedValue.textContent = playbackSpeed + 'x';
-            ayahAudio.playbackRate = playbackSpeed;
-            translationAudio.playbackRate = playbackSpeed;
-        }
+        playbackSpeed = parseFloat(savedSpeed);
+        speedSelect.value = savedSpeed;
+        ayahAudio.playbackRate = playbackSpeed;
+        translationAudio.playbackRate = playbackSpeed;
     }
     
     // Show player bar when there's an ayah to play
@@ -922,11 +923,9 @@
         }
     });
     
-    // Speed control
-    speedBtn.addEventListener('click', () => {
-        speedIndex = (speedIndex + 1) % speeds.length;
-        playbackSpeed = speeds[speedIndex];
-        speedValue.textContent = playbackSpeed + 'x';
+    // Speed control dropdown
+    speedSelect.addEventListener('change', () => {
+        playbackSpeed = parseFloat(speedSelect.value);
         ayahAudio.playbackRate = playbackSpeed;
         translationAudio.playbackRate = playbackSpeed;
         localStorage.setItem('playbackSpeed', playbackSpeed);
@@ -1527,12 +1526,58 @@
         font-size: 22px;
     }
     
-    .speed-btn {
-        font-size: 12px;
-        font-weight: bold;
-        min-width: 36px;
-        border-radius: 4px;
-        padding: 4px 8px;
+    /* Speed Dropdown */
+    .speed-dropdown {
+        position: relative;
+    }
+    
+    .speed-select {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        outline: none;
+        transition: all 0.2s ease;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        padding-right: 28px;
+        min-width: 70px;
+    }
+    
+    .speed-select:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-color: #198754;
+    }
+    
+    .speed-select:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 2px rgba(25, 135, 84, 0.3);
+    }
+    
+    .speed-select option {
+        background: #1a1a2e;
+        color: #fff;
+        padding: 8px;
+    }
+    
+    [data-bs-theme="light"] .speed-select {
+        background-color: rgba(0, 0, 0, 0.05);
+        border-color: rgba(0, 0, 0, 0.2);
+        color: #333;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    }
+    
+    [data-bs-theme="light"] .speed-select option {
+        background: #fff;
+        color: #333;
     }
     
     /* Volume Control */
@@ -1668,8 +1713,10 @@
             width: 60px;
         }
         
-        .speed-btn {
-            display: none;
+        .speed-select {
+            min-width: 60px;
+            padding: 4px 24px 4px 6px;
+            font-size: 11px;
         }
         
         .now-playing-info {
