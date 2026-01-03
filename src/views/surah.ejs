@@ -174,12 +174,13 @@
                         </button>
                     </div>
                     <div class="d-flex gap-1">
+                        <% const defaultTranslation = config.translations.find(t => t.isDefault && t.language === 'bangla') || config.translations[0]; %>
                         <button class="btn btn-sm btn-outline-primary share-btn" 
                                 data-surah-id="<%= surah.id %>" 
                                 data-surah-name="<%= surah.transliteration %>"
                                 data-ayah-number="<%= ayah.number %>"
                                 data-ayah-text="<%= ayah.text %>"
-                                data-ayah-translation="<%= ayah.translation %>"
+                                data-ayah-translation="<%= ayah.translations[defaultTranslation.id] || '' %>"
                                 title="Share this Ayah">
                             <i class="bi bi-share"></i>
                         </button>
@@ -187,7 +188,7 @@
                                 data-surah-id="<%= surah.id %>" 
                                 data-ayah-number="<%= ayah.number %>"
                                 data-ayah-text="<%= ayah.text %>"
-                                data-ayah-translation="<%= ayah.translation %>"
+                                data-ayah-translation="<%= ayah.translations[defaultTranslation.id] || '' %>"
                                 title="Bookmark this Ayah">
                             <i class="bi bi-bookmark"></i>
                         </button>
@@ -195,79 +196,21 @@
                 </div>
                 <p class="arabic-text" id="arabic-<%= ayah.number %>"><%= ayah.text %></p>
                 
-                <!-- Bengali Translations -->
-                <div class="translation-taisirul bangla-translation">
-                    <p class="translation-text mb-2">
-                        <span class="badge bg-success me-1">বাংলা</span>
-                        <small class="text-muted fw-semibold">মুহিউদ্দীন খান:</small>
-                        <br><%= ayah.translation %>
-                    </p>
-                </div>
-                <% if (ayah.banglaMujibur) { %>
-                <div class="translation-mujibur bangla-translation" style="display: none;">
-                    <p class="translation-text mb-2">
-                        <span class="badge bg-success me-1">বাংলা</span>
-                        <small class="text-muted fw-semibold">জহুরুল হক:</small>
-                        <br><%= ayah.banglaMujibur %>
+                <!-- Dynamic Translations -->
+                <% config.translations.forEach((t, index) => { %>
+                <% if (ayah.translations[t.id]) { %>
+                <div class="translation-<%= t.id %> <%= t.language %>-translation" 
+                     style="<%= t.isDefault ? '' : 'display: none;' %>">
+                    <p class="translation-text <%= t.language === 'english' ? 'text-muted' : '' %> mb-2">
+                        <span class="badge <%= t.language === 'bangla' ? 'bg-success' : 'bg-secondary' %> me-1">
+                            <%= t.language === 'bangla' ? 'বাংলা' : 'English' %>
+                        </span>
+                        <small class="<%= t.language === 'english' ? '' : 'text-muted' %> fw-semibold"><%= t.label %>:</small>
+                        <br><%= ayah.translations[t.id] %>
                     </p>
                 </div>
                 <% } %>
-                <% if (ayah.banglaRawai) { %>
-                <div class="translation-rawai bangla-translation" style="display: none;">
-                    <p class="translation-text mb-2">
-                        <span class="badge bg-success me-1">বাংলা</span>
-                        <small class="text-muted fw-semibold">রাওয়াই আল-বায়ান:</small>
-                        <br><%= ayah.banglaRawai %>
-                    </p>
-                </div>
-                <% } %>
-                <% if (ayah.banglaZakaria) { %>
-                <div class="translation-zakaria bangla-translation" style="display: none;">
-                    <p class="translation-text mb-2">
-                        <span class="badge bg-success me-1">বাংলা</span>
-                        <small class="text-muted fw-semibold">ড. আবু বকর মুহাম্মাদ যাকারিয়া:</small>
-                        <br><%= ayah.banglaZakaria %>
-                    </p>
-                </div>
-                <% } %>
-                
-                <!-- English Translations -->
-                <% if (ayah.englishTranslation) { %>
-                <div class="translation-sahih english-translation">
-                    <p class="translation-text text-muted mb-2">
-                        <span class="badge bg-secondary me-1">English</span>
-                        <small class="fw-semibold">Sahih International:</small>
-                        <br><%= ayah.englishTranslation %>
-                    </p>
-                </div>
-                <% } %>
-                <% if (ayah.englishPickthall) { %>
-                <div class="translation-pickthall english-translation" style="display: none;">
-                    <p class="translation-text text-muted mb-2">
-                        <span class="badge bg-secondary me-1">English</span>
-                        <small class="fw-semibold">Pickthall:</small>
-                        <br><%= ayah.englishPickthall %>
-                    </p>
-                </div>
-                <% } %>
-                <% if (ayah.englishYusufali) { %>
-                <div class="translation-yusufali english-translation" style="display: none;">
-                    <p class="translation-text text-muted mb-2">
-                        <span class="badge bg-secondary me-1">English</span>
-                        <small class="fw-semibold">Yusuf Ali:</small>
-                        <br><%= ayah.englishYusufali %>
-                    </p>
-                </div>
-                <% } %>
-                <% if (ayah.englishHilali) { %>
-                <div class="translation-hilali english-translation" style="display: none;">
-                    <p class="translation-text text-muted mb-2">
-                        <span class="badge bg-secondary me-1">English</span>
-                        <small class="fw-semibold">Al-Hilali & Khan:</small>
-                        <br><%= ayah.englishHilali %>
-                    </p>
-                </div>
-                <% } %>
+                <% }) %>
             </div>
         </div>
     <% }) %>
@@ -1257,8 +1200,8 @@
     /* Playing ayah card - enhanced highlight */
     .ayah-card.playing {
         border-left: 5px solid #871983 !important;
-        background: linear-gradient(90deg, rgba(25, 135, 84, 0.15) 0%, rgba(25, 135, 84, 0.05) 50%, transparent 100%);
-        animation: pulse-highlight 2s ease-in-out infinite;
+        /* background: linear-gradient(90deg, rgba(25, 135, 84, 0.15) 0%, rgba(25, 135, 84, 0.05) 50%, transparent 100%); */
+        /* animation: pulse-highlight 2s ease-in-out infinite; */
         box-shadow: 0 0 20px rgba(25, 135, 84, 0.4);
         transform: scale(1.01);
         transition: all 0.3s ease;
@@ -1274,8 +1217,8 @@
         left: 0;
         height: 100%;
         width: 4px;
-        background: linear-gradient(180deg, #198754, #20c997, #198754);
-        animation: gradient-flow 2s linear infinite;
+        /* background: linear-gradient(180deg, #198754, #20c997, #198754); */
+        /* animation: gradient-flow 2s linear infinite; */
     }
     
     /* Sound wave indicator */
@@ -1286,18 +1229,18 @@
         top: 10px;
         right: 10px;
         font-size: 1.2rem;
-        animation: sound-wave 1s ease-in-out infinite;
+        /* animation: sound-wave 1s ease-in-out infinite; */
     }
     
     .ayah-card.playing .arabic-text {
         color: #146c43;
         font-weight: 600;
-        animation: text-glow 2s ease-in-out infinite;
+        /* animation: text-glow 2s ease-in-out infinite; */
     }
     
     [data-bs-theme="dark"] .ayah-card.playing {
-        background: linear-gradient(90deg, rgba(25, 135, 84, 0.3) 0%, rgba(25, 135, 84, 0.15) 50%, rgba(25, 135, 84, 0.05) 100%);
-        box-shadow: 0 0 30px rgba(25, 135, 84, 0.5);
+        /* background: linear-gradient(90deg, rgba(25, 135, 84, 0.3) 0%, rgba(25, 135, 84, 0.15) 50%, rgba(25, 135, 84, 0.05) 100%); */
+        box-shadow: 0 0 30px rgba(157, 243, 203, 0.5);
     }
     
     [data-bs-theme="dark"] .ayah-card.playing .arabic-text {

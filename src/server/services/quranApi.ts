@@ -17,27 +17,46 @@ export interface TranslationEdition {
   isDefault: boolean;   // Whether checked by default
 }
 
+// ============================================
+// TRANSLATION ID MAPPINGS (Quran.com API v4)
+// ============================================
+const TRANSLATION_IDS = {
+  // Bengali
+  mujibur: 163,     // Sheikh Mujibur Rahman (Darussalaam)
+  taisirul: 161,    // Taisirul Quran (Tawheed Publication)
+  rawai: 213,       // Rawai Al-bayan (Darussalaam)
+  zakaria: 162,     // Dr. Abu Bakr Muhammad Zakaria (Darussalaam)
+  
+  // English
+  sahih: 20,        // Saheeh International
+  pickthall: 19,    // M. Pickthall
+  yusufali: 22,     // A. Yusuf Ali
+  hilali: 203,      // Al-Hilali & Khan
+};
+
 export const TRANSLATION_EDITIONS: TranslationEdition[] = [
   // Bengali Translations (from Quran.com)
   // 161: Taisirul Quran (Tawheed Publication)
   // 163: Sheikh Mujibur Rahman (Darussalaam)
-  // 213: Rawai Al-bayan
-  // 162: Dr. Abu Bakr Muhammad Zakaria
-  { id: 'taisirul', apiId: 161, label: 'তাইসীরুল কুরআন', language: 'bangla', isDefault: true },
-  { id: 'mujibur', apiId: 163, label: 'শেখ মুজিবুর রহমান', language: 'bangla', isDefault: false },
-  { id: 'rawai', apiId: 213, label: 'রাওয়াই আল-বায়ান', language: 'bangla', isDefault: false },
-  { id: 'zakaria', apiId: 162, label: 'ড. আবু বকর মুহাম্মাদ যাকারিয়া', language: 'bangla', isDefault: false },
+  // 213: Rawai Al-bayan (Darussalaam)
+  // 162: Dr. Abu Bakr Muhammad Zakaria (Darussalaam)
+  { id: 'mujibur', apiId: TRANSLATION_IDS.mujibur, label: 'শেখ মুজিবুর রহমান', language: 'bangla', isDefault: true },
+  { id: 'rawai', apiId: TRANSLATION_IDS.rawai, label: 'রাওয়াই আল-বায়ান', language: 'bangla', isDefault: false },
+  { id: 'taisirul', apiId: TRANSLATION_IDS.taisirul, label: 'তাইসীরুল কুরআন', language: 'bangla', isDefault: false },
+  { id: 'zakaria', apiId: TRANSLATION_IDS.zakaria, label: 'ড. আবু বকর মুহাম্মাদ যাকারিয়া', language: 'bangla', isDefault: false },
 
   // English Translations (from Quran.com)
   // 20: Saheeh International
   // 19: M. Pickthall
   // 22: A. Yusuf Ali
   // 203: Al-Hilali & Khan (replacing Arberry which is not available)
-  { id: 'sahih', apiId: 20, label: 'Sahih International', language: 'english', isDefault: true },
-  { id: 'pickthall', apiId: 19, label: 'Pickthall', language: 'english', isDefault: false },
-  { id: 'yusufali', apiId: 22, label: 'Yusuf Ali', language: 'english', isDefault: false },
-  { id: 'hilali', apiId: 203, label: 'Al-Hilali & Khan', language: 'english', isDefault: false },
+  { id: 'sahih', apiId: TRANSLATION_IDS.sahih, label: 'Sahih International', language: 'english', isDefault: true },
+  { id: 'pickthall', apiId: TRANSLATION_IDS.pickthall, label: 'Pickthall', language: 'english', isDefault: false },
+  { id: 'yusufali', apiId: TRANSLATION_IDS.yusufali, label: 'Yusuf Ali', language: 'english', isDefault: false },
+  { id: 'hilali', apiId: TRANSLATION_IDS.hilali, label: 'Al-Hilali & Khan', language: 'english', isDefault: false },
 ];
+
+
 
 // Helper to get editions by language
 export function getTranslationsByLanguage(language: 'bangla' | 'english' | 'urdu'): TranslationEdition[] {
@@ -109,22 +128,6 @@ export const APP_CONFIG = {
     english: getTranslationsByLanguage('english'),
   },
   audio: AUDIO_CONFIG,
-};
-
-// ============================================
-// TRANSLATION ID MAPPINGS (Quran.com API v4)
-// ============================================
-const TRANSLATION_IDS = {
-  // Bengali
-  taisirul: 161,    // Taisirul Quran
-  mujibur: 163,     // Sheikh Mujibur Rahman
-  rawai: 213,       // Rawai Al-bayan
-  zakaria: 162,     // Dr. Abu Bakr Muhammad Zakaria
-  // English
-  sahih: 20,        // Saheeh International
-  pickthall: 19,    // M. Pickthall
-  yusufali: 22,     // A. Yusuf Ali
-  hilali: 203,      // Al-Hilali & Khan
 };
 
 // Cache for surah data
@@ -306,20 +309,19 @@ export async function getSurahById(id: number): Promise<Surah | null> {
       return translation?.text?.replace(/<sup[^>]*>.*?<\/sup>/g, '') || '';
     };
 
-    const ayahs: Ayah[] = verses.map((verse: any) => ({
-      number: verse.verse_number,
-      text: verse.text_uthmani || '',
-      // Bengali translations
-      translation: getTranslation(verse.translations, TRANSLATION_IDS.taisirul),
-      banglaMujibur: getTranslation(verse.translations, TRANSLATION_IDS.mujibur),
-      banglaRawai: getTranslation(verse.translations, TRANSLATION_IDS.rawai),
-      banglaZakaria: getTranslation(verse.translations, TRANSLATION_IDS.zakaria),
-      // English translations
-      englishTranslation: getTranslation(verse.translations, TRANSLATION_IDS.sahih),
-      englishPickthall: getTranslation(verse.translations, TRANSLATION_IDS.pickthall),
-      englishYusufali: getTranslation(verse.translations, TRANSLATION_IDS.yusufali),
-      englishHilali: getTranslation(verse.translations, TRANSLATION_IDS.hilali)
-    }));
+    const ayahs: Ayah[] = verses.map((verse: any) => {
+      // Build translations object dynamically from TRANSLATION_EDITIONS
+      const translations: Record<string, string> = {};
+      TRANSLATION_EDITIONS.forEach(edition => {
+        translations[edition.id] = getTranslation(verse.translations, edition.apiId);
+      });
+      
+      return {
+        number: verse.verse_number,
+        text: verse.text_uthmani || '',
+        translations
+      };
+    });
 
     const surah: Surah = {
       id,
