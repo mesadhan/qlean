@@ -1,0 +1,47 @@
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Dark Mode Script -->
+<script>
+    // Dark mode persistence
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    if (darkMode) {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+        document.getElementById('darkModeToggle').innerHTML = '<i class="bi bi-sun-fill"></i>';
+    }
+    
+    document.getElementById('darkModeToggle').addEventListener('click', () => {
+        const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+        if (isDark) {
+            document.documentElement.setAttribute('data-bs-theme', 'light');
+            document.getElementById('darkModeToggle').innerHTML = '<i class="bi bi-moon-fill"></i>';
+            localStorage.setItem('darkMode', 'false');
+        } else {
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+            document.getElementById('darkModeToggle').innerHTML = '<i class="bi bi-sun-fill"></i>';
+            localStorage.setItem('darkMode', 'true');
+        }
+    });
+    
+    // Mobile menu close helper
+    function closeMobileMenu() {
+        const navbarCollapseEl = document.getElementById('navbarNav');
+        if (navbarCollapseEl && navbarCollapseEl.classList.contains('show')) {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapseEl);
+                if (bsCollapse) {
+                    bsCollapse.hide();
+                } else {
+                    navbarCollapseEl.classList.remove('show');
+                }
+            } else {
+                navbarCollapseEl.classList.remove('show');
+            }
+        }
+    }
+    
+    // Close mobile menu on link click
+    document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+    });
+</script>

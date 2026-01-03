@@ -1,0 +1,619 @@
+<!-- Hero Carousel -->
+<div id="heroCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+    </div>
+    <div class="carousel-inner rounded-4 shadow">
+        <div class="carousel-item active">
+            <div class="carousel-slide bg-success text-white">
+                <div class="carousel-content">
+                    <i class="bi bi-book display-1 mb-3"></i>
+                    <h2>পবিত্র কুরআন</h2>
+                    <p>১১৪ টি সূরা | আরবি ও বাংলা অনুবাদ সহ</p>
+                    <a href="#quran-section" class="btn btn-light btn-lg">
+                        <i class="bi bi-arrow-down-circle me-2"></i>পড়ুন
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-slide bg-primary text-white">
+                <div class="carousel-content">
+                    <i class="bi bi-moon-stars display-1 mb-3"></i>
+                    <h2>ইবাদত ও আমল</h2>
+                    <p>সালাত, সিয়াম, হজ, যাকাত সম্পর্কে জানুন</p>
+                    <a href="#ibadat-section" class="btn btn-light btn-lg">
+                        <i class="bi bi-arrow-down-circle me-2"></i>দেখুন
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-slide bg-info text-white">
+                <div class="carousel-content">
+                    <i class="bi bi-heart display-1 mb-3"></i>
+                    <h2>দান-সদকা</h2>
+                    <p>দান করুন, পুণ্য অর্জন করুন</p>
+                    <a href="#donation-section" class="btn btn-light btn-lg">
+                        <i class="bi bi-arrow-down-circle me-2"></i>দান করুন
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+
+<!-- Search Bar -->
+<div class="row mb-4">
+    <div class="col-12">
+        <form action="/search" method="GET">
+            <div class="input-group input-group-lg shadow-sm">
+                <span class="input-group-text bg-white"><i class="bi bi-search text-success"></i></span>
+                <input type="text" class="form-control border-start-0" name="q" id="searchInput" 
+                       placeholder="সূরা খুঁজুন... (আরবি বা বাংলা)"
+                       value="<%= typeof query !== 'undefined' ? query : '' %>">
+                <button type="submit" class="btn btn-success px-4">
+                    <i class="bi bi-search me-1"></i> খুঁজুন
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Quick Categories -->
+<div class="row g-3 mb-5">
+    <div class="col-6 col-md-3">
+        <a href="#quran-section" class="text-decoration-none">
+            <div class="category-card bg-success text-white text-center p-3 rounded-4 h-100">
+                <i class="bi bi-book display-4"></i>
+                <h6 class="mt-2 mb-0">কুরআন</h6>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="#ibadat-section" class="text-decoration-none">
+            <div class="category-card bg-primary text-white text-center p-3 rounded-4 h-100">
+                <i class="bi bi-moon-stars display-4"></i>
+                <h6 class="mt-2 mb-0">ইবাদত</h6>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="#article-section" class="text-decoration-none">
+            <div class="category-card bg-warning text-dark text-center p-3 rounded-4 h-100">
+                <i class="bi bi-journal-text display-4"></i>
+                <h6 class="mt-2 mb-0">প্রবন্ধ</h6>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="#marriage-section" class="text-decoration-none">
+            <div class="category-card bg-danger text-white text-center p-3 rounded-4 h-100">
+                <i class="bi bi-hearts display-4"></i>
+                <h6 class="mt-2 mb-0">বিবাহ</h6>
+            </div>
+        </a>
+    </div>
+</div>
+
+
+
+<!-- Ibadat Section -->
+<section id="ibadat-section" class="mb-5">
+    <h3 class="section-title mb-3">
+        <i class="bi bi-moon-stars text-primary me-2"></i>ইবাদত
+    </h3>
+    <div class="row g-3">
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="/ibadat/salat" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-primary-subtle text-primary rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-person-standing"></i>
+                        </div>
+                        <h6 class="card-title">সালাত</h6>
+                        <small class="text-muted">নামাজ শিখুন</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="/ibadat/siam" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-success-subtle text-success rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-cup-hot"></i>
+                        </div>
+                        <h6 class="card-title">সিয়াম</h6>
+                        <small class="text-muted">রোজা</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="/ibadat/hajj" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-warning-subtle text-warning rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <h6 class="card-title">হজ</h6>
+                        <small class="text-muted">হজের নিয়ম</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="/ibadat/zakat" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-info-subtle text-info rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-cash-coin"></i>
+                        </div>
+                        <h6 class="card-title">যাকাত</h6>
+                        <small class="text-muted">যাকাত হিসাব</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="/ibadat/hadith" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-danger-subtle text-danger rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-journal-bookmark"></i>
+                        </div>
+                        <h6 class="card-title">হাদিসসমূহ</h6>
+                        <small class="text-muted">হাদিস পড়ুন</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="/ibadat/dua" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-secondary-subtle text-secondary rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-hand-thumbs-up"></i>
+                        </div>
+                        <h6 class="card-title">দোয়া</h6>
+                        <small class="text-muted">দৈনিক দোয়া</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Article Section -->
+<section id="article-section" class="mb-5">
+    <h3 class="section-title mb-3">
+        <i class="bi bi-journal-text text-warning me-2"></i>প্রবন্ধ
+    </h3>
+    <div class="row g-3">
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="/articles/salat" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-primary-subtle text-primary rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <h6 class="card-title">সালাত</h6>
+                        <small class="text-muted">নামাজ বিষয়ক</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="/articles/siam" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-success-subtle text-success rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <h6 class="card-title">সিয়াম</h6>
+                        <small class="text-muted">রোজা বিষয়ক</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="/articles/hajj" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-warning-subtle text-warning rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <h6 class="card-title">হজ</h6>
+                        <small class="text-muted">হজ বিষয়ক</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="/articles/zakat" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-info-subtle text-info rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <h6 class="card-title">যাকাত</h6>
+                        <small class="text-muted">যাকাত বিষয়ক</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="/articles/hadith" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-danger-subtle text-danger rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <h6 class="card-title">হাদিস</h6>
+                        <small class="text-muted">হাদিস বিষয়ক</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Donation Section -->
+<section id="donation-section" class="mb-5">
+    <h3 class="section-title mb-3">
+        <i class="bi bi-heart text-info me-2"></i>দান
+    </h3>
+    <div class="row g-3">
+        <div class="col-6 col-md-3">
+            <a href="/donation/donate" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-success-subtle text-success rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-gift"></i>
+                        </div>
+                        <h6 class="card-title">দান</h6>
+                        <small class="text-muted">সাধারণ দান</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="/donation/charity" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-primary-subtle text-primary rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-house-heart"></i>
+                        </div>
+                        <h6 class="card-title">দাতব্য</h6>
+                        <small class="text-muted">দাতব্য প্রতিষ্ঠান</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="/donation/sadaqah" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-warning-subtle text-warning rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-cash-stack"></i>
+                        </div>
+                        <h6 class="card-title">দান-সদকা</h6>
+                        <small class="text-muted">সদকা জারিয়া</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="/kalima" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-danger-subtle text-danger rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-chat-quote"></i>
+                        </div>
+                        <h6 class="card-title">কালিমা</h6>
+                        <small class="text-muted">ছয় কালিমা</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Marriage Section -->
+<section id="marriage-section" class="mb-5">
+    <h3 class="section-title mb-3">
+        <i class="bi bi-hearts text-danger me-2"></i>বিবাহ
+    </h3>
+    <div class="row g-3">
+        <div class="col-6 col-md-3">
+            <a href="/marriage/info" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-danger-subtle text-danger rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-info-circle"></i>
+                        </div>
+                        <h6 class="card-title">বিবাহ</h6>
+                        <small class="text-muted">বিবাহের নিয়ম</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="/marriage/groom-register" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-primary-subtle text-primary rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-person-plus"></i>
+                        </div>
+                        <h6 class="card-title">পুরুষের তথ্য</h6>
+                        <small class="text-muted">বায়োডাটা জমা</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="/marriage/bride-register" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-pink-subtle text-pink rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-person-plus"></i>
+                        </div>
+                        <h6 class="card-title">নারীর তথ্য</h6>
+                        <small class="text-muted">বায়োডাটা জমা</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="/marriage/profiles" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon bg-success-subtle text-success rounded-circle mb-3 mx-auto">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h6 class="card-title">প্রোফাইল দেখুন</h6>
+                        <small class="text-muted">সবার জন্য</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Quran Section -->
+<section id="quran-section" class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="section-title">
+            <i class="bi bi-book text-success me-2"></i>পবিত্র কুরআন
+        </h3>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-success btn-sm active" id="gridViewBtn">
+                <i class="bi bi-grid-3x3-gap"></i>
+            </button>
+            <button type="button" class="btn btn-outline-success btn-sm" id="listViewBtn">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Surahs Grid -->
+    <div class="row g-3" id="surahsContainer">
+        <% surahs.forEach(surah => { %>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 surah-item">
+                <a href="/surah/<%= surah.id %>" class="text-decoration-none">
+                    <div class="card surah-card h-100 text-center">
+                        <div class="card-body p-2 p-md-3">
+                            <div class="surah-number-badge mb-2">
+                                <span class="badge bg-success rounded-circle"><%= surah.id %></span>
+                            </div>
+                            <h6 class="card-title arabic-text mb-1" style="font-size: 1.1rem;"><%= surah.name %></h6>
+                            <p class="card-text small text-muted mb-1"><%= surah.transliteration %></p>
+                            <small class="text-success"><%= surah.totalAyahs %> আয়াত</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <% }) %>
+    </div>
+    
+    <% if (surahs.length === 0) { %>
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> কোনো সূরা পাওয়া যায়নি।
+        </div>
+    <% } %>
+</section>
+
+
+<style>
+    /* Carousel Styles */
+    .carousel-slide {
+        min-height: 280px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .carousel-content {
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .carousel-content h2 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .carousel-content p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+    
+    /* Category Cards */
+    .category-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    /* Section Titles */
+    .section-title {
+        font-weight: 600;
+        color: #333;
+        border-bottom: 2px solid #198754;
+        padding-bottom: 0.5rem;
+        display: inline-block;
+    }
+    
+    [data-bs-theme="dark"] .section-title {
+        color: #fff;
+    }
+    
+    /* Surah Cards */
+    .surah-card {
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .surah-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(25, 135, 84, 0.2);
+        border-color: #198754;
+    }
+    
+    .surah-number-badge .badge {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+    }
+    
+    /* Feature Cards */
+    .feature-card {
+        transition: all 0.3s ease;
+        border-radius: 1rem;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    
+    /* List View */
+    .list-view .surah-item {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+    
+    .list-view .surah-card {
+        text-align: left !important;
+    }
+    
+    .list-view .surah-card .card-body {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .list-view .surah-number-badge {
+        margin-bottom: 0 !important;
+    }
+    
+    /* Pink color for bride section */
+    .bg-pink-subtle {
+        background-color: rgba(255, 105, 180, 0.15);
+    }
+    
+    .text-pink {
+        color: #ff69b4;
+    }
+    
+    /* Responsive */
+    @media (max-width: 576px) {
+        .carousel-slide {
+            min-height: 220px;
+        }
+        
+        .carousel-content h2 {
+            font-size: 1.5rem;
+        }
+        
+        .carousel-content p {
+            font-size: 0.9rem;
+        }
+        
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+
+<script>
+    // Grid/List View Toggle
+    const gridViewBtn = document.getElementById('gridViewBtn');
+    const listViewBtn = document.getElementById('listViewBtn');
+    const surahsContainer = document.getElementById('surahsContainer');
+    
+    // Load saved view preference
+    const savedView = localStorage.getItem('surahViewMode');
+    if (savedView === 'list') {
+        surahsContainer.classList.add('list-view');
+        listViewBtn.classList.add('active');
+        gridViewBtn.classList.remove('active');
+    }
+    
+    gridViewBtn.addEventListener('click', () => {
+        surahsContainer.classList.remove('list-view');
+        gridViewBtn.classList.add('active');
+        listViewBtn.classList.remove('active');
+        localStorage.setItem('surahViewMode', 'grid');
+    });
+    
+    listViewBtn.addEventListener('click', () => {
+        surahsContainer.classList.add('list-view');
+        listViewBtn.classList.add('active');
+        gridViewBtn.classList.remove('active');
+        localStorage.setItem('surahViewMode', 'list');
+    });
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+</script>

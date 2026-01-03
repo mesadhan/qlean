@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="bn" dir="ltr">
+<head>
+    <%- include('partials/head', { title: typeof title !== 'undefined' ? title : '' }) %>
+</head>
+<body>
+    <%- include('partials/navbar', { activePage: typeof activePage !== 'undefined' ? activePage : '' }) %>
+    
+    <main class="container py-4">
+        <%- content %>
+    </main>
+    
+    <%- include('partials/scripts') %>
+</body>
+</html>

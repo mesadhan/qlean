@@ -1,0 +1,277 @@
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h3 class="mb-0"><i class="bi bi-bookmark-fill text-warning"></i> My Bookmarks</h3>
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-success" id="bookmarkCount">0</span>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-secondary btn-sm active" id="gridViewBtn" title="Grid View">
+                <i class="bi bi-grid-3x3-gap"></i>
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="listViewBtn" title="List View">
+                <i class="bi bi-list-ul"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filter -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" id="bookmarkSearch" placeholder="Search bookmarks (Arabic, Bangla, English)...">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="surahFilter">
+                    <option value="">All Surahs</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="sortBy">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="surah">By Surah</option>
+                    <option value="ayah">By Ayah Number</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bookmarks Grid/List Container -->
+<div id="bookmarksList" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+    <!-- Bookmarks will be rendered here by JavaScript -->
+</div>
+
+<div id="noBookmarks" class="alert alert-info" style="display: none;">
+    <i class="bi bi-bookmark"></i> No bookmarks yet. Start bookmarking your favorite ayahs!
+</div>
+
+<div id="noResults" class="alert alert-warning" style="display: none;">
+    <i class="bi bi-search"></i> No bookmarks found matching your search.
+</div>
+
+<!-- Clear All Bookmarks -->
+<div class="mt-4 text-center" id="clearAllSection" style="display: none;">
+    <button class="btn btn-outline-danger" id="clearAllBtn">
+        <i class="bi bi-trash"></i> Clear All Bookmarks
+    </button>
+</div>
+
+<script>
+    // Surah names for display
+    const SURAH_NAMES = [
+        '', 'Al-Fatihah', 'Al-Baqarah', 'Aal-E-Imran', 'An-Nisa', 'Al-Maidah', 'Al-Anam', 'Al-Araf',
+        'Al-Anfal', 'At-Tawbah', 'Yunus', 'Hud', 'Yusuf', 'Ar-Rad', 'Ibrahim', 'Al-Hijr', 'An-Nahl',
+        'Al-Isra', 'Al-Kahf', 'Maryam', 'Taha', 'Al-Anbiya', 'Al-Hajj', 'Al-Muminun', 'An-Nur',
+        'Al-Furqan', 'Ash-Shuara', 'An-Naml', 'Al-Qasas', 'Al-Ankabut', 'Ar-Rum', 'Luqman',
+        'As-Sajdah', 'Al-Ahzab', 'Saba', 'Fatir', 'Ya-Sin', 'As-Saffat', 'Sad', 'Az-Zumar',
+        'Ghafir', 'Fussilat', 'Ash-Shura', 'Az-Zukhruf', 'Ad-Dukhan', 'Al-Jathiyah', 'Al-Ahqaf',
+        'Muhammad', 'Al-Fath', 'Al-Hujurat', 'Qaf', 'Adh-Dhariyat', 'At-Tur', 'An-Najm', 'Al-Qamar',
+        'Ar-Rahman', 'Al-Waqiah', 'Al-Hadid', 'Al-Mujadila', 'Al-Hashr', 'Al-Mumtahanah', 'As-Saff',
+        'Al-Jumuah', 'Al-Munafiqun', 'At-Taghabun', 'At-Talaq', 'At-Tahrim', 'Al-Mulk', 'Al-Qalam',
+        'Al-Haqqah', 'Al-Maarij', 'Nuh', 'Al-Jinn', 'Al-Muzzammil', 'Al-Muddaththir', 'Al-Qiyamah',
+        'Al-Insan', 'Al-Mursalat', 'An-Naba', 'An-Naziat', 'Abasa', 'At-Takwir', 'Al-Infitar',
+        'Al-Mutaffifin', 'Al-Inshiqaq', 'Al-Buruj', 'At-Tariq', 'Al-Ala', 'Al-Ghashiyah', 'Al-Fajr',
+        'Al-Balad', 'Ash-Shams', 'Al-Layl', 'Ad-Duhaa', 'Ash-Sharh', 'At-Tin', 'Al-Alaq', 'Al-Qadr',
+        'Al-Bayyinah', 'Az-Zalzalah', 'Al-Adiyat', 'Al-Qariah', 'At-Takathur', 'Al-Asr', 'Al-Humazah',
+        'Al-Fil', 'Quraysh', 'Al-Maun', 'Al-Kawthar', 'Al-Kafirun', 'An-Nasr', 'Al-Masad', 'Al-Ikhlas',
+        'Al-Falaq', 'An-Nas'
+    ];
+    
+    let isGridView = true;
+    let allBookmarks = [];
+    
+    function getBookmarks() {
+        return JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    }
+    
+    function saveBookmarks(bookmarks) {
+        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+    }
+    
+    function populateSurahFilter() {
+        const filter = document.getElementById('surahFilter');
+        const bookmarks = getBookmarks();
+        const surahs = [...new Set(bookmarks.map(b => b.surahId))].sort((a, b) => a - b);
+        
+        filter.innerHTML = '<option value="">All Surahs</option>' + 
+            surahs.map(id => `<option value="${id}">${id}. ${SURAH_NAMES[id]}</option>`).join('');
+    }
+    
+    function filterAndSortBookmarks() {
+        const searchTerm = document.getElementById('bookmarkSearch').value.toLowerCase();
+        const surahFilter = document.getElementById('surahFilter').value;
+        const sortBy = document.getElementById('sortBy').value;
+        
+        let filtered = [...allBookmarks];
+        
+        // Filter by search
+        if (searchTerm) {
+            filtered = filtered.filter(b => 
+                b.text.toLowerCase().includes(searchTerm) ||
+                b.translation.toLowerCase().includes(searchTerm) ||
+                (b.englishTranslation && b.englishTranslation.toLowerCase().includes(searchTerm)) ||
+                SURAH_NAMES[b.surahId].toLowerCase().includes(searchTerm)
+            );
+        }
+        
+        // Filter by surah
+        if (surahFilter) {
+            filtered = filtered.filter(b => b.surahId === parseInt(surahFilter));
+        }
+        
+        // Sort
+        switch (sortBy) {
+            case 'oldest':
+                filtered.reverse();
+                break;
+            case 'surah':
+                filtered.sort((a, b) => a.surahId - b.surahId || a.ayahNumber - b.ayahNumber);
+                break;
+            case 'ayah':
+                filtered.sort((a, b) => a.ayahNumber - b.ayahNumber);
+                break;
+            // 'newest' is default order
+        }
+        
+        return filtered;
+    }
+    
+    function renderBookmarks() {
+        allBookmarks = getBookmarks();
+        const filtered = filterAndSortBookmarks();
+        const container = document.getElementById('bookmarksList');
+        const noBookmarksMsg = document.getElementById('noBookmarks');
+        const noResultsMsg = document.getElementById('noResults');
+        const clearAllSection = document.getElementById('clearAllSection');
+        const bookmarkCount = document.getElementById('bookmarkCount');
+        
+        bookmarkCount.textContent = allBookmarks.length;
+        populateSurahFilter();
+        
+        if (allBookmarks.length === 0) {
+            container.innerHTML = '';
+            noBookmarksMsg.style.display = 'block';
+            noResultsMsg.style.display = 'none';
+            clearAllSection.style.display = 'none';
+            return;
+        }
+        
+        noBookmarksMsg.style.display = 'none';
+        clearAllSection.style.display = 'block';
+        
+        if (filtered.length === 0) {
+            container.innerHTML = '';
+            noResultsMsg.style.display = 'block';
+            return;
+        }
+        
+        noResultsMsg.style.display = 'none';
+        
+        // Update container class based on view mode
+        if (isGridView) {
+            container.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3';
+        } else {
+            container.className = 'row row-cols-1 g-2';
+        }
+        
+        container.innerHTML = filtered.map(bookmark => `
+            <div class="col bookmark-item" data-surah="${bookmark.surahId}" data-ayah="${bookmark.ayahNumber}">
+                <div class="card h-100 ${isGridView ? '' : 'flex-row'}">
+                    <div class="card-body ${isGridView ? '' : 'd-flex flex-column flex-grow-1'}">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <span class="badge bg-success">${bookmark.surahId}:${bookmark.ayahNumber}</span>
+                                <span class="badge bg-secondary ms-1">${SURAH_NAMES[bookmark.surahId]}</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger remove-bookmark-btn"
+                                    data-surah-id="${bookmark.surahId}"
+                                    data-ayah-number="${bookmark.ayahNumber}"
+                                    title="Remove bookmark">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        <p class="arabic-text mb-2 ${isGridView ? 'text-truncate-3' : ''}" style="${isGridView ? 'display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;' : ''}">${bookmark.text}</p>
+                        <p class="translation-text small text-muted mb-2 ${isGridView ? 'text-truncate-2' : ''}" style="${isGridView ? 'display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;' : ''}">${bookmark.translation}</p>
+                        <div class="mt-auto">
+                            <a href="/surah/${bookmark.surahId}#ayah-${bookmark.ayahNumber}" class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-book"></i> Go to Ayah
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        
+        // Add remove handlers
+        document.querySelectorAll('.remove-bookmark-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const surahId = parseInt(btn.dataset.surahId);
+                const ayahNumber = parseInt(btn.dataset.ayahNumber);
+                
+                if (confirm('Remove this bookmark?')) {
+                    const bookmarks = getBookmarks();
+                    const filtered = bookmarks.filter(b => !(b.surahId === surahId && b.ayahNumber === ayahNumber));
+                    saveBookmarks(filtered);
+                    renderBookmarks();
+                }
+            });
+        });
+    }
+    
+    // View toggle handlers
+    document.getElementById('gridViewBtn').addEventListener('click', () => {
+        isGridView = true;
+        document.getElementById('gridViewBtn').classList.add('active');
+        document.getElementById('listViewBtn').classList.remove('active');
+        renderBookmarks();
+    });
+    
+    document.getElementById('listViewBtn').addEventListener('click', () => {
+        isGridView = false;
+        document.getElementById('listViewBtn').classList.add('active');
+        document.getElementById('gridViewBtn').classList.remove('active');
+        renderBookmarks();
+    });
+    
+    // Search and filter handlers
+    document.getElementById('bookmarkSearch').addEventListener('input', renderBookmarks);
+    document.getElementById('surahFilter').addEventListener('change', renderBookmarks);
+    document.getElementById('sortBy').addEventListener('change', renderBookmarks);
+    
+    // Clear all handler
+    document.getElementById('clearAllBtn').addEventListener('click', () => {
+        if (confirm('Are you sure you want to clear ALL bookmarks? This cannot be undone.')) {
+            saveBookmarks([]);
+            renderBookmarks();
+        }
+    });
+    
+    // Render on page load
+    renderBookmarks();
+</script>
+
+<style>
+    .bookmark-item .card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .bookmark-item .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .bookmark-item .arabic-text {
+        font-size: 1.1rem;
+        line-height: 2;
+    }
+    
+    .btn-group .btn.active {
+        background-color: var(--bs-success);
+        border-color: var(--bs-success);
+        color: white;
+    }
+</style>
