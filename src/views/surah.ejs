@@ -20,36 +20,30 @@
             <div class="col-md-6">
                 <h6 class="mb-2"><i class="bi bi-translate text-success me-1"></i> বাংলা অনুবাদ</h6>
                 <div class="d-flex flex-wrap gap-2">
+                    <% config.translationsByLanguage.bangla.forEach(t => { %>
                     <div class="form-check">
-                        <input class="form-check-input translation-checkbox" type="checkbox" id="banglaTaisirul" data-translation="taisirul" checked>
-                        <label class="form-check-label small" for="banglaTaisirul">মুহিউদ্দীন খান</label>
+                        <input class="form-check-input translation-checkbox" type="checkbox" 
+                               id="bangla<%= t.id.charAt(0).toUpperCase() + t.id.slice(1) %>" 
+                               data-translation="<%= t.id %>" 
+                               <%= t.isDefault ? 'checked' : '' %>>
+                        <label class="form-check-label small" for="bangla<%= t.id.charAt(0).toUpperCase() + t.id.slice(1) %>"><%= t.label %></label>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input translation-checkbox" type="checkbox" id="banglaMujibur" data-translation="mujibur">
-                        <label class="form-check-label small" for="banglaMujibur">জহুরুল হক</label>
-                    </div>
+                    <% }) %>
                 </div>
             </div>
             <!-- English Translations -->
             <div class="col-md-6">
                 <h6 class="mb-2"><i class="bi bi-translate text-primary me-1"></i> English Translation</h6>
                 <div class="d-flex flex-wrap gap-2">
+                    <% config.translationsByLanguage.english.forEach(t => { %>
                     <div class="form-check">
-                        <input class="form-check-input translation-checkbox" type="checkbox" id="englishSahih" data-translation="sahih" checked>
-                        <label class="form-check-label small" for="englishSahih">Sahih International</label>
+                        <input class="form-check-input translation-checkbox" type="checkbox" 
+                               id="english<%= t.id.charAt(0).toUpperCase() + t.id.slice(1) %>" 
+                               data-translation="<%= t.id %>" 
+                               <%= t.isDefault ? 'checked' : '' %>>
+                        <label class="form-check-label small" for="english<%= t.id.charAt(0).toUpperCase() + t.id.slice(1) %>"><%= t.label %></label>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input translation-checkbox" type="checkbox" id="englishPickthall" data-translation="pickthall">
-                        <label class="form-check-label small" for="englishPickthall">Pickthall</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input translation-checkbox" type="checkbox" id="englishYusufali" data-translation="yusufali">
-                        <label class="form-check-label small" for="englishYusufali">Yusuf Ali</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input translation-checkbox" type="checkbox" id="englishArberry" data-translation="arberry">
-                        <label class="form-check-label small" for="englishArberry">Arberry</label>
-                    </div>
+                    <% }) %>
                 </div>
             </div>
         </div>
@@ -58,52 +52,60 @@
     <!-- Audio Player Section -->
     <div class="card-body border-top">
         <div class="d-flex flex-column gap-3">
+            
+            <!-- Arabic Reciter Selection -->
+            <div class="d-flex align-items-center gap-2 flex-wrap reciter-section" id="arabicReciterSection" data-language="arabic" style="display: none;">
+                <label class="form-label mb-0"><i class="bi bi-person-circle"></i> আরবি কারী:</label>
+                <% if (config.audio.reciters.arabic.length > 1) { %>
+                <select class="form-select form-select-sm reciter-select" id="arabicReciterSelect" data-language="arabic" style="max-width: 280px;">
+                    <% config.audio.reciters.arabic.forEach(r => { %>
+                    <option value="<%= r.id %>" <%= r.isDefault ? 'selected' : '' %>><%= r.name %></option>
+                    <% }) %>
+                </select>
+                <% } else { %>
+                <span class="badge bg-success"><%= config.audio.reciters.arabic[0].name %></span>
+                <% } %>
+            </div>
+            
+            <!-- Urdu Reciter Selection -->
+            <div class="d-flex align-items-center gap-2 flex-wrap reciter-section" id="urduReciterSection" data-language="urdu" style="display: none;">
+                <label class="form-label mb-0"><i class="bi bi-person-circle"></i> উর্দু কারী:</label>
+                <% if (config.audio.reciters.urdu.length > 1) { %>
+                <select class="form-select form-select-sm reciter-select" id="urduReciterSelect" data-language="urdu" style="max-width: 280px;">
+                    <% config.audio.reciters.urdu.forEach(r => { %>
+                    <option value="<%= r.id %>" <%= r.isDefault ? 'selected' : '' %>><%= r.name %></option>
+                    <% }) %>
+                </select>
+                <% } else { %>
+                <span class="badge bg-success"><%= config.audio.reciters.urdu[0].name %></span>
+                <% } %>
+            </div>
+            
+            <!-- English Reciter Selection -->
+            <div class="d-flex align-items-center gap-2 flex-wrap reciter-section" id="englishReciterSection" data-language="english" style="display: none;">
+                <label class="form-label mb-0"><i class="bi bi-person-circle"></i> English Reciter:</label>
+                <% if (config.audio.reciters.english.length > 1) { %>
+                <select class="form-select form-select-sm reciter-select" id="englishReciterSelect" data-language="english" style="max-width: 280px;">
+                    <% config.audio.reciters.english.forEach(r => { %>
+                    <option value="<%= r.id %>" <%= r.isDefault ? 'selected' : '' %>><%= r.name %></option>
+                    <% }) %>
+                </select>
+                <% } else { %>
+                <span class="badge bg-primary"><%= config.audio.reciters.english[0].name %></span>
+                <% } %>
+            </div>
+
             <!-- Audio Type Selection -->
             <div class="d-flex align-items-center gap-2 flex-wrap">
                 <label class="form-label mb-0"><i class="bi bi-translate"></i> Audio Type:</label>
                 <div class="btn-group" role="group">
-                    <input type="radio" class="btn-check" name="audioType" id="audioArabic" value="arabic" checked>
-                    <label class="btn btn-outline-success btn-sm" for="audioArabic">আরবি (Arabic)</label>
-                    
-                    <input type="radio" class="btn-check" name="audioType" id="audioUrdu" value="urdu">
-                    <label class="btn btn-outline-success btn-sm" for="audioUrdu">উর্দু (Urdu)</label>
-                    
-                    <input type="radio" class="btn-check" name="audioType" id="audioEnglish" value="english">
-                    <label class="btn btn-outline-success btn-sm" for="audioEnglish">English</label>
-                    
-                    <input type="radio" class="btn-check" name="audioType" id="audioBoth" value="both">
-                    <label class="btn btn-outline-success btn-sm" for="audioBoth">Arabic + English</label>
+                    <% config.audio.types.forEach((type, index) => { %>
+                    <input type="radio" class="btn-check" name="audioType" id="audio<%= type.id.charAt(0).toUpperCase() + type.id.slice(1) %>" value="<%= type.id %>" <%= index === 0 ? 'checked' : '' %>>
+                    <label class="btn btn-outline-success btn-sm" for="audio<%= type.id.charAt(0).toUpperCase() + type.id.slice(1) %>"><%= type.labelBn ? type.labelBn + ' (' + type.label + ')' : type.label %></label>
+                    <% }) %>
                 </div>
             </div>
             
-            <!-- Arabic Reciter Selection -->
-            <div class="d-flex align-items-center gap-2 flex-wrap" id="arabicReciterSection">
-                <label class="form-label mb-0"><i class="bi bi-person-circle"></i> আরবি কারী:</label>
-                <select class="form-select form-select-sm" id="reciterSelect" style="max-width: 280px;">
-                    <option value="Alafasy_128kbps">Mishary Rashid Alafasy</option>
-                    <option value="Abdul_Basit_Murattal_192kbps">Abdul Basit (Murattal)</option>
-                    <option value="Abdul_Basit_Mujawwad_128kbps">Abdul Basit (Mujawwad)</option>
-                    <option value="Husary_128kbps">Mahmoud Khalil Al-Husary</option>
-                    <option value="Minshawy_Murattal_128kbps">Mohamed Siddiq El-Minshawi</option>
-                    <option value="Ahmed_ibn_Ali_al_Ajamy_128kbps_ketaballah.net">Ahmed ibn Ali al-Ajamy</option>
-                    <option value="Muhammad_Ayyoub_128kbps">Muhammad Ayyoub</option>
-                    <option value="Muhammad_Jibreel_128kbps">Muhammad Jibreel</option>
-                    <option value="Maher_AlMuworrkly_128kbps">Maher Al-Muaiqly</option>
-                    <option value="Saood_ash-Shuraym_128kbps">Saood Ash-Shuraym</option>
-                </select>
-            </div>
-            
-            <!-- Urdu Translation Selection -->
-            <div class="d-flex align-items-center gap-2 flex-wrap" id="urduReciterSection" style="display: none;">
-                <label class="form-label mb-0"><i class="bi bi-person-circle"></i> উর্দু কারী:</label>
-                <span class="badge bg-success">Shamshad Ali Khan</span>
-            </div>
-            
-            <!-- English Translation Selection -->
-            <div class="d-flex align-items-center gap-2 flex-wrap" id="englishReciterSection" style="display: none;">
-                <label class="form-label mb-0"><i class="bi bi-person-circle"></i> English Reciter:</label>
-                <span class="badge bg-primary">Sahih International (Ibrahim Walk)</span>
-            </div>
             
             <!-- Full Surah Player -->
             <div class="d-flex align-items-center gap-2 flex-wrap">
@@ -333,6 +335,11 @@
 </div>
 
 <script>
+    // ============================================
+    // DYNAMIC CONFIGURATION (from server)
+    // ============================================
+    const APP_CONFIG = <%- JSON.stringify(config) %>;
+    
     // Surah and ayah counts for audio URL generation
     const SURAH_AYAH_COUNTS = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
     
@@ -355,28 +362,20 @@
         return `https://everyayah.com/data/${reciterFolder}/${paddedSurah}${paddedAyah}.mp3`;
     }
     
-    // Get Urdu translation audio URL
-    function getUrduAyahAudioUrl(surahId, ayahNumber, translationId) {
+    // Get Urdu translation audio URL (uses reciter ID from config)
+    function getUrduAyahAudioUrl(surahId, ayahNumber, reciterId) {
         const paddedSurah = String(surahId).padStart(3, '0');
         const paddedAyah = String(ayahNumber).padStart(3, '0');
-        return `https://everyayah.com/data/translations/urdu_shamshad_ali_khan_46kbps/${paddedSurah}${paddedAyah}.mp3`;
+        // Use the reciter ID directly (it's the folder name)
+        return `https://everyayah.com/data/translations/${reciterId}/${paddedSurah}${paddedAyah}.mp3`;
     }
     
-    // Get English translation audio URL (everyayah.com)
-    function getEnglishAyahAudioUrl(surahId, ayahNumber, translationId) {
+    // Get English translation audio URL (uses reciter ID from config)
+    function getEnglishAyahAudioUrl(surahId, ayahNumber, reciterId) {
         const paddedSurah = String(surahId).padStart(3, '0');
         const paddedAyah = String(ayahNumber).padStart(3, '0');
-        // Map translation IDs to EveryAyah folder names
-        const translationMap = {
-            'en.sahih': 'English/Sahih_Intnl_Ibrahim_Walk_192kbps',
-            'en.pickthall': 'English/Sahih_Intnl_Ibrahim_Walk_192kbps',
-            'en.yusufali': 'English/Sahih_Intnl_Ibrahim_Walk_192kbps',
-            'en.arberry': 'English/Sahih_Intnl_Ibrahim_Walk_192kbps',
-            'en.sarwar': 'English/Sahih_Intnl_Ibrahim_Walk_192kbps',
-            'en.shakir': 'English/Sahih_Intnl_Ibrahim_Walk_192kbps'
-        };
-        const folder = translationMap[translationId] || 'English/Sahih_Intnl_Ibrahim_Walk_192kbps';
-        return `https://everyayah.com/data/${folder}/${paddedSurah}${paddedAyah}.mp3`;
+        // Use the reciter ID directly (it's the folder path like 'English/Sahih_Intnl_Ibrahim_Walk_192kbps')
+        return `https://everyayah.com/data/${reciterId}/${paddedSurah}${paddedAyah}.mp3`;
     }
     
     // Get full surah audio URL (quranicaudio.com)
@@ -385,16 +384,43 @@
         return `https://download.quranicaudio.com/quran/${reciterFolder}/${paddedSurah}.mp3`;
     }
     
+    // ============================================
+    // DYNAMIC AUDIO HELPERS
+    // ============================================
+    
+    // Get default reciter ID for a language
+    function getDefaultReciter(language) {
+        const reciters = APP_CONFIG.audio.reciters[language];
+        if (!reciters || reciters.length === 0) return null;
+        const defaultReciter = reciters.find(r => r.isDefault);
+        return defaultReciter ? defaultReciter.id : reciters[0].id;
+    }
+    
+    // Get selected reciter for a language (from dropdown or default)
+    function getSelectedReciter(language) {
+        const select = document.getElementById(`${language}ReciterSelect`);
+        if (select) {
+            return select.value;
+        }
+        return getDefaultReciter(language);
+    }
+    
     // Audio elements
     const surahAudio = document.getElementById('surahAudio');
     const ayahAudio = document.getElementById('ayahAudio');
-    const reciterSelect = document.getElementById('reciterSelect');
     const playSurahBtn = document.getElementById('playSurahBtn');
     const stopSurahBtn = document.getElementById('stopSurahBtn');
     const nowPlaying = document.getElementById('nowPlaying');
-    const arabicReciterSection = document.getElementById('arabicReciterSection');
-    const urduReciterSection = document.getElementById('urduReciterSection');
-    const englishReciterSection = document.getElementById('englishReciterSection');
+    
+    // Dynamic reciter sections
+    const reciterSections = {};
+    APP_CONFIG.audio.types.forEach(type => {
+        type.showsReciters.forEach(lang => {
+            if (!reciterSections[lang]) {
+                reciterSections[lang] = document.getElementById(`${lang}ReciterSection`);
+            }
+        });
+    });
     
     // Audio type radio buttons
     const audioTypeRadios = document.querySelectorAll('input[name="audioType"]');
@@ -420,72 +446,85 @@
         return localStorage.getItem('translationLanguage') || 'english';
     }
     
+    // Function to update reciter section visibility based on audio type (DYNAMIC)
+    function updateReciterSectionVisibility(audioType) {
+        // Hide all reciter sections first
+        Object.values(reciterSections).forEach(section => {
+            if (section) section.style.display = 'none';
+        });
+        
+        // Find the audio type config
+        const audioTypeConfig = APP_CONFIG.audio.types.find(t => t.id === audioType);
+        if (!audioTypeConfig) return;
+        
+        // Show the relevant sections
+        audioTypeConfig.showsReciters.forEach(lang => {
+            const section = reciterSections[lang];
+            if (section) section.style.display = 'flex';
+        });
+    }
+    
     // Handle audio type change
     audioTypeRadios.forEach(radio => {
         radio.addEventListener('change', () => {
             currentAudioType = getAudioType();
-            
-            // Show/hide reciter sections based on selection
-            arabicReciterSection.style.display = 'none';
-            urduReciterSection.style.display = 'none';
-            englishReciterSection.style.display = 'none';
-            
-            if (currentAudioType === 'arabic') {
-                arabicReciterSection.style.display = 'flex';
-            } else if (currentAudioType === 'urdu') {
-                urduReciterSection.style.display = 'flex';
-            } else if (currentAudioType === 'english') {
-                englishReciterSection.style.display = 'flex';
-            } else { // both - Arabic + selected translation
-                arabicReciterSection.style.display = 'flex';
-                englishReciterSection.style.display = 'flex';
-                urduReciterSection.style.display = 'flex';
-            }
-            
-            // Save preference
+            updateReciterSectionVisibility(currentAudioType);
             localStorage.setItem('audioType', currentAudioType);
         });
     });
     
-    // Load saved audio type preference
+    // Initialize: Load saved audio type and update visibility
     const savedAudioType = localStorage.getItem('audioType') || 'arabic';
     const savedRadio = document.querySelector(`input[name="audioType"][value="${savedAudioType}"]`);
     if (savedRadio) {
         savedRadio.checked = true;
-        savedRadio.dispatchEvent(new Event('change'));
     }
+    currentAudioType = savedAudioType;
+    // Call visibility update after a small delay to ensure DOM is ready
+    setTimeout(() => {
+        updateReciterSectionVisibility(savedAudioType);
+    }, 0);
     
-    // Load saved reciter preference (with migration from old format)
-    const savedReciter = localStorage.getItem('preferredReciter');
-    if (savedReciter) {
-        // Check if it's an old format value and migrate
-        const oldToNewMap = {
-            'ar.alafasy': 'Alafasy_128kbps',
-            'ar.abdulbasitmurattal': 'Abdul_Basit_Murattal_192kbps',
-            'ar.abdulsamad': 'Abdul_Basit_Mujawwad_128kbps',
-            'ar.husary': 'Husary_128kbps',
-            'ar.minshawi': 'Minshawy_Murattal_128kbps',
-            'ar.ahmedajamy': 'Ahmed_ibn_Ali_al_Ajamy_128kbps_ketaballah.net',
-            'ar.muhammadayyoub': 'Muhammad_Ayyoub_128kbps',
-            'ar.muhammadjibreel': 'Muhammad_Jibreel_128kbps'
-        };
-        const newValue = oldToNewMap[savedReciter] || savedReciter;
-        reciterSelect.value = newValue;
-        // Update storage with new format
-        if (oldToNewMap[savedReciter]) {
-            localStorage.setItem('preferredReciter', newValue);
+    // Load saved reciter preferences for all languages dynamically
+    Object.keys(APP_CONFIG.audio.reciters).forEach(language => {
+        const savedKey = `preferredReciter_${language}`;
+        const savedReciter = localStorage.getItem(savedKey);
+        const select = document.getElementById(`${language}ReciterSelect`);
+        
+        if (select && savedReciter) {
+            select.value = savedReciter;
+        }
+        
+        // Save preference on change
+        if (select) {
+            select.addEventListener('change', () => {
+                localStorage.setItem(savedKey, select.value);
+            });
+        }
+    });
+    
+    // Migration: old 'preferredReciter' to new format
+    const oldSavedReciter = localStorage.getItem('preferredReciter');
+    if (oldSavedReciter) {
+        const arabicSelect = document.getElementById('arabicReciterSelect');
+        if (arabicSelect) {
+            // Check if it's an old format value and migrate
+            const oldToNewMap = {
+                'ar.alafasy': 'Alafasy_128kbps',
+                'ar.abdulbasitmurattal': 'Abdul_Basit_Murattal_192kbps',
+                'ar.abdulsamad': 'Abdul_Basit_Mujawwad_128kbps',
+                'ar.husary': 'Husary_128kbps',
+                'ar.minshawi': 'Minshawy_Murattal_128kbps',
+                'ar.ahmedajamy': 'Ahmed_ibn_Ali_al_Ajamy_128kbps_ketaballah.net',
+                'ar.muhammadayyoub': 'Muhammad_Ayyoub_128kbps',
+                'ar.muhammadjibreel': 'Muhammad_Jibreel_128kbps'
+            };
+            const newValue = oldToNewMap[oldSavedReciter] || oldSavedReciter;
+            arabicSelect.value = newValue;
+            localStorage.setItem('preferredReciter_arabic', newValue);
+            localStorage.removeItem('preferredReciter'); // Clean up old key
         }
     }
-    
-    // Ensure a valid default is selected
-    if (!reciterSelect.value) {
-        reciterSelect.value = 'Alafasy_128kbps';
-    }
-    
-    // Save reciter preference
-    reciterSelect.addEventListener('change', () => {
-        localStorage.setItem('preferredReciter', reciterSelect.value);
-    });
     
     // Play full surah (Arabic only - translations play ayah by ayah)
     playSurahBtn.addEventListener('click', () => {
@@ -500,7 +539,7 @@
             return;
         }
         
-        const reciterId = reciterSelect.value;
+        const reciterId = getSelectedReciter('arabic') || getDefaultReciter('arabic');
         const audioUrl = getSurahAudioUrl(surahId, reciterId);
         
         surahAudio.src = audioUrl;
@@ -535,9 +574,7 @@
         btn.addEventListener('click', () => {
             const ayahNumber = parseInt(btn.dataset.ayahNumber);
             const audioType = getAudioType();
-            const arabicReciterId = reciterSelect.value || 'Alafasy_128kbps';
-            
-            console.log('Playing ayah:', ayahNumber, 'Reciter:', arabicReciterId, 'Type:', audioType);
+            const arabicReciterId = getSelectedReciter('arabic') || getDefaultReciter('arabic');
             
             // Stop surah audio if playing
             surahAudio.pause();
@@ -576,17 +613,17 @@
                 return;
             }
             
-            // Determine which audio to play based on type
+            // Determine which audio to play based on type (using dynamic config)
             let audioUrl;
             if (audioType === 'arabic' || audioType === 'both') {
                 audioUrl = getArabicAyahAudioUrl(surahId, ayahNumber, arabicReciterId);
             } else if (audioType === 'urdu') {
-                audioUrl = getUrduAyahAudioUrl(surahId, ayahNumber, 'ur.khan');
+                const urduReciterId = getSelectedReciter('urdu') || getDefaultReciter('urdu');
+                audioUrl = getUrduAyahAudioUrl(surahId, ayahNumber, urduReciterId);
             } else if (audioType === 'english') {
-                audioUrl = getEnglishAyahAudioUrl(surahId, ayahNumber, 'en.sahih');
+                const englishReciterId = getSelectedReciter('english') || getDefaultReciter('english');
+                audioUrl = getEnglishAyahAudioUrl(surahId, ayahNumber, englishReciterId);
             }
-            
-            console.log('Audio URL:', audioUrl);
             
             // Play the audio
             ayahAudio.src = audioUrl;
@@ -597,13 +634,13 @@
             btn.classList.remove('btn-outline-success');
             currentlyPlayingAyah = ayahNumber;
             
-            // Set status text based on audio type
+            // Set status text based on audio type (dynamic)
+            const audioTypeConfig = APP_CONFIG.audio.types.find(t => t.id === audioType);
             if (audioType === 'both') {
                 nowPlaying.textContent = `আয়াত ${ayahNumber} - আরবি তেলাওয়াত`;
-            } else if (audioType === 'urdu') {
-                nowPlaying.textContent = `আয়াত ${ayahNumber} - উর্দু অনুবাদ`;
-            } else if (audioType === 'english') {
-                nowPlaying.textContent = `Ayah ${ayahNumber} - English Translation`;
+            } else if (audioTypeConfig) {
+                const label = audioTypeConfig.labelBn || audioTypeConfig.label;
+                nowPlaying.textContent = `আয়াত ${ayahNumber} - ${label}`;
             } else {
                 nowPlaying.textContent = `Playing Ayah ${ayahNumber}`;
             }
@@ -1014,7 +1051,8 @@
         // If in "both" mode and Arabic just finished, play English translation
         if (audioType === 'both' && !isPlayingTranslationAfterArabic) {
             isPlayingTranslationAfterArabic = true;
-            const translationUrl = getEnglishAyahAudioUrl(surahId, currentlyPlayingAyah, 'en.sahih');
+            const englishReciterId = getSelectedReciter('english') || getDefaultReciter('english');
+            const translationUrl = getEnglishAyahAudioUrl(surahId, currentlyPlayingAyah, englishReciterId);
             translationAudio.src = translationUrl;
             translationAudio.playbackRate = playbackSpeed;
             translationAudio.play();
@@ -1188,7 +1226,7 @@
     
     /* Playing ayah card - enhanced highlight */
     .ayah-card.playing {
-        border-left: 5px solid #198754 !important;
+        border-left: 5px solid #871983 !important;
         background: linear-gradient(90deg, rgba(25, 135, 84, 0.15) 0%, rgba(25, 135, 84, 0.05) 50%, transparent 100%);
         animation: pulse-highlight 2s ease-in-out infinite;
         box-shadow: 0 0 20px rgba(25, 135, 84, 0.4);

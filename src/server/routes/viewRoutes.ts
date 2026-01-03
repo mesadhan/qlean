@@ -3,7 +3,7 @@ import express, { Request, Response } from 'express';
 import ejs from 'ejs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getAllSurahs, getSurahById, searchSurahs } from '../services/quranApi.js';
+import { getAllSurahs, getSurahById, searchSurahs, APP_CONFIG } from '../services/quranApi.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -110,7 +110,8 @@ router.get('/surah/:id', async (req: Request, res: Response) => {
     await renderWithLayout(res, 'surah', {
       title: surah.transliteration,
       activePage: 'surahs',
-      surah
+      surah,
+      config: APP_CONFIG
     });
   } catch (error) {
     await renderWithLayout(res, 'error', {

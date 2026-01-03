@@ -3,20 +3,121 @@ import { Surah, Ayah } from '../types/index.js';
 // Al-Quran Cloud API base URL
 const API_BASE = 'https://api.alquran.cloud/v1';
 
-// Translation editions
+// ============================================
+// TRANSLATION CONFIGURATION
+// ============================================
+// Add new translations here - they will automatically appear in the UI
+
+export interface TranslationEdition {
+  id: string;           // Unique identifier used in code
+  apiEdition: string;   // Al-Quran Cloud API edition code
+  label: string;        // Display label in UI
+  language: 'bangla' | 'english' | 'urdu';  // Language group
+  isDefault: boolean;   // Whether checked by default
+}
+
+export const TRANSLATION_EDITIONS: TranslationEdition[] = [
+  // Bengali Translations
+  { id: 'taisirul', apiEdition: 'bn.bengali', label: 'মুহিউদ্দীন খান', language: 'bangla', isDefault: true },
+  { id: 'mujibur', apiEdition: 'bn.hoque', label: 'জহুরুল হক', language: 'bangla', isDefault: false },
+
+  // English Translations
+  { id: 'sahih', apiEdition: 'en.sahih', label: 'Sahih International', language: 'english', isDefault: true },
+  { id: 'pickthall', apiEdition: 'en.pickthall', label: 'Pickthall', language: 'english', isDefault: false },
+  { id: 'yusufali', apiEdition: 'en.yusufali', label: 'Yusuf Ali', language: 'english', isDefault: false },
+  { id: 'arberry', apiEdition: 'en.arberry', label: 'Arberry', language: 'english', isDefault: false },
+];
+
+// Helper to get editions by language
+export function getTranslationsByLanguage(language: 'bangla' | 'english' | 'urdu'): TranslationEdition[] {
+  return TRANSLATION_EDITIONS.filter(t => t.language === language);
+}
+
+// ============================================
+// AUDIO CONFIGURATION
+// ============================================
+// Add new audio types and reciters here - they will automatically appear in the UI
+
+export interface AudioType {
+  id: string;           // Value for radio button
+  label: string;        // Display label
+  labelBn: string;      // Bengali label (optional)
+  showsReciters: string[];  // Which reciter sections to show (e.g., ['arabic', 'english'])
+}
+
+export interface Reciter {
+  id: string;           // Folder name for everyayah.com
+  name: string;         // Display name
+  language: 'arabic' | 'urdu' | 'english';  // Language/type
+  isDefault?: boolean;  // Default selection
+}
+
+export const AUDIO_TYPES: AudioType[] = [
+  { id: 'arabic', label: 'Arabic', labelBn: 'আরবি', showsReciters: ['arabic'] },
+  { id: 'urdu', label: 'Urdu', labelBn: 'উর্দু', showsReciters: ['urdu'] },
+  { id: 'english', label: 'English', labelBn: '', showsReciters: ['english'] },
+  { id: 'both', label: 'Arabic + English', labelBn: '', showsReciters: ['arabic', 'english'] },
+];
+
+export const ARABIC_RECITERS: Reciter[] = [
+  { id: 'Alafasy_128kbps', name: 'Mishary Rashid Alafasy', language: 'arabic', isDefault: true },
+  { id: 'Abdul_Basit_Murattal_192kbps', name: 'Abdul Basit (Murattal)', language: 'arabic' },
+  { id: 'Abdul_Basit_Mujawwad_128kbps', name: 'Abdul Basit (Mujawwad)', language: 'arabic' },
+  { id: 'Husary_128kbps', name: 'Mahmoud Khalil Al-Husary', language: 'arabic' },
+  { id: 'Minshawy_Murattal_128kbps', name: 'Mohamed Siddiq El-Minshawi', language: 'arabic' },
+  { id: 'Ahmed_ibn_Ali_al_Ajamy_128kbps_ketaballah.net', name: 'Ahmed ibn Ali al-Ajamy', language: 'arabic' },
+  { id: 'Muhammad_Ayyoub_128kbps', name: 'Muhammad Ayyoub', language: 'arabic' },
+  { id: 'Muhammad_Jibreel_128kbps', name: 'Muhammad Jibreel', language: 'arabic' },
+  { id: 'Maher_AlMuworrkly_128kbps', name: 'Maher Al-Muaiqly', language: 'arabic' },
+  { id: 'Saood_ash-Shuraym_128kbps', name: 'Saood Ash-Shuraym', language: 'arabic' },
+];
+
+export const URDU_RECITERS: Reciter[] = [
+  { id: 'urdu_shamshad_ali_khan_46kbps', name: 'Shamshad Ali Khan', language: 'urdu', isDefault: true },
+];
+
+export const ENGLISH_RECITERS: Reciter[] = [
+  { id: 'English/Sahih_Intnl_Ibrahim_Walk_192kbps', name: 'Sahih International (Ibrahim Walk)', language: 'english', isDefault: true },
+];
+
+// Combined config export for easy access
+export const AUDIO_CONFIG = {
+  types: AUDIO_TYPES,
+  reciters: {
+    arabic: ARABIC_RECITERS,
+    urdu: URDU_RECITERS,
+    english: ENGLISH_RECITERS,
+  }
+};
+
+// Export all config for routes
+export const APP_CONFIG = {
+  translations: TRANSLATION_EDITIONS,
+  translationsByLanguage: {
+    bangla: getTranslationsByLanguage('bangla'),
+    english: getTranslationsByLanguage('english'),
+  },
+  audio: AUDIO_CONFIG,
+};
+
+// ============================================
+// LEGACY MAPPINGS (for backward compatibility)
+// ============================================
 const BANGLA_EDITIONS = {
-  taisirul: 'bn.bengali',           // Muhiuddin Khan (মুহিউদ্দীন খান)
-  mujibur: 'bn.hoque',              // Zohurul Hoque (জহুরুল হক)
+  taisirul: 'bn.bengali',
+  mujibur: 'bn.hoque',
 };
 
 const ENGLISH_EDITIONS = {
-  sahih: 'en.sahih',                // Sahih International
-  pickthall: 'en.pickthall',        // Pickthall
-  yusufali: 'en.yusufali',          // Yusuf Ali
-  arberry: 'en.arberry',            // Arberry
+  sahih: 'en.sahih',
+  pickthall: 'en.pickthall',
+  yusufali: 'en.yusufali',
+  arberry: 'en.arberry',
 };
 
-const ARABIC_EDITION = 'quran-uthmani';
+const ARABIC_EDITION = {
+  uthmani: 'quran-uthmani'
+}
 
 // Cache for surah data
 const surahCache: Map<number, Surah> = new Map();
@@ -181,9 +282,11 @@ export async function getSurahById(id: number): Promise<Surah | null> {
       englishYusufaliResponse,
       englishArberryResponse
     ] = await Promise.all([
-      fetch(`${API_BASE}/surah/${id}/${ARABIC_EDITION}`),
+      fetch(`${API_BASE}/surah/${id}/${ARABIC_EDITION.uthmani}`),   // Arabic
+
       fetch(`${API_BASE}/surah/${id}/${BANGLA_EDITIONS.taisirul}`),
       fetch(`${API_BASE}/surah/${id}/${BANGLA_EDITIONS.mujibur}`),
+      
       fetch(`${API_BASE}/surah/${id}/${ENGLISH_EDITIONS.sahih}`),
       fetch(`${API_BASE}/surah/${id}/${ENGLISH_EDITIONS.pickthall}`),
       fetch(`${API_BASE}/surah/${id}/${ENGLISH_EDITIONS.yusufali}`),
@@ -240,7 +343,7 @@ export async function getSurahById(id: number): Promise<Surah | null> {
 
   } catch (error) {
     console.error(`Error fetching surah ${id}:`, error);
-    
+
     // Return metadata without ayahs on error
     const metadata = SURAH_METADATA[id - 1];
     return {
