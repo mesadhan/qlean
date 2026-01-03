@@ -128,6 +128,8 @@ export const APP_CONFIG = {
     english: getTranslationsByLanguage('english'),
   },
   audio: AUDIO_CONFIG,
+  // Derived from SURAH_METADATA - used for calculating global ayah numbers
+  surahAyahCounts: [] as number[], // Will be populated after SURAH_METADATA is defined
 };
 
 // Cache for surah data
@@ -251,6 +253,9 @@ const SURAH_METADATA: Array<{ name: string; transliteration: string; banglish: s
   { name: 'الفلق', transliteration: 'Al-Falaq', banglish: 'আল-ফালাক', translation: 'প্রভাত', type: 'Meccan', totalAyahs: 5 },
   { name: 'الناس', transliteration: 'An-Nas', banglish: 'আন-নাস', translation: 'মানুষ', type: 'Meccan', totalAyahs: 6 }
 ];
+
+// Populate surahAyahCounts from SURAH_METADATA
+APP_CONFIG.surahAyahCounts = SURAH_METADATA.map(s => s.totalAyahs);
 
 // Fetch all surahs (metadata only for listing)
 export async function getAllSurahs(): Promise<Surah[]> {
