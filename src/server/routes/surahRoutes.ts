@@ -5,7 +5,7 @@ import { ApiResponse, Surah } from '../types/index.js';
 const router = express.Router();
 
 // Get all surahs
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (_req: Request, res: Response) => {
   try {
     const surahs = await getAllSurahs();
     const response: ApiResponse<Surah[]> = {
@@ -74,7 +74,7 @@ router.get('/:id', async (req: Request, res: Response) => {
       success: false,
       error: 'Failed to fetch surah'
     };
-    res.status(500).json(response);
+    return res.status(500).json(response);
   }
 });
 

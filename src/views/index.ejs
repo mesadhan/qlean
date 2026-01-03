@@ -12,8 +12,8 @@
                     <i class="bi bi-book display-1 mb-3"></i>
                     <h2>পবিত্র কুরআন</h2>
                     <p>১১৪ টি সূরা | আরবি ও বাংলা অনুবাদ সহ</p>
-                    <a href="#quran-section" class="btn btn-light btn-lg">
-                        <i class="bi bi-arrow-down-circle me-2"></i>পড়ুন
+                    <a href="/quran" class="btn btn-light btn-lg">
+                        <i class="bi bi-arrow-right-circle me-2"></i>পড়ুন
                     </a>
                 </div>
             </div>
@@ -51,27 +51,10 @@
     </button>
 </div>
 
-<!-- Search Bar -->
-<div class="row mb-4">
-    <div class="col-12">
-        <form action="/search" method="GET">
-            <div class="input-group input-group-lg shadow-sm">
-                <span class="input-group-text bg-white"><i class="bi bi-search text-success"></i></span>
-                <input type="text" class="form-control border-start-0" name="q" id="searchInput" 
-                       placeholder="সূরা খুঁজুন... (আরবি বা বাংলা)"
-                       value="<%= typeof query !== 'undefined' ? query : '' %>">
-                <button type="submit" class="btn btn-success px-4">
-                    <i class="bi bi-search me-1"></i> খুঁজুন
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
 <!-- Quick Categories -->
 <div class="row g-3 mb-5">
     <div class="col-6 col-md-3">
-        <a href="#quran-section" class="text-decoration-none">
+        <a href="/quran" class="text-decoration-none">
             <div class="category-card bg-success text-white text-center p-3 rounded-4 h-100">
                 <i class="bi bi-book display-4"></i>
                 <h6 class="mt-2 mb-0">কুরআন</h6>
@@ -389,50 +372,6 @@
     </div>
 </section>
 
-<!-- Quran Section -->
-<section id="quran-section" class="mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="section-title">
-            <i class="bi bi-book text-success me-2"></i>পবিত্র কুরআন
-        </h3>
-        <div class="btn-group" role="group">
-            <button type="button" class="btn btn-outline-success btn-sm active" id="gridViewBtn">
-                <i class="bi bi-grid-3x3-gap"></i>
-            </button>
-            <button type="button" class="btn btn-outline-success btn-sm" id="listViewBtn">
-                <i class="bi bi-list"></i>
-            </button>
-        </div>
-    </div>
-    
-    <!-- Surahs Grid -->
-    <div class="row g-3" id="surahsContainer">
-        <% surahs.forEach(surah => { %>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2 surah-item">
-                <a href="/surah/<%= surah.id %>" class="text-decoration-none">
-                    <div class="card surah-card h-100 text-center">
-                        <div class="card-body p-2 p-md-3">
-                            <div class="surah-number-badge mb-2">
-                                <span class="badge bg-success rounded-circle"><%= surah.id %></span>
-                            </div>
-                            <h6 class="card-title arabic-text mb-1" style="font-size: 1.1rem;"><%= surah.name %></h6>
-                            <p class="card-text small text-muted mb-1"><%= surah.transliteration %></p>
-                            <small class="text-success"><%= surah.totalAyahs %> আয়াত</small>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        <% }) %>
-    </div>
-    
-    <% if (surahs.length === 0) { %>
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i> কোনো সূরা পাওয়া যায়নি।
-        </div>
-    <% } %>
-</section>
-
-
 <style>
     /* Carousel Styles */
     .carousel-slide {
@@ -481,31 +420,11 @@
         color: #fff;
     }
     
-    /* Surah Cards */
-    .surah-card {
-        transition: all 0.3s ease;
-        border: 1px solid rgba(0,0,0,0.1);
-    }
-    
-    .surah-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(25, 135, 84, 0.2);
-        border-color: #198754;
-    }
-    
-    .surah-number-badge .badge {
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.85rem;
-    }
-    
     /* Feature Cards */
     .feature-card {
         transition: all 0.3s ease;
         border-radius: 1rem;
+        background-color: #fff;
     }
     
     .feature-card:hover {
@@ -522,25 +441,55 @@
         font-size: 1.5rem;
     }
     
-    /* List View */
-    .list-view .surah-item {
-        width: 100% !important;
-        max-width: 100% !important;
-        flex: 0 0 100% !important;
+    /* Dark Mode Styles */
+    [data-bs-theme="dark"] .feature-card {
+        background-color: #212529;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    .list-view .surah-card {
-        text-align: left !important;
+    [data-bs-theme="dark"] .feature-card:hover {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        border-color: rgba(255, 255, 255, 0.2);
     }
     
-    .list-view .surah-card .card-body {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
+    [data-bs-theme="dark"] .feature-card .card-title {
+        color: #fff;
     }
     
-    .list-view .surah-number-badge {
-        margin-bottom: 0 !important;
+    [data-bs-theme="dark"] .feature-card .text-muted {
+        color: #adb5bd !important;
+    }
+    
+    [data-bs-theme="dark"] .category-card {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    [data-bs-theme="dark"] .bg-primary-subtle {
+        background-color: rgba(13, 110, 253, 0.2) !important;
+    }
+    
+    [data-bs-theme="dark"] .bg-success-subtle {
+        background-color: rgba(25, 135, 84, 0.2) !important;
+    }
+    
+    [data-bs-theme="dark"] .bg-warning-subtle {
+        background-color: rgba(255, 193, 7, 0.2) !important;
+    }
+    
+    [data-bs-theme="dark"] .bg-info-subtle {
+        background-color: rgba(13, 202, 240, 0.2) !important;
+    }
+    
+    [data-bs-theme="dark"] .bg-danger-subtle {
+        background-color: rgba(220, 53, 69, 0.2) !important;
+    }
+    
+    [data-bs-theme="dark"] .bg-secondary-subtle {
+        background-color: rgba(108, 117, 125, 0.2) !important;
+    }
+    
+    [data-bs-theme="dark"] .bg-pink-subtle {
+        background-color: rgba(255, 105, 180, 0.2) !important;
     }
     
     /* Pink color for bride section */
@@ -579,33 +528,6 @@
 </style>
 
 <script>
-    // Grid/List View Toggle
-    const gridViewBtn = document.getElementById('gridViewBtn');
-    const listViewBtn = document.getElementById('listViewBtn');
-    const surahsContainer = document.getElementById('surahsContainer');
-    
-    // Load saved view preference
-    const savedView = localStorage.getItem('surahViewMode');
-    if (savedView === 'list') {
-        surahsContainer.classList.add('list-view');
-        listViewBtn.classList.add('active');
-        gridViewBtn.classList.remove('active');
-    }
-    
-    gridViewBtn.addEventListener('click', () => {
-        surahsContainer.classList.remove('list-view');
-        gridViewBtn.classList.add('active');
-        listViewBtn.classList.remove('active');
-        localStorage.setItem('surahViewMode', 'grid');
-    });
-    
-    listViewBtn.addEventListener('click', () => {
-        surahsContainer.classList.add('list-view');
-        listViewBtn.classList.add('active');
-        gridViewBtn.classList.remove('active');
-        localStorage.setItem('surahViewMode', 'list');
-    });
-    
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {

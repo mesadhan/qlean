@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+// @ts-ignore
 import ejs from 'ejs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -21,13 +22,35 @@ const renderWithLayout = async (res: Response, view: string, data: Record<string
   }
 };
 
-// Home - List all surahs
-router.get('/', async (req: Request, res: Response) => {
+// Home page
+router.get('/', async (_req: Request, res: Response) => {
+  try {
+    await renderWithLayout(res, 'index', {
+      title: 'হোম',
+      activePage: 'home'
+    });
+  } catch (error) {
+    await renderWithLayout(res, 'error', {
+      title: 'Error',
+      activePage: '',
+      error: { title: 'Failed to load', message: 'Could not load page. Please try again.' }
+    });
+  }
+});
+
+// Search surahs (redirect to quran page)
+router.get('/search', async (req: Request, res: Response) => {
+  const query = req.query.q as string || '';
+  res.redirect(`/quran/search?q=${encodeURIComponent(query)}`);
+});
+
+// Quran page - List all surahs
+router.get('/quran', async (_req: Request, res: Response) => {
   try {
     const surahs = await getAllSurahs();
-    await renderWithLayout(res, 'index', {
-      title: 'Home',
-      activePage: 'surahs',
+    await renderWithLayout(res, 'quran', {
+      title: 'পবিত্র কুরআন',
+      activePage: 'quran',
       surahs,
       query: ''
     });
@@ -40,15 +63,15 @@ router.get('/', async (req: Request, res: Response) => {
   }
 });
 
-// Search surahs
-router.get('/search', async (req: Request, res: Response) => {
+// Quran search
+router.get('/quran/search', async (req: Request, res: Response) => {
   try {
     const query = (req.query.q as string || '');
     const results = query ? await searchSurahs(query) : await getAllSurahs();
     
-    await renderWithLayout(res, 'index', {
-      title: query ? `Search: ${query}` : 'Home',
-      activePage: 'surahs',
+    await renderWithLayout(res, 'quran', {
+      title: query ? `অনুসন্ধান: ${query}` : 'পবিত্র কুরআন',
+      activePage: 'quran',
       surahs: results,
       query
     });

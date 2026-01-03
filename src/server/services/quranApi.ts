@@ -4,8 +4,18 @@ import { Surah, Ayah } from '../types/index.js';
 const API_BASE = 'https://api.alquran.cloud/v1';
 
 // Translation editions
-const BANGLA_EDITION = 'bn.bengali';
-const ENGLISH_EDITION = 'en.sahih';
+const BANGLA_EDITIONS = {
+  taisirul: 'bn.bengali',           // Muhiuddin Khan (মুহিউদ্দীন খান)
+  mujibur: 'bn.hoque',              // Zohurul Hoque (জহুরুল হক)
+};
+
+const ENGLISH_EDITIONS = {
+  sahih: 'en.sahih',                // Sahih International
+  pickthall: 'en.pickthall',        // Pickthall
+  yusufali: 'en.yusufali',          // Yusuf Ali
+  arberry: 'en.arberry',            // Arberry
+};
+
 const ARABIC_EDITION = 'quran-uthmani';
 
 // Cache for surah data
@@ -161,31 +171,57 @@ export async function getSurahById(id: number): Promise<Surah | null> {
   }
 
   try {
-    // Fetch Arabic text, Bangla and English translations in parallel
-    const [arabicResponse, banglaResponse, englishResponse] = await Promise.all([
+    // Fetch Arabic text and all translations in parallel
+    const [
+      arabicResponse,
+      banglaTaisirulResponse,
+      banglaMujiburResponse,
+      englishSahihResponse,
+      englishPickthallResponse,
+      englishYusufaliResponse,
+      englishArberryResponse
+    ] = await Promise.all([
       fetch(`${API_BASE}/surah/${id}/${ARABIC_EDITION}`),
-      fetch(`${API_BASE}/surah/${id}/${BANGLA_EDITION}`),
-      fetch(`${API_BASE}/surah/${id}/${ENGLISH_EDITION}`)
+      fetch(`${API_BASE}/surah/${id}/${BANGLA_EDITIONS.taisirul}`),
+      fetch(`${API_BASE}/surah/${id}/${BANGLA_EDITIONS.mujibur}`),
+      fetch(`${API_BASE}/surah/${id}/${ENGLISH_EDITIONS.sahih}`),
+      fetch(`${API_BASE}/surah/${id}/${ENGLISH_EDITIONS.pickthall}`),
+      fetch(`${API_BASE}/surah/${id}/${ENGLISH_EDITIONS.yusufali}`),
+      fetch(`${API_BASE}/surah/${id}/${ENGLISH_EDITIONS.arberry}`)
     ]);
 
-    if (!arabicResponse.ok || !banglaResponse.ok || !englishResponse.ok) {
-      throw new Error('Failed to fetch surah data');
+    if (!arabicResponse.ok) {
+      throw new Error('Failed to fetch Arabic text');
     }
 
-    const arabicData = await arabicResponse.json();
-    const banglaData = await banglaResponse.json();
-    const englishData = await englishResponse.json();
+    const arabicData: any = await arabicResponse.json();
+    const banglaTaisirulData: any = banglaTaisirulResponse.ok ? await banglaTaisirulResponse.json() : null;
+    const banglaMujiburData: any = banglaMujiburResponse.ok ? await banglaMujiburResponse.json() : null;
+    const englishSahihData: any = englishSahihResponse.ok ? await englishSahihResponse.json() : null;
+    const englishPickthallData: any = englishPickthallResponse.ok ? await englishPickthallResponse.json() : null;
+    const englishYusufaliData: any = englishYusufaliResponse.ok ? await englishYusufaliResponse.json() : null;
+    const englishArberryData: any = englishArberryResponse.ok ? await englishArberryResponse.json() : null;
 
     const metadata = SURAH_METADATA[id - 1];
     const arabicAyahs = arabicData.data.ayahs;
-    const banglaAyahs = banglaData.data.ayahs;
-    const englishAyahs = englishData.data.ayahs;
+    const banglaTaisirulAyahs = banglaTaisirulData?.data?.ayahs || [];
+    const banglaMujiburAyahs = banglaMujiburData?.data?.ayahs || [];
+    const englishSahihAyahs = englishSahihData?.data?.ayahs || [];
+    const englishPickthallAyahs = englishPickthallData?.data?.ayahs || [];
+    const englishYusufaliAyahs = englishYusufaliData?.data?.ayahs || [];
+    const englishArberryAyahs = englishArberryData?.data?.ayahs || [];
 
     const ayahs: Ayah[] = arabicAyahs.map((ayah: any, index: number) => ({
       number: ayah.numberInSurah,
       text: ayah.text,
-      translation: banglaAyahs[index]?.text || '',
-      englishTranslation: englishAyahs[index]?.text || ''
+      // Bengali translations
+      translation: banglaTaisirulAyahs[index]?.text || '',
+      banglaMujibur: banglaMujiburAyahs[index]?.text || '',
+      // English translations
+      englishTranslation: englishSahihAyahs[index]?.text || '',
+      englishPickthall: englishPickthallAyahs[index]?.text || '',
+      englishYusufali: englishYusufaliAyahs[index]?.text || '',
+      englishArberry: englishArberryAyahs[index]?.text || ''
     }));
 
     const surah: Surah = {

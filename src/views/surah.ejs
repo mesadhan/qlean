@@ -1,4 +1,4 @@
-<a href="/" class="btn btn-outline-secondary mb-4">
+<a href="/quran" class="btn btn-outline-secondary mb-4">
     <i class="bi bi-arrow-left"></i> Back to Surahs
 </a>
 
@@ -10,6 +10,48 @@
                 <h5 class="mb-0"><%= surah.transliteration %> - <%= surah.translation %></h5>
             </div>
             <span class="badge bg-light text-dark"><%= surah.totalAyahs %> Ayahs</span>
+        </div>
+    </div>
+    
+    <!-- Translation Selection -->
+    <div class="card-body border-bottom">
+        <div class="row g-3">
+            <!-- Bengali Translations -->
+            <div class="col-md-6">
+                <h6 class="mb-2"><i class="bi bi-translate text-success me-1"></i> বাংলা অনুবাদ</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <div class="form-check">
+                        <input class="form-check-input translation-checkbox" type="checkbox" id="banglaTaisirul" data-translation="taisirul" checked>
+                        <label class="form-check-label small" for="banglaTaisirul">মুহিউদ্দীন খান</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input translation-checkbox" type="checkbox" id="banglaMujibur" data-translation="mujibur">
+                        <label class="form-check-label small" for="banglaMujibur">জহুরুল হক</label>
+                    </div>
+                </div>
+            </div>
+            <!-- English Translations -->
+            <div class="col-md-6">
+                <h6 class="mb-2"><i class="bi bi-translate text-primary me-1"></i> English Translation</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <div class="form-check">
+                        <input class="form-check-input translation-checkbox" type="checkbox" id="englishSahih" data-translation="sahih" checked>
+                        <label class="form-check-label small" for="englishSahih">Sahih International</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input translation-checkbox" type="checkbox" id="englishPickthall" data-translation="pickthall">
+                        <label class="form-check-label small" for="englishPickthall">Pickthall</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input translation-checkbox" type="checkbox" id="englishYusufali" data-translation="yusufali">
+                        <label class="form-check-label small" for="englishYusufali">Yusuf Ali</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input translation-checkbox" type="checkbox" id="englishArberry" data-translation="arberry">
+                        <label class="form-check-label small" for="englishArberry">Arberry</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -148,13 +190,61 @@
                     </div>
                 </div>
                 <p class="arabic-text" id="arabic-<%= ayah.number %>"><%= ayah.text %></p>
-                <p class="translation-text bangla-translation">
-                    <span class="badge bg-info me-1">বাংলা</span> <%= ayah.translation %>
-                </p>
+                
+                <!-- Bengali Translations -->
+                <div class="translation-taisirul bangla-translation">
+                    <p class="translation-text mb-2">
+                        <span class="badge bg-success me-1">বাংলা</span>
+                        <small class="text-muted fw-semibold">মুহিউদ্দীন খান:</small>
+                        <br><%= ayah.translation %>
+                    </p>
+                </div>
+                <% if (ayah.banglaMujibur) { %>
+                <div class="translation-mujibur bangla-translation" style="display: none;">
+                    <p class="translation-text mb-2">
+                        <span class="badge bg-success me-1">বাংলা</span>
+                        <small class="text-muted fw-semibold">জহুরুল হক:</small>
+                        <br><%= ayah.banglaMujibur %>
+                    </p>
+                </div>
+                <% } %>
+                
+                <!-- English Translations -->
                 <% if (ayah.englishTranslation) { %>
-                <p class="translation-text english-translation text-muted">
-                    <span class="badge bg-secondary me-1">English</span> <%= ayah.englishTranslation %>
-                </p>
+                <div class="translation-sahih english-translation">
+                    <p class="translation-text text-muted mb-2">
+                        <span class="badge bg-secondary me-1">English</span>
+                        <small class="fw-semibold">Sahih International:</small>
+                        <br><%= ayah.englishTranslation %>
+                    </p>
+                </div>
+                <% } %>
+                <% if (ayah.englishPickthall) { %>
+                <div class="translation-pickthall english-translation" style="display: none;">
+                    <p class="translation-text text-muted mb-2">
+                        <span class="badge bg-secondary me-1">English</span>
+                        <small class="fw-semibold">Pickthall:</small>
+                        <br><%= ayah.englishPickthall %>
+                    </p>
+                </div>
+                <% } %>
+                <% if (ayah.englishYusufali) { %>
+                <div class="translation-yusufali english-translation" style="display: none;">
+                    <p class="translation-text text-muted mb-2">
+                        <span class="badge bg-secondary me-1">English</span>
+                        <small class="fw-semibold">Yusuf Ali:</small>
+                        <br><%= ayah.englishYusufali %>
+                    </p>
+                </div>
+                <% } %>
+                <% if (ayah.englishArberry) { %>
+                <div class="translation-arberry english-translation" style="display: none;">
+                    <p class="translation-text text-muted mb-2">
+                        <span class="badge bg-secondary me-1">English</span>
+                        <small class="fw-semibold">Arberry:</small>
+                        <br><%= ayah.englishArberry %>
+                    </p>
+                </div>
                 <% } %>
             </div>
         </div>
@@ -178,6 +268,71 @@
 
 <!-- Hidden audio element for ayah playback -->
 <audio id="ayahAudio"></audio>
+
+<!-- Fixed Bottom Audio Player Control Bar -->
+<div id="audioPlayerBar" class="audio-player-bar">
+    <div class="player-container">
+        <!-- Progress Bar -->
+        <div class="progress-section">
+            <span class="time-display" id="currentTime">0:00</span>
+            <div class="progress-bar-container" id="progressBarContainer">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progressBarFill"></div>
+                </div>
+            </div>
+            <span class="time-display" id="totalTime">0:00</span>
+        </div>
+        
+        <!-- Main Controls -->
+        <div class="controls-section">
+            <!-- Left Controls -->
+            <div class="controls-left">
+                <button class="player-btn speed-btn" id="speedBtn" title="Playback Speed">
+                    <span id="speedValue">1x</span>
+                </button>
+                <button class="player-btn" id="repeatBtn" title="Repeat Mode">
+                    <i class="bi bi-repeat"></i>
+                </button>
+            </div>
+            
+            <!-- Center Controls -->
+            <div class="controls-center">
+                <button class="player-btn nav-btn" id="prevAyahBtn" title="Previous Ayah">
+                    <i class="bi bi-skip-backward-fill"></i>
+                </button>
+                <button class="player-btn play-pause-btn" id="mainPlayPauseBtn" title="Play/Pause">
+                    <i class="bi bi-play-fill" id="playPauseIcon"></i>
+                </button>
+                <button class="player-btn nav-btn" id="nextAyahBtn" title="Next Ayah">
+                    <i class="bi bi-skip-forward-fill"></i>
+                </button>
+            </div>
+            
+            <!-- Right Controls -->
+            <div class="controls-right">
+                <div class="volume-control">
+                    <button class="player-btn volume-btn" id="volumeBtn" title="Volume">
+                        <i class="bi bi-volume-up-fill" id="volumeIcon"></i>
+                    </button>
+                    <div class="volume-slider-container" id="volumeSliderContainer">
+                        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="100">
+                    </div>
+                </div>
+                <button class="player-btn" id="autoPlayToggle" title="Auto-play next ayah">
+                    <i class="bi bi-collection-play"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Now Playing Info -->
+        <div class="now-playing-section">
+            <div class="now-playing-info">
+                <span class="surah-name"><%= surah.transliteration %></span>
+                <span class="ayah-indicator" id="playerAyahIndicator">Select an ayah to play</span>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     // Surah and ayah counts for audio URL generation
@@ -469,84 +624,11 @@
         });
     });
     
-    // When ayah audio ends
-    ayahAudio.addEventListener('ended', () => {
-        const audioType = getAudioType();
-        const englishTranslationId = englishReciterSelect.value;
-        
-        // If in "both" mode and Arabic just finished, play English translation
-        if (audioType === 'both' && !isPlayingTranslationAfterArabic) {
-            isPlayingTranslationAfterArabic = true;
-            const translationUrl = getEnglishAyahAudioUrl(surahId, currentlyPlayingAyah, englishTranslationId);
-            translationAudio.src = translationUrl;
-            translationAudio.play();
-            nowPlaying.textContent = `Ayah ${currentlyPlayingAyah} - English Translation`;
-            return;
-        }
-        
-        // Reset translation state
-        isPlayingTranslationAfterArabic = false;
-        
-        const btn = document.querySelector(`.play-ayah-btn[data-ayah-number="${currentlyPlayingAyah}"]`);
-        if (btn) {
-            btn.innerHTML = '<i class="bi bi-play-fill"></i>';
-            btn.classList.remove('btn-success', 'playing');
-            btn.classList.add('btn-outline-success');
-        }
-        
-        // Remove highlight from current card
-        const currentCard = document.getElementById(`ayah-${currentlyPlayingAyah}`);
-        if (currentCard) {
-            currentCard.classList.remove('playing');
-        }
-        
-        // Auto-play next ayah if in sequence mode
-        if (currentlyPlayingAyah < totalAyahs) {
-            const nextAyah = currentlyPlayingAyah + 1;
-            const nextBtn = document.querySelector(`.play-ayah-btn[data-ayah-number="${nextAyah}"]`);
-            if (nextBtn) {
-                // Scroll to next ayah
-                document.getElementById(`ayah-${nextAyah}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setTimeout(() => nextBtn.click(), 500);
-            }
-        } else {
-            currentlyPlayingAyah = null;
-            nowPlaying.textContent = '';
-            document.querySelectorAll('.ayah-card').forEach(card => card.classList.remove('playing', 'border-success'));
-        }
-    });
+    // When ayah audio ends - handled by bottom player bar code
+    // (See the comprehensive handler in the Bottom Audio Player Bar Controls section)
     
-    // When translation audio ends (for "Both" mode)
-    translationAudio.addEventListener('ended', () => {
-        isPlayingTranslationAfterArabic = false;
-        
-        const btn = document.querySelector(`.play-ayah-btn[data-ayah-number="${currentlyPlayingAyah}"]`);
-        if (btn) {
-            btn.innerHTML = '<i class="bi bi-play-fill"></i>';
-            btn.classList.remove('btn-success', 'playing');
-            btn.classList.add('btn-outline-success');
-        }
-        
-        // Remove highlight from current card
-        const currentCard = document.getElementById(`ayah-${currentlyPlayingAyah}`);
-        if (currentCard) {
-            currentCard.classList.remove('playing');
-        }
-        
-        // Auto-play next ayah
-        if (currentlyPlayingAyah < totalAyahs) {
-            const nextAyah = currentlyPlayingAyah + 1;
-            const nextBtn = document.querySelector(`.play-ayah-btn[data-ayah-number="${nextAyah}"]`);
-            if (nextBtn) {
-                document.getElementById(`ayah-${nextAyah}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setTimeout(() => nextBtn.click(), 500);
-            }
-        } else {
-            currentlyPlayingAyah = null;
-            nowPlaying.textContent = '';
-            document.querySelectorAll('.ayah-card').forEach(card => card.classList.remove('playing', 'border-success'));
-        }
-    });
+    // When translation audio ends (for "Both" mode) - handled by bottom player bar code
+    // (See the comprehensive handler in the Bottom Audio Player Bar Controls section)
     
     // Bookmark functionality
     const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
@@ -649,9 +731,479 @@
             showShareToast('লিংক কপি করা হয়েছে! 📋');
         }
     }
+    
+    // =========================================
+    // Bottom Audio Player Bar Controls
+    // =========================================
+    const playerBar = document.getElementById('audioPlayerBar');
+    const mainPlayPauseBtn = document.getElementById('mainPlayPauseBtn');
+    const playPauseIcon = document.getElementById('playPauseIcon');
+    const prevAyahBtn = document.getElementById('prevAyahBtn');
+    const nextAyahBtn = document.getElementById('nextAyahBtn');
+    const speedBtn = document.getElementById('speedBtn');
+    const speedValue = document.getElementById('speedValue');
+    const repeatBtn = document.getElementById('repeatBtn');
+    const volumeBtn = document.getElementById('volumeBtn');
+    const volumeIcon = document.getElementById('volumeIcon');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const autoPlayToggle = document.getElementById('autoPlayToggle');
+    const progressBarContainer = document.getElementById('progressBarContainer');
+    const progressBarFill = document.getElementById('progressBarFill');
+    const currentTimeDisplay = document.getElementById('currentTime');
+    const totalTimeDisplay = document.getElementById('totalTime');
+    const playerAyahIndicator = document.getElementById('playerAyahIndicator');
+    
+    // Player state
+    let isAutoPlayEnabled = true;
+    let repeatMode = 'none'; // 'none', 'one', 'all'
+    let playbackSpeed = 1;
+    const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
+    let speedIndex = 2; // Start at 1x
+    
+    // Load saved preferences
+    const savedAutoPlay = localStorage.getItem('autoPlayEnabled');
+    if (savedAutoPlay !== null) {
+        isAutoPlayEnabled = savedAutoPlay === 'true';
+    }
+    autoPlayToggle.classList.toggle('active', isAutoPlayEnabled);
+    
+    const savedRepeat = localStorage.getItem('repeatMode');
+    if (savedRepeat) {
+        repeatMode = savedRepeat;
+        updateRepeatButton();
+    }
+    
+    const savedVolume = localStorage.getItem('playerVolume');
+    if (savedVolume) {
+        volumeSlider.value = savedVolume;
+        ayahAudio.volume = savedVolume / 100;
+        translationAudio.volume = savedVolume / 100;
+        updateVolumeIcon(savedVolume);
+    }
+    
+    const savedSpeed = localStorage.getItem('playbackSpeed');
+    if (savedSpeed) {
+        const savedSpeedIndex = speeds.indexOf(parseFloat(savedSpeed));
+        if (savedSpeedIndex !== -1) {
+            speedIndex = savedSpeedIndex;
+            playbackSpeed = speeds[speedIndex];
+            speedValue.textContent = playbackSpeed + 'x';
+            ayahAudio.playbackRate = playbackSpeed;
+            translationAudio.playbackRate = playbackSpeed;
+        }
+    }
+    
+    // Show player bar when there's an ayah to play
+    function showPlayerBar() {
+        playerBar.classList.add('active');
+    }
+    
+    function hidePlayerBar() {
+        playerBar.classList.remove('active');
+    }
+    
+    // Format time (seconds to mm:ss)
+    function formatTime(seconds) {
+        if (isNaN(seconds)) return '0:00';
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+    
+    // Update progress bar
+    ayahAudio.addEventListener('timeupdate', () => {
+        if (ayahAudio.duration) {
+            const progress = (ayahAudio.currentTime / ayahAudio.duration) * 100;
+            progressBarFill.style.width = progress + '%';
+            currentTimeDisplay.textContent = formatTime(ayahAudio.currentTime);
+        }
+    });
+    
+    ayahAudio.addEventListener('loadedmetadata', () => {
+        totalTimeDisplay.textContent = formatTime(ayahAudio.duration);
+    });
+    
+    ayahAudio.addEventListener('play', () => {
+        playPauseIcon.className = 'bi bi-pause-fill';
+        mainPlayPauseBtn.classList.add('playing');
+        showPlayerBar();
+    });
+    
+    ayahAudio.addEventListener('pause', () => {
+        if (!isPlayingTranslationAfterArabic) {
+            playPauseIcon.className = 'bi bi-play-fill';
+            mainPlayPauseBtn.classList.remove('playing');
+        }
+    });
+    
+    // Translation audio events for "Both" mode
+    translationAudio.addEventListener('play', () => {
+        playPauseIcon.className = 'bi bi-pause-fill';
+        mainPlayPauseBtn.classList.add('playing');
+    });
+    
+    translationAudio.addEventListener('timeupdate', () => {
+        if (isPlayingTranslationAfterArabic && translationAudio.duration) {
+            const progress = (translationAudio.currentTime / translationAudio.duration) * 100;
+            progressBarFill.style.width = progress + '%';
+            currentTimeDisplay.textContent = formatTime(translationAudio.currentTime);
+            totalTimeDisplay.textContent = formatTime(translationAudio.duration);
+        }
+    });
+    
+    // Click on progress bar to seek
+    progressBarContainer.addEventListener('click', (e) => {
+        const rect = progressBarContainer.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const width = rect.width;
+        const percent = clickX / width;
+        
+        if (isPlayingTranslationAfterArabic) {
+            translationAudio.currentTime = percent * translationAudio.duration;
+        } else if (ayahAudio.duration) {
+            ayahAudio.currentTime = percent * ayahAudio.duration;
+        }
+    });
+    
+    // Main play/pause button
+    mainPlayPauseBtn.addEventListener('click', () => {
+        if (currentlyPlayingAyah) {
+            if (isPlayingTranslationAfterArabic) {
+                if (translationAudio.paused) {
+                    translationAudio.play();
+                } else {
+                    translationAudio.pause();
+                }
+            } else {
+                if (ayahAudio.paused) {
+                    ayahAudio.play();
+                } else {
+                    ayahAudio.pause();
+                }
+            }
+        } else {
+            // Start playing from first ayah
+            const firstAyahBtn = document.querySelector('.play-ayah-btn[data-ayah-number="1"]');
+            if (firstAyahBtn) {
+                firstAyahBtn.click();
+            }
+        }
+    });
+    
+    // Previous ayah button
+    prevAyahBtn.addEventListener('click', () => {
+        if (currentlyPlayingAyah && currentlyPlayingAyah > 1) {
+            // Stop current playback
+            ayahAudio.pause();
+            translationAudio.pause();
+            isPlayingTranslationAfterArabic = false;
+            
+            const prevAyah = currentlyPlayingAyah - 1;
+            const prevBtn = document.querySelector(`.play-ayah-btn[data-ayah-number="${prevAyah}"]`);
+            if (prevBtn) {
+                prevBtn.click();
+            }
+        }
+    });
+    
+    // Next ayah button
+    nextAyahBtn.addEventListener('click', () => {
+        if (currentlyPlayingAyah && currentlyPlayingAyah < totalAyahs) {
+            // Stop current playback
+            ayahAudio.pause();
+            translationAudio.pause();
+            isPlayingTranslationAfterArabic = false;
+            
+            const nextAyah = currentlyPlayingAyah + 1;
+            const nextBtn = document.querySelector(`.play-ayah-btn[data-ayah-number="${nextAyah}"]`);
+            if (nextBtn) {
+                nextBtn.click();
+            }
+        }
+    });
+    
+    // Speed control
+    speedBtn.addEventListener('click', () => {
+        speedIndex = (speedIndex + 1) % speeds.length;
+        playbackSpeed = speeds[speedIndex];
+        speedValue.textContent = playbackSpeed + 'x';
+        ayahAudio.playbackRate = playbackSpeed;
+        translationAudio.playbackRate = playbackSpeed;
+        localStorage.setItem('playbackSpeed', playbackSpeed);
+    });
+    
+    // Repeat mode toggle
+    function updateRepeatButton() {
+        if (repeatMode === 'none') {
+            repeatBtn.classList.remove('active');
+            repeatBtn.innerHTML = '<i class="bi bi-repeat"></i>';
+        } else if (repeatMode === 'one') {
+            repeatBtn.classList.add('active');
+            repeatBtn.innerHTML = '<i class="bi bi-repeat-1"></i>';
+        } else {
+            repeatBtn.classList.add('active');
+            repeatBtn.innerHTML = '<i class="bi bi-repeat"></i>';
+        }
+    }
+    
+    repeatBtn.addEventListener('click', () => {
+        if (repeatMode === 'none') {
+            repeatMode = 'one';
+        } else if (repeatMode === 'one') {
+            repeatMode = 'all';
+        } else {
+            repeatMode = 'none';
+        }
+        updateRepeatButton();
+        localStorage.setItem('repeatMode', repeatMode);
+    });
+    
+    // Volume control
+    function updateVolumeIcon(value) {
+        if (value == 0) {
+            volumeIcon.className = 'bi bi-volume-mute-fill';
+        } else if (value < 50) {
+            volumeIcon.className = 'bi bi-volume-down-fill';
+        } else {
+            volumeIcon.className = 'bi bi-volume-up-fill';
+        }
+    }
+    
+    volumeSlider.addEventListener('input', () => {
+        const value = volumeSlider.value;
+        ayahAudio.volume = value / 100;
+        translationAudio.volume = value / 100;
+        surahAudio.volume = value / 100;
+        updateVolumeIcon(value);
+        localStorage.setItem('playerVolume', value);
+    });
+    
+    let previousVolume = 100;
+    volumeBtn.addEventListener('click', () => {
+        if (volumeSlider.value > 0) {
+            previousVolume = volumeSlider.value;
+            volumeSlider.value = 0;
+        } else {
+            volumeSlider.value = previousVolume;
+        }
+        volumeSlider.dispatchEvent(new Event('input'));
+    });
+    
+    // Auto-play toggle
+    autoPlayToggle.addEventListener('click', () => {
+        isAutoPlayEnabled = !isAutoPlayEnabled;
+        autoPlayToggle.classList.toggle('active', isAutoPlayEnabled);
+        localStorage.setItem('autoPlayEnabled', isAutoPlayEnabled);
+    });
+    
+    // Update player bar ayah indicator when playing
+    function updatePlayerBarInfo(ayahNumber) {
+        if (ayahNumber) {
+            const audioType = getAudioType();
+            let audioTypeText = 'আরবি';
+            if (audioType === 'bangla') audioTypeText = 'বাংলা';
+            else if (audioType === 'english') audioTypeText = 'English';
+            else if (audioType === 'both') audioTypeText = 'Arabic + Translation';
+            
+            playerAyahIndicator.textContent = `আয়াত ${ayahNumber} • ${audioTypeText}`;
+        } else {
+            playerAyahIndicator.textContent = 'Select an ayah to play';
+        }
+    }
+    
+    // Override existing ayah button click to update player bar
+    const originalPlayHandler = (btn) => {
+        btn.addEventListener('click', () => {
+            showPlayerBar();
+            updatePlayerBarInfo(parseInt(btn.dataset.ayahNumber));
+        });
+    };
+    
+    document.querySelectorAll('.play-ayah-btn').forEach(btn => {
+        originalPlayHandler(btn);
+    });
+    
+    // Update the ayahAudio ended handler to use autoplay setting and repeat mode
+    ayahAudio.removeEventListener('ended', () => {});
+    ayahAudio.addEventListener('ended', () => {
+        const audioType = getAudioType();
+        const englishTranslationId = englishReciterSelect.value;
+        
+        // If in "both" mode and Arabic just finished, play English translation
+        if (audioType === 'both' && !isPlayingTranslationAfterArabic) {
+            isPlayingTranslationAfterArabic = true;
+            const translationUrl = getEnglishAyahAudioUrl(surahId, currentlyPlayingAyah, englishTranslationId);
+            translationAudio.src = translationUrl;
+            translationAudio.playbackRate = playbackSpeed;
+            translationAudio.play();
+            nowPlaying.textContent = `Ayah ${currentlyPlayingAyah} - English Translation`;
+            updatePlayerBarInfo(currentlyPlayingAyah);
+            return;
+        }
+        
+        // Check repeat mode
+        if (repeatMode === 'one') {
+            ayahAudio.currentTime = 0;
+            ayahAudio.play();
+            return;
+        }
+        
+        // Reset translation state
+        isPlayingTranslationAfterArabic = false;
+        
+        const btn = document.querySelector(`.play-ayah-btn[data-ayah-number="${currentlyPlayingAyah}"]`);
+        if (btn) {
+            btn.innerHTML = '<i class="bi bi-play-fill"></i>';
+            btn.classList.remove('btn-success', 'playing');
+            btn.classList.add('btn-outline-success');
+        }
+        
+        // Remove highlight from current card
+        const currentCard = document.getElementById(`ayah-${currentlyPlayingAyah}`);
+        if (currentCard) {
+            currentCard.classList.remove('playing');
+        }
+        
+        // Auto-play next ayah if enabled
+        if (isAutoPlayEnabled && currentlyPlayingAyah < totalAyahs) {
+            const nextAyah = currentlyPlayingAyah + 1;
+            const nextBtn = document.querySelector(`.play-ayah-btn[data-ayah-number="${nextAyah}"]`);
+            if (nextBtn) {
+                document.getElementById(`ayah-${nextAyah}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => nextBtn.click(), 500);
+            }
+        } else if (repeatMode === 'all' && currentlyPlayingAyah >= totalAyahs) {
+            // Loop back to first ayah
+            const firstBtn = document.querySelector('.play-ayah-btn[data-ayah-number="1"]');
+            if (firstBtn) {
+                document.getElementById('ayah-1').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => firstBtn.click(), 500);
+            }
+        } else {
+            currentlyPlayingAyah = null;
+            nowPlaying.textContent = '';
+            playPauseIcon.className = 'bi bi-play-fill';
+            mainPlayPauseBtn.classList.remove('playing');
+            updatePlayerBarInfo(null);
+            document.querySelectorAll('.ayah-card').forEach(card => card.classList.remove('playing', 'border-success'));
+        }
+    });
+    
+    // Update translation audio ended handler
+    translationAudio.removeEventListener('ended', () => {});
+    translationAudio.addEventListener('ended', () => {
+        isPlayingTranslationAfterArabic = false;
+        
+        // Check repeat mode for "both" audio type
+        if (repeatMode === 'one') {
+            // Restart from Arabic
+            const currentBtn = document.querySelector(`.play-ayah-btn[data-ayah-number="${currentlyPlayingAyah}"]`);
+            if (currentBtn) {
+                setTimeout(() => currentBtn.click(), 200);
+            }
+            return;
+        }
+        
+        const btn = document.querySelector(`.play-ayah-btn[data-ayah-number="${currentlyPlayingAyah}"]`);
+        if (btn) {
+            btn.innerHTML = '<i class="bi bi-play-fill"></i>';
+            btn.classList.remove('btn-success', 'playing');
+            btn.classList.add('btn-outline-success');
+        }
+        
+        // Remove highlight from current card
+        const currentCard = document.getElementById(`ayah-${currentlyPlayingAyah}`);
+        if (currentCard) {
+            currentCard.classList.remove('playing');
+        }
+        
+        // Auto-play next ayah if enabled
+        if (isAutoPlayEnabled && currentlyPlayingAyah < totalAyahs) {
+            const nextAyah = currentlyPlayingAyah + 1;
+            const nextBtn = document.querySelector(`.play-ayah-btn[data-ayah-number="${nextAyah}"]`);
+            if (nextBtn) {
+                document.getElementById(`ayah-${nextAyah}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => nextBtn.click(), 500);
+            }
+        } else if (repeatMode === 'all' && currentlyPlayingAyah >= totalAyahs) {
+            // Loop back to first ayah
+            const firstBtn = document.querySelector('.play-ayah-btn[data-ayah-number="1"]');
+            if (firstBtn) {
+                document.getElementById('ayah-1').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => firstBtn.click(), 500);
+            }
+        } else {
+            currentlyPlayingAyah = null;
+            nowPlaying.textContent = '';
+            playPauseIcon.className = 'bi bi-play-fill';
+            mainPlayPauseBtn.classList.remove('playing');
+            updatePlayerBarInfo(null);
+            document.querySelectorAll('.ayah-card').forEach(card => card.classList.remove('playing', 'border-success'));
+        }
+    });
+    
+    // Keyboard shortcuts for player
+    document.addEventListener('keydown', (e) => {
+        // Don't trigger if typing in an input
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+            return;
+        }
+        
+        switch(e.code) {
+            case 'Space':
+                e.preventDefault();
+                mainPlayPauseBtn.click();
+                break;
+            case 'ArrowLeft':
+                e.preventDefault();
+                prevAyahBtn.click();
+                break;
+            case 'ArrowRight':
+                e.preventDefault();
+                nextAyahBtn.click();
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                volumeSlider.value = Math.min(100, parseInt(volumeSlider.value) + 10);
+                volumeSlider.dispatchEvent(new Event('input'));
+                break;
+            case 'ArrowDown':
+                e.preventDefault();
+                volumeSlider.value = Math.max(0, parseInt(volumeSlider.value) - 10);
+                volumeSlider.dispatchEvent(new Event('input'));
+                break;
+            case 'KeyR':
+                repeatBtn.click();
+                break;
+        }
+    });
 </script>
 
 <style>
+    /* Translation checkbox styling */
+    .form-check {
+        padding-left: 1.75em;
+    }
+    
+    .translation-checkbox:checked {
+        background-color: #198754;
+        border-color: #198754;
+    }
+    
+    .translation-text small.fw-semibold {
+        display: inline-block;
+        margin-bottom: 0.25rem;
+    }
+    
+    /* Dark mode for translation section */
+    [data-bs-theme="dark"] .card-body h6 {
+        color: #fff;
+    }
+    
+    [data-bs-theme="dark"] .form-check-label {
+        color: #e0e0e0;
+    }
+    
     /* Playing ayah card - enhanced highlight */
     .ayah-card.playing {
         border-left: 5px solid #198754 !important;
@@ -809,6 +1361,323 @@
         50% {
             box-shadow: 0 0 35px rgba(13, 110, 253, 0.7);
             transform: scale(1.02);
+        }
+    }
+    
+    /* Fixed Bottom Audio Player Bar */
+    .audio-player-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        border-top: 2px solid #198754;
+        padding: 8px 16px;
+        z-index: 1050;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .audio-player-bar.active {
+        transform: translateY(0);
+    }
+    
+    .player-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    /* Progress Section */
+    .progress-section {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .time-display {
+        font-size: 12px;
+        color: #aaa;
+        min-width: 40px;
+        text-align: center;
+        font-family: monospace;
+    }
+    
+    .progress-bar-container {
+        flex: 1;
+        cursor: pointer;
+        padding: 8px 0;
+    }
+    
+    .progress-bar-bg {
+        height: 6px;
+        background: #333;
+        border-radius: 3px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #198754, #20c997);
+        border-radius: 3px;
+        width: 0%;
+        transition: width 0.1s linear;
+        position: relative;
+    }
+    
+    .progress-bar-fill::after {
+        content: '';
+        position: absolute;
+        right: -6px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 12px;
+        height: 12px;
+        background: #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+    
+    .progress-bar-container:hover .progress-bar-fill::after {
+        opacity: 1;
+    }
+    
+    /* Controls Section */
+    .controls-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .controls-left,
+    .controls-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 120px;
+    }
+    
+    .controls-right {
+        justify-content: flex-end;
+    }
+    
+    .controls-center {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .player-btn {
+        background: transparent;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        font-size: 18px;
+    }
+    
+    .player-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: scale(1.1);
+    }
+    
+    .player-btn:active {
+        transform: scale(0.95);
+    }
+    
+    .player-btn.active {
+        color: #198754;
+    }
+    
+    .play-pause-btn {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, #198754, #20c997);
+        border-radius: 50%;
+        font-size: 24px;
+        box-shadow: 0 4px 15px rgba(25, 135, 84, 0.4);
+    }
+    
+    .play-pause-btn:hover {
+        background: linear-gradient(135deg, #146c43, #198754);
+        box-shadow: 0 6px 20px rgba(25, 135, 84, 0.6);
+    }
+    
+    .play-pause-btn.playing {
+        animation: pulse-play 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse-play {
+        0%, 100% { box-shadow: 0 4px 15px rgba(25, 135, 84, 0.4); }
+        50% { box-shadow: 0 4px 25px rgba(25, 135, 84, 0.7); }
+    }
+    
+    .nav-btn {
+        font-size: 22px;
+    }
+    
+    .speed-btn {
+        font-size: 12px;
+        font-weight: bold;
+        min-width: 36px;
+        border-radius: 4px;
+        padding: 4px 8px;
+    }
+    
+    /* Volume Control */
+    .volume-control {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    
+    .volume-slider-container {
+        width: 0;
+        overflow: hidden;
+        transition: width 0.3s ease;
+    }
+    
+    .volume-control:hover .volume-slider-container {
+        width: 80px;
+        margin-left: 8px;
+    }
+    
+    .volume-slider {
+        width: 80px;
+        height: 4px;
+        -webkit-appearance: none;
+        appearance: none;
+        background: #333;
+        border-radius: 2px;
+        outline: none;
+    }
+    
+    .volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 14px;
+        height: 14px;
+        background: #198754;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    
+    .volume-slider::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
+        background: #198754;
+        border-radius: 50%;
+        cursor: pointer;
+        border: none;
+    }
+    
+    /* Now Playing Section */
+    .now-playing-section {
+        text-align: center;
+        padding: 4px 0;
+    }
+    
+    .now-playing-info {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    .surah-name {
+        color: #198754;
+        font-weight: 600;
+        font-size: 13px;
+    }
+    
+    .ayah-indicator {
+        color: #aaa;
+        font-size: 12px;
+    }
+    
+    /* Add bottom padding to content when player is active */
+    body:has(.audio-player-bar.active) {
+        padding-bottom: 140px;
+    }
+    
+    /* Light mode styles */
+    [data-bs-theme="light"] .audio-player-bar {
+        background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+        border-top-color: #198754;
+    }
+    
+    [data-bs-theme="light"] .player-btn {
+        color: #333;
+    }
+    
+    [data-bs-theme="light"] .time-display {
+        color: #666;
+    }
+    
+    [data-bs-theme="light"] .progress-bar-bg {
+        background: #ccc;
+    }
+    
+    [data-bs-theme="light"] .ayah-indicator {
+        color: #666;
+    }
+    
+    [data-bs-theme="light"] .volume-slider {
+        background: #ccc;
+    }
+    
+    /* Mobile responsive */
+    @media (max-width: 576px) {
+        .audio-player-bar {
+            padding: 6px 10px;
+        }
+        
+        .controls-left,
+        .controls-right {
+            min-width: auto;
+            gap: 4px;
+        }
+        
+        .player-btn {
+            padding: 6px;
+            font-size: 16px;
+        }
+        
+        .play-pause-btn {
+            width: 48px;
+            height: 48px;
+            font-size: 20px;
+        }
+        
+        .nav-btn {
+            font-size: 18px;
+        }
+        
+        .volume-control:hover .volume-slider-container {
+            width: 60px;
+        }
+        
+        .speed-btn {
+            display: none;
+        }
+        
+        .now-playing-info {
+            font-size: 11px;
+        }
+        
+        body:has(.audio-player-bar.active) {
+            padding-bottom: 120px;
         }
     }
 </style>
@@ -998,5 +1867,43 @@
                 }
             }
         }, 300);
+    })();
+    
+    // Translation visibility toggle
+    (function() {
+        const translationCheckboxes = document.querySelectorAll('.translation-checkbox');
+        
+        // Load saved preferences
+        const savedPrefs = JSON.parse(localStorage.getItem('translationPrefs') || '{}');
+        
+        // Apply saved preferences
+        translationCheckboxes.forEach(checkbox => {
+            const translationType = checkbox.dataset.translation;
+            if (savedPrefs[translationType] !== undefined) {
+                checkbox.checked = savedPrefs[translationType];
+            }
+            updateTranslationVisibility(translationType, checkbox.checked);
+        });
+        
+        // Handle checkbox changes
+        translationCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const translationType = this.dataset.translation;
+                const isChecked = this.checked;
+                
+                updateTranslationVisibility(translationType, isChecked);
+                
+                // Save preference
+                savedPrefs[translationType] = isChecked;
+                localStorage.setItem('translationPrefs', JSON.stringify(savedPrefs));
+            });
+        });
+        
+        function updateTranslationVisibility(type, show) {
+            const elements = document.querySelectorAll(`.translation-${type}`);
+            elements.forEach(el => {
+                el.style.display = show ? 'block' : 'none';
+            });
+        }
     })();
 </script>
