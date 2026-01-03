@@ -1,31 +1,38 @@
 import { Surah, Ayah } from '../types/index.js';
 
-// Al-Quran Cloud API base URL
-const API_BASE = 'https://api.alquran.cloud/v1';
+// Quran.com API v4 base URL
+const API_BASE = 'https://api.quran.com/api/v4';
 
 // ============================================
 // TRANSLATION CONFIGURATION
 // ============================================
 // Add new translations here - they will automatically appear in the UI
+// Translation IDs from: https://api.quran.com/api/v4/resources/translations
 
 export interface TranslationEdition {
   id: string;           // Unique identifier used in code
-  apiEdition: string;   // Al-Quran Cloud API edition code
+  apiId: number;        // Quran.com API translation ID
   label: string;        // Display label in UI
   language: 'bangla' | 'english' | 'urdu';  // Language group
   isDefault: boolean;   // Whether checked by default
 }
 
 export const TRANSLATION_EDITIONS: TranslationEdition[] = [
-  // Bengali Translations
-  { id: 'taisirul', apiEdition: 'bn.bengali', label: 'মুহিউদ্দীন খান', language: 'bangla', isDefault: true },
-  { id: 'mujibur', apiEdition: 'bn.hoque', label: 'জহুরুল হক', language: 'bangla', isDefault: false },
+  // Bengali Translations (from Quran.com)
+  // 161: Taisirul Quran (Tawheed Publication)
+  // 163: Sheikh Mujibur Rahman (Darussalaam)
+  { id: 'taisirul', apiId: 161, label: 'তাইসীরুল কুরআন', language: 'bangla', isDefault: true },
+  { id: 'mujibur', apiId: 163, label: 'শেখ মুজিবুর রহমান', language: 'bangla', isDefault: false },
 
-  // English Translations
-  { id: 'sahih', apiEdition: 'en.sahih', label: 'Sahih International', language: 'english', isDefault: true },
-  { id: 'pickthall', apiEdition: 'en.pickthall', label: 'Pickthall', language: 'english', isDefault: false },
-  { id: 'yusufali', apiEdition: 'en.yusufali', label: 'Yusuf Ali', language: 'english', isDefault: false },
-  { id: 'arberry', apiEdition: 'en.arberry', label: 'Arberry', language: 'english', isDefault: false },
+  // English Translations (from Quran.com)
+  // 20: Saheeh International
+  // 19: M. Pickthall
+  // 22: A. Yusuf Ali
+  // 203: Al-Hilali & Khan (replacing Arberry which is not available)
+  { id: 'sahih', apiId: 20, label: 'Sahih International', language: 'english', isDefault: true },
+  { id: 'pickthall', apiId: 19, label: 'Pickthall', language: 'english', isDefault: false },
+  { id: 'yusufali', apiId: 22, label: 'Yusuf Ali', language: 'english', isDefault: false },
+  { id: 'hilali', apiId: 203, label: 'Al-Hilali & Khan', language: 'english', isDefault: false },
 ];
 
 // Helper to get editions by language
@@ -101,23 +108,18 @@ export const APP_CONFIG = {
 };
 
 // ============================================
-// LEGACY MAPPINGS (for backward compatibility)
+// TRANSLATION ID MAPPINGS (Quran.com API v4)
 // ============================================
-const BANGLA_EDITIONS = {
-  taisirul: 'bn.bengali',
-  mujibur: 'bn.hoque',
+const TRANSLATION_IDS = {
+  // Bengali
+  taisirul: 161,    // Taisirul Quran
+  mujibur: 163,     // Sheikh Mujibur Rahman
+  // English
+  sahih: 20,        // Saheeh International
+  pickthall: 19,    // M. Pickthall
+  yusufali: 22,     // A. Yusuf Ali
+  hilali: 203,      // Al-Hilali & Khan
 };
-
-const ENGLISH_EDITIONS = {
-  sahih: 'en.sahih',
-  pickthall: 'en.pickthall',
-  yusufali: 'en.yusufali',
-  arberry: 'en.arberry',
-};
-
-const ARABIC_EDITION = {
-  uthmani: 'quran-uthmani'
-}
 
 // Cache for surah data
 const surahCache: Map<number, Surah> = new Map();
@@ -273,59 +275,42 @@ export async function getSurahById(id: number): Promise<Surah | null> {
   }
 
   try {
-    // Fetch Arabic text and all translations in parallel
-    const [
-      arabicResponse,
-      banglaTaisirulResponse,
-      banglaMujiburResponse,
-      englishSahihResponse,
-      englishPickthallResponse,
-      englishYusufaliResponse,
-      englishArberryResponse
-    ] = await Promise.all([
-      fetch(`${API_BASE}/surah/${id}/${ARABIC_EDITION.uthmani}`),   // Arabic
+    // Build translation IDs string for the API request
+    const allTranslationIds = Object.values(TRANSLATION_IDS).join(',');
+    
+    // Fetch verses with Arabic text and all translations in a single request
+    // Quran.com API v4 format: /verses/by_chapter/{chapter_id}?translations=id1,id2,...&fields=text_uthmani
+    const response = await fetch(
+      `${API_BASE}/verses/by_chapter/${id}?translations=${allTranslationIds}&fields=text_uthmani&per_page=300`
+    );
 
-      fetch(`${API_BASE}/surah/${id}/${BANGLA_EDITIONS.taisirul}`),
-      fetch(`${API_BASE}/surah/${id}/${BANGLA_EDITIONS.mujibur}`),
-      
-      fetch(`${API_BASE}/surah/${id}/${ENGLISH_EDITIONS.sahih}`),
-      fetch(`${API_BASE}/surah/${id}/${ENGLISH_EDITIONS.pickthall}`),
-      fetch(`${API_BASE}/surah/${id}/${ENGLISH_EDITIONS.yusufali}`),
-      fetch(`${API_BASE}/surah/${id}/${ENGLISH_EDITIONS.arberry}`)
-    ]);
-
-    if (!arabicResponse.ok) {
-      throw new Error('Failed to fetch Arabic text');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch surah ${id}: ${response.status}`);
     }
 
-    const arabicData: any = await arabicResponse.json();
-    const banglaTaisirulData: any = banglaTaisirulResponse.ok ? await banglaTaisirulResponse.json() : null;
-    const banglaMujiburData: any = banglaMujiburResponse.ok ? await banglaMujiburResponse.json() : null;
-    const englishSahihData: any = englishSahihResponse.ok ? await englishSahihResponse.json() : null;
-    const englishPickthallData: any = englishPickthallResponse.ok ? await englishPickthallResponse.json() : null;
-    const englishYusufaliData: any = englishYusufaliResponse.ok ? await englishYusufaliResponse.json() : null;
-    const englishArberryData: any = englishArberryResponse.ok ? await englishArberryResponse.json() : null;
+    const data: any = await response.json();
+    const verses = data.verses || [];
 
     const metadata = SURAH_METADATA[id - 1];
-    const arabicAyahs = arabicData.data.ayahs;
-    const banglaTaisirulAyahs = banglaTaisirulData?.data?.ayahs || [];
-    const banglaMujiburAyahs = banglaMujiburData?.data?.ayahs || [];
-    const englishSahihAyahs = englishSahihData?.data?.ayahs || [];
-    const englishPickthallAyahs = englishPickthallData?.data?.ayahs || [];
-    const englishYusufaliAyahs = englishYusufaliData?.data?.ayahs || [];
-    const englishArberryAyahs = englishArberryData?.data?.ayahs || [];
+    
+    // Helper to find translation text by resource_id
+    const getTranslation = (translations: any[], resourceId: number): string => {
+      const translation = translations?.find((t: any) => t.resource_id === resourceId);
+      // Remove HTML footnotes like <sup foot_note=xxx>n</sup>
+      return translation?.text?.replace(/<sup[^>]*>.*?<\/sup>/g, '') || '';
+    };
 
-    const ayahs: Ayah[] = arabicAyahs.map((ayah: any, index: number) => ({
-      number: ayah.numberInSurah,
-      text: ayah.text,
+    const ayahs: Ayah[] = verses.map((verse: any) => ({
+      number: verse.verse_number,
+      text: verse.text_uthmani || '',
       // Bengali translations
-      translation: banglaTaisirulAyahs[index]?.text || '',
-      banglaMujibur: banglaMujiburAyahs[index]?.text || '',
+      translation: getTranslation(verse.translations, TRANSLATION_IDS.taisirul),
+      banglaMujibur: getTranslation(verse.translations, TRANSLATION_IDS.mujibur),
       // English translations
-      englishTranslation: englishSahihAyahs[index]?.text || '',
-      englishPickthall: englishPickthallAyahs[index]?.text || '',
-      englishYusufali: englishYusufaliAyahs[index]?.text || '',
-      englishArberry: englishArberryAyahs[index]?.text || ''
+      englishTranslation: getTranslation(verse.translations, TRANSLATION_IDS.sahih),
+      englishPickthall: getTranslation(verse.translations, TRANSLATION_IDS.pickthall),
+      englishYusufali: getTranslation(verse.translations, TRANSLATION_IDS.yusufali),
+      englishHilali: getTranslation(verse.translations, TRANSLATION_IDS.hilali)
     }));
 
     const surah: Surah = {

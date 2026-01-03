@@ -2,13 +2,13 @@ export interface Ayah {
   number: number;
   text: string;
   // Bengali translations
-  translation: string;           // Taisirul Quran (মুহিউদ্দীন খান)
-  banglaMujibur?: string;        // Sheikh Mujibur Rahman / Zohurul Hoque
+  translation: string;           // Taisirul Quran (তাইসীরুল কুরআন)
+  banglaMujibur?: string;        // Sheikh Mujibur Rahman
   // English translations
   englishTranslation?: string;   // Sahih International
   englishPickthall?: string;     // Pickthall
   englishYusufali?: string;      // Yusuf Ali
-  englishArberry?: string;       // Arberry
+  englishHilali?: string;        // Al-Hilali & Khan
 }
 
 export interface Reciter {
