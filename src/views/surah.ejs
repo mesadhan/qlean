@@ -212,6 +212,24 @@
                     </p>
                 </div>
                 <% } %>
+                <% if (ayah.banglaRawai) { %>
+                <div class="translation-rawai bangla-translation" style="display: none;">
+                    <p class="translation-text mb-2">
+                        <span class="badge bg-success me-1">বাংলা</span>
+                        <small class="text-muted fw-semibold">রাওয়াই আল-বায়ান:</small>
+                        <br><%= ayah.banglaRawai %>
+                    </p>
+                </div>
+                <% } %>
+                <% if (ayah.banglaZakaria) { %>
+                <div class="translation-zakaria bangla-translation" style="display: none;">
+                    <p class="translation-text mb-2">
+                        <span class="badge bg-success me-1">বাংলা</span>
+                        <small class="text-muted fw-semibold">ড. আবু বকর মুহাম্মাদ যাকারিয়া:</small>
+                        <br><%= ayah.banglaZakaria %>
+                    </p>
+                </div>
+                <% } %>
                 
                 <!-- English Translations -->
                 <% if (ayah.englishTranslation) { %>

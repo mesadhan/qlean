@@ -21,8 +21,12 @@ export const TRANSLATION_EDITIONS: TranslationEdition[] = [
   // Bengali Translations (from Quran.com)
   // 161: Taisirul Quran (Tawheed Publication)
   // 163: Sheikh Mujibur Rahman (Darussalaam)
+  // 213: Rawai Al-bayan
+  // 162: Dr. Abu Bakr Muhammad Zakaria
   { id: 'taisirul', apiId: 161, label: 'তাইসীরুল কুরআন', language: 'bangla', isDefault: true },
   { id: 'mujibur', apiId: 163, label: 'শেখ মুজিবুর রহমান', language: 'bangla', isDefault: false },
+  { id: 'rawai', apiId: 213, label: 'রাওয়াই আল-বায়ান', language: 'bangla', isDefault: false },
+  { id: 'zakaria', apiId: 162, label: 'ড. আবু বকর মুহাম্মাদ যাকারিয়া', language: 'bangla', isDefault: false },
 
   // English Translations (from Quran.com)
   // 20: Saheeh International
@@ -114,6 +118,8 @@ const TRANSLATION_IDS = {
   // Bengali
   taisirul: 161,    // Taisirul Quran
   mujibur: 163,     // Sheikh Mujibur Rahman
+  rawai: 213,       // Rawai Al-bayan
+  zakaria: 162,     // Dr. Abu Bakr Muhammad Zakaria
   // English
   sahih: 20,        // Saheeh International
   pickthall: 19,    // M. Pickthall
@@ -306,6 +312,8 @@ export async function getSurahById(id: number): Promise<Surah | null> {
       // Bengali translations
       translation: getTranslation(verse.translations, TRANSLATION_IDS.taisirul),
       banglaMujibur: getTranslation(verse.translations, TRANSLATION_IDS.mujibur),
+      banglaRawai: getTranslation(verse.translations, TRANSLATION_IDS.rawai),
+      banglaZakaria: getTranslation(verse.translations, TRANSLATION_IDS.zakaria),
       // English translations
       englishTranslation: getTranslation(verse.translations, TRANSLATION_IDS.sahih),
       englishPickthall: getTranslation(verse.translations, TRANSLATION_IDS.pickthall),

@@ -4,6 +4,8 @@ export interface Ayah {
   // Bengali translations
   translation: string;           // Taisirul Quran (তাইসীরুল কুরআন)
   banglaMujibur?: string;        // Sheikh Mujibur Rahman
+  banglaRawai?: string;          // Rawai Al-bayan
+  banglaZakaria?: string;        // Dr. Abu Bakr Muhammad Zakaria
   // English translations
   englishTranslation?: string;   // Sahih International
   englishPickthall?: string;     // Pickthall
