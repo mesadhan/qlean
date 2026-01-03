@@ -1814,6 +1814,18 @@
         color: inherit;
     }
     
+    .word-number {
+        font-size: 0.65rem;
+        padding: 2px 6px;
+        border-radius: 10px;
+        position: absolute;
+        top: -8px;
+        right: -4px;
+        font-family: system-ui, sans-serif;
+        min-width: 18px;
+        text-align: center;
+    }
+    
     .word-bangla {
         font-size: 0.75rem;
         color: #198754;
@@ -1824,6 +1836,12 @@
         transition: all 0.3s ease;
         text-align: center;
         direction: ltr;
+    }
+    
+    /* Always show translation when word-by-word mode is enabled */
+    .arabic-text.word-by-word .word-bangla {
+        opacity: 1;
+        max-height: 50px;
     }
     
     .quran-word:hover .word-bangla,
@@ -2301,16 +2319,18 @@
             const wordElements = words
                 .filter(word => word.char_type_name === 'word') // Only actual words, not end markers
                 .map((word, index) => {
+
                     const wordPosition = index + 1;
                     const arabicText = word.text_uthmani || word.text || '';
                     const banglaTranslation = word.translation?.text || '';
-                    
+
                     return `
                         <span class="quran-word" 
                               data-surah="${surahId}" 
                               data-ayah="${ayahNumber}" 
                               data-word="${wordPosition}"
                               data-bangla="${banglaTranslation}">
+                            <span class="word-number badge bg-success">${wordPosition}</span>
                             <span class="word-arabic">${arabicText}</span>
                             <span class="word-bangla">${banglaTranslation}</span>
                         </span>
@@ -2320,7 +2340,8 @@
             // Add the ayah end marker
             const endMarker = words.find(w => w.char_type_name === 'end');
             if (endMarker) {
-                container.innerHTML = wordElements + `<span class="quran-word end-marker" style="cursor: default;"><span class="word-arabic">${endMarker.text_uthmani || endMarker.text}</span></span>`;
+                // container.innerHTML = wordElements + `<span class="quran-word end-marker" style="cursor: default;"><span class="word-number badge bg-primary">${ayahNumber}</span></span>`;
+                container.innerHTML = wordElements;
             } else {
                 container.innerHTML = wordElements;
             }
