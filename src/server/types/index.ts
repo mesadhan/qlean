@@ -28,6 +28,7 @@ export interface Surah {
   id: number;
   name: string;
   transliteration: string;
+  banglish?: string;
   translation: string;
   type: 'Meccan' | 'Medinan';
   totalAyahs: number;
