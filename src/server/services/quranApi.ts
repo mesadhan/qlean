@@ -15,6 +15,7 @@ export interface TranslationEdition {
   label: string;        // Display label in UI
   language: 'bangla' | 'english' | 'urdu';  // Language group
   isDefault: boolean;   // Whether checked by default
+  order: number;        // Display order (lower number = higher priority)
 }
 
 // ============================================
@@ -40,20 +41,20 @@ export const TRANSLATION_EDITIONS: TranslationEdition[] = [
   // 163: Sheikh Mujibur Rahman (Darussalaam)
   // 213: Rawai Al-bayan (Darussalaam)
   // 162: Dr. Abu Bakr Muhammad Zakaria (Darussalaam)
-  { id: 'mujibur', apiId: TRANSLATION_IDS.mujibur, label: 'শেখ মুজিবুর রহমান', language: 'bangla', isDefault: true },
-  { id: 'rawai', apiId: TRANSLATION_IDS.rawai, label: 'রাওয়াই আল-বায়ান', language: 'bangla', isDefault: false },
-  { id: 'taisirul', apiId: TRANSLATION_IDS.taisirul, label: 'তাইসীরুল কুরআন', language: 'bangla', isDefault: false },
-  { id: 'zakaria', apiId: TRANSLATION_IDS.zakaria, label: 'ড. আবু বকর মুহাম্মাদ যাকারিয়া', language: 'bangla', isDefault: false },
+  { id: 'mujibur', apiId: TRANSLATION_IDS.mujibur, label: 'শেখ মুজিবুর রহমান', language: 'bangla', isDefault: true, order: 1 },
+  { id: 'rawai', apiId: TRANSLATION_IDS.rawai, label: 'রাওয়াই আল-বায়ান', language: 'bangla', isDefault: false, order: 2 },
+  { id: 'taisirul', apiId: TRANSLATION_IDS.taisirul, label: 'তাইসীরুল কুরআন', language: 'bangla', isDefault: false, order: 3 },
+  { id: 'zakaria', apiId: TRANSLATION_IDS.zakaria, label: 'ড. আবু বকর মুহাম্মাদ যাকারিয়া', language: 'bangla', isDefault: false, order: 4 },
 
   // English Translations (from Quran.com)
   // 20: Saheeh International
   // 19: M. Pickthall
   // 22: A. Yusuf Ali
   // 203: Al-Hilali & Khan (replacing Arberry which is not available)
-  { id: 'sahih', apiId: TRANSLATION_IDS.sahih, label: 'Sahih International', language: 'english', isDefault: true },
-  { id: 'pickthall', apiId: TRANSLATION_IDS.pickthall, label: 'Pickthall', language: 'english', isDefault: false },
-  { id: 'yusufali', apiId: TRANSLATION_IDS.yusufali, label: 'Yusuf Ali', language: 'english', isDefault: false },
-  { id: 'hilali', apiId: TRANSLATION_IDS.hilali, label: 'Al-Hilali & Khan', language: 'english', isDefault: false },
+  { id: 'sahih', apiId: TRANSLATION_IDS.sahih, label: 'Sahih International', language: 'english', isDefault: true, order: 1 },
+  { id: 'pickthall', apiId: TRANSLATION_IDS.pickthall, label: 'Pickthall', language: 'english', isDefault: false, order: 2 },
+  { id: 'yusufali', apiId: TRANSLATION_IDS.yusufali, label: 'Yusuf Ali', language: 'english', isDefault: false, order: 3 },
+  { id: 'hilali', apiId: TRANSLATION_IDS.hilali, label: 'Al-Hilali & Khan', language: 'english', isDefault: false, order: 4 },
 ];
 
 

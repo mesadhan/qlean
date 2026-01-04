@@ -20,11 +20,20 @@
             <div class="col-md-6">
                 <h6 class="mb-2"><i class="bi bi-translate text-success me-1"></i> বাংলা অনুবাদ</h6>
                 <div class="d-flex flex-wrap gap-2">
-                    <% config.translationsByLanguage.bangla.forEach(t => { %>
-                    <div class="form-check">
+                    <% config.translationsByLanguage.bangla.forEach((t, index) => { %>
+                    <div class="form-check d-flex align-items-center gap-1">
+                        <!-- <select class="form-select form-select-sm translation-order-select" 
+                                data-translation="<%= t.id %>" 
+                                data-language="bangla"
+                                style="width: 50px; padding: 2px 4px; font-size: 0.75rem;">
+                            <% for(let i = 1; i <= config.translationsByLanguage.bangla.length; i++) { %>
+                            <option value="<%= i %>" <%= t.order === i ? 'selected' : '' %>><%= i %></option>
+                            <% } %>
+                        </select> -->
                         <input class="form-check-input translation-checkbox" type="checkbox" 
                                id="bangla<%= t.id.charAt(0).toUpperCase() + t.id.slice(1) %>" 
                                data-translation="<%= t.id %>" 
+                               data-order="<%= t.order %>"
                                <%= t.isDefault ? 'checked' : '' %>>
                         <label class="form-check-label small" for="bangla<%= t.id.charAt(0).toUpperCase() + t.id.slice(1) %>"><%= t.label %></label>
                     </div>
@@ -35,11 +44,20 @@
             <div class="col-md-6">
                 <h6 class="mb-2"><i class="bi bi-translate text-primary me-1"></i> English Translation</h6>
                 <div class="d-flex flex-wrap gap-2">
-                    <% config.translationsByLanguage.english.forEach(t => { %>
-                    <div class="form-check">
+                    <% config.translationsByLanguage.english.forEach((t, index) => { %>
+                    <div class="form-check d-flex align-items-center gap-1">
+                        <!-- <select class="form-select form-select-sm translation-order-select" 
+                                data-translation="<%= t.id %>" 
+                                data-language="english"
+                                style="width: 50px; padding: 2px 4px; font-size: 0.75rem;">
+                            <% for(let i = 1; i <= config.translationsByLanguage.english.length; i++) { %>
+                            <option value="<%= i %>" <%= t.order === i ? 'selected' : '' %>><%= i %></option>
+                            <% } %>
+                        </select> -->
                         <input class="form-check-input translation-checkbox" type="checkbox" 
                                id="english<%= t.id.charAt(0).toUpperCase() + t.id.slice(1) %>" 
                                data-translation="<%= t.id %>" 
+                               data-order="<%= t.order %>"
                                <%= t.isDefault ? 'checked' : '' %>>
                         <label class="form-check-label small" for="english<%= t.id.charAt(0).toUpperCase() + t.id.slice(1) %>"><%= t.label %></label>
                     </div>
@@ -196,10 +214,14 @@
                 </div>
                 <p class="arabic-text" id="arabic-<%= ayah.number %>"><%= ayah.text %></p>
                 
-                <!-- Dynamic Translations -->
+                <!-- Dynamic Translations Container -->
+                <div class="translations-container" data-ayah="<%= ayah.number %>">
                 <% config.translations.forEach((t, index) => { %>
                 <% if (ayah.translations[t.id]) { %>
-                <div class="translation-<%= t.id %> <%= t.language %>-translation" 
+                <div class="translation-<%= t.id %> <%= t.language %>-translation translation-item" 
+                     data-translation-id="<%= t.id %>"
+                     data-language="<%= t.language %>"
+                     data-order="<%= t.order %>"
                      style="<%= t.isDefault ? '' : 'display: none;' %>">
                     <p class="translation-text <%= t.language === 'english' ? 'text-muted' : '' %> mb-2">
                         <span class="badge <%= t.language === 'bangla' ? 'bg-success' : 'bg-secondary' %> me-1">
@@ -211,6 +233,7 @@
                 </div>
                 <% } %>
                 <% }) %>
+                </div>
             </div>
         </div>
     <% }) %>
@@ -1183,6 +1206,28 @@
         border-color: #198754;
     }
     
+    /* Translation order select styling */
+    .translation-order-select {
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        background-color: #fff;
+        cursor: pointer;
+        min-width: 45px;
+        text-align: center;
+    }
+    
+    .translation-order-select:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+        outline: none;
+    }
+    
+    [data-bs-theme="dark"] .translation-order-select {
+        background-color: #2c3034;
+        border-color: #495057;
+        color: #fff;
+    }
+    
     .translation-text small.fw-semibold {
         display: inline-block;
         margin-bottom: 0.25rem;
@@ -2124,21 +2169,33 @@
         }, 300);
     })();
     
-    // Translation visibility toggle
+    // Translation visibility and ordering
     (function() {
         const translationCheckboxes = document.querySelectorAll('.translation-checkbox');
+        const translationOrderSelects = document.querySelectorAll('.translation-order-select');
         
         // Load saved preferences
         const savedPrefs = JSON.parse(localStorage.getItem('translationPrefs') || '{}');
+        const savedOrders = JSON.parse(localStorage.getItem('translationOrders') || '{}');
         
-        // Apply saved preferences
+        // Apply saved preferences for checkboxes
         translationCheckboxes.forEach(checkbox => {
             const translationType = checkbox.dataset.translation;
             if (savedPrefs[translationType] !== undefined) {
                 checkbox.checked = savedPrefs[translationType];
             }
-            updateTranslationVisibility(translationType, checkbox.checked);
         });
+        
+        // Apply saved order preferences
+        translationOrderSelects.forEach(select => {
+            const translationType = select.dataset.translation;
+            if (savedOrders[translationType] !== undefined) {
+                select.value = savedOrders[translationType];
+            }
+        });
+        
+        // Initial update of visibility and order
+        updateAllTranslations();
         
         // Handle checkbox changes
         translationCheckboxes.forEach(checkbox => {
@@ -2146,18 +2203,87 @@
                 const translationType = this.dataset.translation;
                 const isChecked = this.checked;
                 
-                updateTranslationVisibility(translationType, isChecked);
-                
                 // Save preference
                 savedPrefs[translationType] = isChecked;
                 localStorage.setItem('translationPrefs', JSON.stringify(savedPrefs));
+                
+                // Update visibility and order
+                updateAllTranslations();
             });
         });
         
-        function updateTranslationVisibility(type, show) {
-            const elements = document.querySelectorAll(`.translation-${type}`);
-            elements.forEach(el => {
-                el.style.display = show ? 'block' : 'none';
+        // Handle order changes
+        translationOrderSelects.forEach(select => {
+            select.addEventListener('change', function() {
+                const translationType = this.dataset.translation;
+                const newOrder = parseInt(this.value);
+                
+                // Save order preference
+                savedOrders[translationType] = newOrder;
+                localStorage.setItem('translationOrders', JSON.stringify(savedOrders));
+                
+                // Update visibility and order
+                updateAllTranslations();
+            });
+        });
+        
+        function getTranslationOrder(translationId) {
+            // First check saved orders
+            if (savedOrders[translationId] !== undefined) {
+                return savedOrders[translationId];
+            }
+            // Then check the select element
+            const select = document.querySelector(`.translation-order-select[data-translation="${translationId}"]`);
+            return select ? parseInt(select.value) : 999;
+        }
+        
+        function isTranslationVisible(translationId) {
+            // First check saved preferences
+            if (savedPrefs[translationId] !== undefined) {
+                return savedPrefs[translationId];
+            }
+            // Then check the checkbox
+            const checkbox = document.querySelector(`.translation-checkbox[data-translation="${translationId}"]`);
+            return checkbox ? checkbox.checked : false;
+        }
+        
+        function updateAllTranslations() {
+            // Get all translation containers
+            const containers = document.querySelectorAll('.translations-container');
+            
+            containers.forEach(container => {
+                const items = container.querySelectorAll('.translation-item');
+                
+                // Collect all items with their order and visibility
+                const itemsArray = Array.from(items).map(item => {
+                    const translationId = item.dataset.translationId;
+                    const language = item.dataset.language;
+                    return {
+                        element: item,
+                        translationId: translationId,
+                        language: language,
+                        order: getTranslationOrder(translationId),
+                        visible: isTranslationVisible(translationId)
+                    };
+                });
+                
+                // Sort by language first (bangla before english), then by order
+                itemsArray.sort((a, b) => {
+                    // First sort by language (bangla = 0, english = 1)
+                    const langOrder = { 'bangla': 0, 'english': 1 };
+                    const langDiff = (langOrder[a.language] || 2) - (langOrder[b.language] || 2);
+                    if (langDiff !== 0) return langDiff;
+                    // Then sort by order within same language
+                    return a.order - b.order;
+                });
+                
+                // Reorder elements in DOM and update visibility
+                itemsArray.forEach(item => {
+                    // Update visibility
+                    item.element.style.display = item.visible ? 'block' : 'none';
+                    // Append to container to reorder
+                    container.appendChild(item.element);
+                });
             });
         }
     })();
