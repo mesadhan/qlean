@@ -52,10 +52,14 @@
                 <a href="/surah/<%= surah.id %>" class="text-decoration-none">
                     <div class="card surah-card h-100 text-center">
                         <div class="card-body p-2 p-md-3">
+                            
                             <div class="surah-number-badge mb-2">
-                                <span class="badge bg-success rounded-circle"><%= surah.id %></span>
+                                <div class="hexagon-badge">
+                                    <i class="bi bi-hexagon"></i>
+                                    <span class="hexagon-number"><%= surah.id %></span>
+                                </div>
                             </div>
-                            <h6 class="card-title arabic-text mb-1" style="font-size: 1.1rem;"><%= surah.name %></h6>
+                            <h6 class="card-title arabic-text text-center mb-1" style="font-size: 1.1rem;"><%= surah.name %></h6>
                             <p class="card-text small text-muted mb-1"><%= surah.transliteration %></p>
                             <p class="card-text small text-muted mb-1"><%= surah.banglish %></p>
                             <small class="text-success"><%= surah.totalAyahs %> আয়াত</small>
@@ -113,6 +117,25 @@
         align-items: center;
         justify-content: center;
         font-size: 0.85rem;
+    }
+    
+    .hexagon-badge {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #198754;
+    }
+    
+    .hexagon-badge i {
+        font-size: 2.5rem;
+        color: #198754;
+    }
+    
+    .hexagon-number {
+        position: absolute;
+        font-weight: 600;
+        
     }
     
     /* Dark Mode Styles */

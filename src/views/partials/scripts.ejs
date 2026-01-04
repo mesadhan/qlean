@@ -3,45 +3,54 @@
 
 <!-- Dark Mode Script -->
 <script>
+    // Dark mode toggle function
+    function toggleDarkMode() {
+        const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+        const desktopBtn = document.getElementById('darkModeToggle');
+        const mobileBtn = document.getElementById('darkModeToggleMobile');
+        
+        if (isDark) {
+            document.documentElement.setAttribute('data-bs-theme', 'light');
+            if (desktopBtn) desktopBtn.innerHTML = '<i class="bi bi-moon-fill"></i>';
+            if (mobileBtn) mobileBtn.innerHTML = '<i class="bi bi-moon-fill"></i> Dark Mode';
+            localStorage.setItem('darkMode', 'false');
+        } else {
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+            if (desktopBtn) desktopBtn.innerHTML = '<i class="bi bi-sun-fill"></i>';
+            if (mobileBtn) mobileBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
+            localStorage.setItem('darkMode', 'true');
+        }
+    }
+    
     // Dark mode persistence
     const darkMode = localStorage.getItem('darkMode') === 'true';
     if (darkMode) {
         document.documentElement.setAttribute('data-bs-theme', 'dark');
-        document.getElementById('darkModeToggle').innerHTML = '<i class="bi bi-sun-fill"></i>';
+        const desktopBtn = document.getElementById('darkModeToggle');
+        const mobileBtn = document.getElementById('darkModeToggleMobile');
+        if (desktopBtn) desktopBtn.innerHTML = '<i class="bi bi-sun-fill"></i>';
+        if (mobileBtn) mobileBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
     }
     
-    document.getElementById('darkModeToggle').addEventListener('click', () => {
-        const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
-        if (isDark) {
-            document.documentElement.setAttribute('data-bs-theme', 'light');
-            document.getElementById('darkModeToggle').innerHTML = '<i class="bi bi-moon-fill"></i>';
-            localStorage.setItem('darkMode', 'false');
-        } else {
-            document.documentElement.setAttribute('data-bs-theme', 'dark');
-            document.getElementById('darkModeToggle').innerHTML = '<i class="bi bi-sun-fill"></i>';
-            localStorage.setItem('darkMode', 'true');
-        }
-    });
+    // Add click handlers to both toggle buttons
+    const desktopBtn = document.getElementById('darkModeToggle');
+    const mobileBtn = document.getElementById('darkModeToggleMobile');
+    if (desktopBtn) desktopBtn.addEventListener('click', toggleDarkMode);
+    if (mobileBtn) mobileBtn.addEventListener('click', toggleDarkMode);
     
-    // Mobile menu close helper
-    function closeMobileMenu() {
-        const navbarCollapseEl = document.getElementById('navbarNav');
-        if (navbarCollapseEl && navbarCollapseEl.classList.contains('show')) {
-            if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
-                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapseEl);
-                if (bsCollapse) {
-                    bsCollapse.hide();
-                } else {
-                    navbarCollapseEl.classList.remove('show');
-                }
-            } else {
-                navbarCollapseEl.classList.remove('show');
+    // Close mobile sidebar on link click
+    function closeMobileSidebar() {
+        const sidebarEl = document.getElementById('mobileSidebar');
+        if (sidebarEl) {
+            const bsOffcanvas = bootstrap.Offcanvas.getInstance(sidebarEl);
+            if (bsOffcanvas) {
+                bsOffcanvas.hide();
             }
         }
     }
     
-    // Close mobile menu on link click
-    document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
-        link.addEventListener('click', closeMobileMenu);
+    // Close sidebar on nav link click
+    document.querySelectorAll('#mobileSidebar .sidebar-link').forEach(link => {
+        link.addEventListener('click', closeMobileSidebar);
     });
 </script>
