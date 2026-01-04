@@ -29,10 +29,10 @@
             <i class="bi bi-book text-success me-2"></i>পবিত্র কুরআন
         </h3>
         <div class="btn-group" role="group">
-            <button type="button" class="btn btn-outline-success btn-sm active" id="gridViewBtn">
+            <button type="button" class="btn btn-outline-success btn-sm" id="gridViewBtn">
                 <i class="bi bi-grid-3x3-gap"></i>
             </button>
-            <button type="button" class="btn btn-outline-success btn-sm" id="listViewBtn">
+            <button type="button" class="btn btn-outline-success btn-sm active" id="listViewBtn">
                 <i class="bi bi-list"></i>
             </button>
         </div>
@@ -46,7 +46,7 @@
     <% } %>
     
     <!-- Surahs Grid -->
-    <div class="row g-3" id="surahsContainer">
+    <div class="row g-3 list-view" id="surahsContainer">
         <% surahs.forEach(surah => { %>
             <div class="col-6 col-sm-4 col-md-3 col-lg-2 surah-item">
                 <a href="/surah/<%= surah.id %>" class="text-decoration-none">
@@ -185,13 +185,18 @@
     const listViewBtn = document.getElementById('listViewBtn');
     const surahsContainer = document.getElementById('surahsContainer');
     
-    // Load saved view preference
+    // Load saved view preference (default to 'list' if not set)
     const savedView = localStorage.getItem('surahViewMode');
-    if (savedView === 'list') {
-        surahsContainer.classList.add('list-view');
-        listViewBtn.classList.add('active');
-        gridViewBtn.classList.remove('active');
+    if (savedView === null) {
+        // No saved preference, set default to list
+        localStorage.setItem('surahViewMode', 'list');
+    } else if (savedView === 'grid') {
+        // User previously selected grid view
+        surahsContainer.classList.remove('list-view');
+        gridViewBtn.classList.add('active');
+        listViewBtn.classList.remove('active');
     }
+    // If savedView is 'list', the HTML already has the correct default state
     
     gridViewBtn.addEventListener('click', () => {
         surahsContainer.classList.remove('list-view');

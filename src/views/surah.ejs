@@ -1986,7 +1986,30 @@
     // Pagination functionality
     (function() {
         const ayahItems = document.querySelectorAll('.ayah-item');
-        if (ayahItems.length <= 20) return; // No pagination needed
+        
+        // Handle hash-based ayah highlighting for surahs with 20 or fewer ayahs (no pagination)
+        if (ayahItems.length <= 20) {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#ayah-')) {
+                const ayahNumber = parseInt(hash.replace('#ayah-', ''));
+                setTimeout(() => {
+                    const ayahCard = document.getElementById(`ayah-${ayahNumber}`);
+                    if (ayahCard) {
+                        // Scroll to the ayah
+                        ayahCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        // Add highlight effect
+                        ayahCard.classList.add('shared-highlight');
+                        
+                        // Remove highlight after a few seconds
+                        setTimeout(() => {
+                            ayahCard.classList.remove('shared-highlight');
+                        }, 5000);
+                    }
+                }, 300);
+            }
+            return; // No pagination needed
+        }
         
         const perPageSelect = document.getElementById('ayahsPerPage');
         const pageInfo = document.getElementById('pageInfo');
@@ -2312,17 +2335,26 @@
     (function() {
         const wordByWordToggle = document.getElementById('wordByWordToggle');
         const wordAudio = new Audio();
-        let wordByWordEnabled = false;
+        let wordByWordEnabled = true; // Default to true (matches UI default)
         let wordDataCache = {};
         let currentPlayingWord = null;
         let hintShown = false;
         
-        // Load saved preference
+        // Load saved preference (default to true if not set)
         const savedWordByWord = localStorage.getItem('wordByWordEnabled');
-        if (savedWordByWord === 'true') {
+        if (savedWordByWord === null) {
+            // No saved preference, use default (enabled)
+            localStorage.setItem('wordByWordEnabled', 'true');
             wordByWordToggle.checked = true;
             wordByWordEnabled = true;
             initWordByWord();
+        } else if (savedWordByWord === 'true') {
+            wordByWordToggle.checked = true;
+            wordByWordEnabled = true;
+            initWordByWord();
+        } else {
+            wordByWordToggle.checked = false;
+            wordByWordEnabled = false;
         }
         
         // Toggle handler
