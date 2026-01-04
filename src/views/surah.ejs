@@ -2143,30 +2143,48 @@
             showPage(page, false);
         });
         
-        // Initialize with page from URL
-        const initialPage = getPageFromUrl();
-        showPage(initialPage, false);
-        
-        // Handle hash-based ayah highlighting on page load
-        setTimeout(() => {
-            const hash = window.location.hash;
-            if (hash && hash.startsWith('#ayah-')) {
-                const ayahNumber = parseInt(hash.replace('#ayah-', ''));
-                const ayahCard = document.getElementById(`ayah-${ayahNumber}`);
-                if (ayahCard) {
-                    // Scroll to the ayah
-                    ayahCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    
-                    // Add highlight effect
-                    ayahCard.classList.add('shared-highlight');
-                    
-                    // Remove highlight after a few seconds
-                    setTimeout(() => {
-                        ayahCard.classList.remove('shared-highlight');
-                    }, 5000);
+        // Initialize with page from URL or navigate to ayah from hash
+        const hash = window.location.hash;
+        if (hash && hash.startsWith('#ayah-')) {
+            const ayahNumber = parseInt(hash.replace('#ayah-', ''));
+            
+            // Find the index of this ayah in the ayahItems NodeList
+            let ayahIndex = -1;
+            ayahItems.forEach((item, index) => {
+                if (parseInt(item.dataset.ayahNumber) === ayahNumber) {
+                    ayahIndex = index;
                 }
+            });
+            
+            if (ayahIndex >= 0) {
+                // Calculate which page this ayah is on
+                const targetPage = Math.floor(ayahIndex / itemsPerPage) + 1;
+                showPage(targetPage, false);
+                
+                // Highlight the ayah after a short delay
+                setTimeout(() => {
+                    const ayahCard = document.getElementById(`ayah-${ayahNumber}`);
+                    if (ayahCard) {
+                        // Scroll to the ayah
+                        ayahCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        // Add highlight effect
+                        ayahCard.classList.add('shared-highlight');
+                        
+                        // Remove highlight after a few seconds
+                        setTimeout(() => {
+                            ayahCard.classList.remove('shared-highlight');
+                        }, 5000);
+                    }
+                }, 300);
+            } else {
+                const initialPage = getPageFromUrl();
+                showPage(initialPage, false);
             }
-        }, 300);
+        } else {
+            const initialPage = getPageFromUrl();
+            showPage(initialPage, false);
+        }
     })();
     
     // Translation visibility and ordering
