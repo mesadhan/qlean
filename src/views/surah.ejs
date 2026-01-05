@@ -1850,6 +1850,58 @@
         max-height: 50px;
     }
     
+    /* Word actions container */
+    .word-actions {
+        display: flex;
+        gap: 4px;
+        margin-top: 4px;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+    
+    .quran-word:hover .word-actions {
+        opacity: 1;
+    }
+    
+    /* Word search button */
+    .word-search-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        border: 1px solid #198754;
+        border-radius: 50%;
+        background: rgba(25, 135, 84, 0.1);
+        color: #198754;
+        font-size: 0.7rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .word-search-btn:hover {
+        background: #198754;
+        color: white;
+        transform: scale(1.1);
+    }
+    
+    .word-search-btn:active {
+        transform: scale(0.95);
+    }
+    
+    /* Dark mode word search button */
+    [data-bs-theme="dark"] .word-search-btn {
+        border-color: #75b798;
+        background: rgba(117, 183, 152, 0.1);
+        color: #75b798;
+    }
+    
+    [data-bs-theme="dark"] .word-search-btn:hover {
+        background: #75b798;
+        color: #212529;
+    }
+
     .quran-word:hover .word-bangla,
     .quran-word.show-translation .word-bangla {
         opacity: 1;
@@ -2466,10 +2518,16 @@
                               data-surah="${surahId}" 
                               data-ayah="${ayahNumber}" 
                               data-word="${wordPosition}"
+                              data-arabic="${arabicText}"
                               data-bangla="${banglaTranslation}">
                             <span class="word-number badge bg-success">${wordPosition}</span>
                             <span class="word-arabic">${arabicText}</span>
                             <span class="word-bangla">${banglaTranslation}</span>
+                            <span class="word-actions">
+                                <button class="word-search-btn" title="কুরআনে এই শব্দ খুঁজুন" data-word="${encodeURIComponent(arabicText)}">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </span>
                         </span>
                     `;
                 }).join('');
@@ -2497,6 +2555,16 @@
                 });
                 wordEl.addEventListener('touchend', () => clearTimeout(touchTimer));
                 wordEl.addEventListener('touchmove', () => clearTimeout(touchTimer));
+                
+                // Search button click
+                const searchBtn = wordEl.querySelector('.word-search-btn');
+                if (searchBtn) {
+                    searchBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const wordToSearch = decodeURIComponent(this.dataset.word);
+                        window.location.href = `/search/word?q=${encodeURIComponent(wordToSearch)}`;
+                    });
+                }
             });
         }
         
