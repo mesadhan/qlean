@@ -18,6 +18,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'search' ? 'active' : '' %>" href="/search/word">
+                        <i class="bi bi-search"></i> শব্দ অনুসন্ধান
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link <%= typeof activePage !== 'undefined' && activePage === 'bookmarks' ? 'active' : '' %>" href="/bookmarks">
                         <i class="bi bi-bookmark-fill"></i> Bookmarks
                     </a>
@@ -45,6 +50,11 @@
             <li class="nav-item">
                 <a class="nav-link sidebar-link <%= typeof activePage !== 'undefined' && activePage === 'surahs' ? 'active' : '' %>" href="/quran">
                     <i class="bi bi-journal-text"></i> Surahs
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link sidebar-link <%= typeof activePage !== 'undefined' && activePage === 'search' ? 'active' : '' %>" href="/search/word">
+                    <i class="bi bi-search"></i> শব্দ অনুসন্ধান
                 </a>
             </li>
             <li class="nav-item">

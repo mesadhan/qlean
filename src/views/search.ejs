@@ -1,0 +1,307 @@
+<div class="container-fluid px-md-4">
+    <!-- Search Header -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h3 class="mb-0">
+                <i class="bi bi-search"></i> শব্দ অনুসন্ধান - Arabic Word Search
+            </h3>
+        </div>
+        <div class="card-body">
+            <form action="/search/word" method="GET" class="mb-3">
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-8 col-lg-6">
+                        <label for="searchWord" class="form-label">আরবি শব্দ লিখুন (Enter Arabic word)</label>
+                        <div class="input-group input-group-lg">
+                            <input type="text" 
+                                   class="form-control arabic-text text-end" 
+                                   id="searchWord" 
+                                   name="q" 
+                                   value="<%= query %>" 
+                                   placeholder="مثال: الله، الرحمن، الصلاة"
+                                   dir="rtl"
+                                   autofocus>
+                            <button class="btn btn-success" type="submit">
+                                <i class="bi bi-search"></i> অনুসন্ধান
+                            </button>
+                        </div>
+                        <small class="text-muted">
+                            টিপস: আরবি শব্দ টাইপ করুন যেমন الله (আল্লাহ), الصلاة (সালাত), الجنة (জান্নাত)
+                        </small>
+                    </div>
+                    <% if (query) { %>
+                    <div class="col-auto">
+                        <a href="/search/word" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-x-circle"></i> Clear
+                        </a>
+                    </div>
+                    <% } %>
+                </div>
+            </form>
+            
+            <!-- Popular/Common Words Quick Links -->
+            <div class="mt-3">
+                <small class="text-muted d-block mb-2">জনপ্রিয় শব্দ (Popular words):</small>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="/search/word?q=الله" class="btn btn-outline-success btn-sm arabic-text">الله</a>
+                    <a href="/search/word?q=الرحمن" class="btn btn-outline-success btn-sm arabic-text">الرحمن</a>
+                    <a href="/search/word?q=الصلاة" class="btn btn-outline-success btn-sm arabic-text">الصلاة</a>
+                    <a href="/search/word?q=الجنة" class="btn btn-outline-success btn-sm arabic-text">الجنة</a>
+                    <a href="/search/word?q=النار" class="btn btn-outline-success btn-sm arabic-text">النار</a>
+                    <a href="/search/word?q=المؤمنين" class="btn btn-outline-success btn-sm arabic-text">المؤمنين</a>
+                    <a href="/search/word?q=الكافرين" class="btn btn-outline-success btn-sm arabic-text">الكافرين</a>
+                    <a href="/search/word?q=رسول" class="btn btn-outline-success btn-sm arabic-text">رسول</a>
+                    <a href="/search/word?q=نبي" class="btn btn-outline-success btn-sm arabic-text">نبي</a>
+                    <a href="/search/word?q=تقوى" class="btn btn-outline-success btn-sm arabic-text">تقوى</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <% if (query) { %>
+    <!-- Results Summary -->
+    <div class="alert <%= totalResults > 0 ? 'alert-success' : 'alert-warning' %> d-flex align-items-center justify-content-between">
+        <div>
+            <i class="bi bi-<%= totalResults > 0 ? 'check-circle' : 'info-circle' %> me-2"></i>
+            <% if (totalResults > 0) { %>
+                <strong>"<span class="arabic-text"><%= query %></span>"</strong> শব্দটি 
+                <strong><%= totalResults %></strong> টি আয়াতে পাওয়া গেছে
+                (<%= totalResults %> ayahs found containing this word)
+            <% } else { %>
+                <strong>"<span class="arabic-text"><%= query %></span>"</strong> শব্দটি কোনো আয়াতে পাওয়া যায়নি
+                (No ayahs found containing this word)
+            <% } %>
+        </div>
+        <% if (totalResults > 0) { %>
+        <div class="d-flex gap-2">
+            <!-- Translation Selection Dropdown -->
+            <div class="dropdown">
+                <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-translate"></i> অনুবাদ
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end p-3" style="min-width: 280px;">
+                    <li><h6 class="dropdown-header">বাংলা অনুবাদ</h6></li>
+                    <% config.translationsByLanguage.bangla.forEach(t => { %>
+                    <li>
+                        <div class="form-check">
+                            <input class="form-check-input search-translation-checkbox" 
+                                   type="checkbox" 
+                                   id="search_<%= t.id %>" 
+                                   data-translation="<%= t.id %>"
+                                   <%= t.isDefault ? 'checked' : '' %>>
+                            <label class="form-check-label" for="search_<%= t.id %>"><%= t.label %></label>
+                        </div>
+                    </li>
+                    <% }) %>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><h6 class="dropdown-header">English Translation</h6></li>
+                    <% config.translationsByLanguage.english.forEach(t => { %>
+                    <li>
+                        <div class="form-check">
+                            <input class="form-check-input search-translation-checkbox" 
+                                   type="checkbox" 
+                                   id="search_<%= t.id %>" 
+                                   data-translation="<%= t.id %>"
+                                   <%= t.isDefault ? 'checked' : '' %>>
+                            <label class="form-check-label" for="search_<%= t.id %>"><%= t.label %></label>
+                        </div>
+                    </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+        <% } %>
+    </div>
+
+    <% if (totalResults > 0) { %>
+    <!-- Results List -->
+    <div class="search-results">
+        <% 
+        // Group results by surah for better organization
+        const groupedResults = {};
+        results.forEach(r => {
+            if (!groupedResults[r.surahId]) {
+                groupedResults[r.surahId] = {
+                    surahId: r.surahId,
+                    surahName: r.surahName,
+                    surahTransliteration: r.surahTransliteration,
+                    surahBanglish: r.surahBanglish,
+                    ayahs: []
+                };
+            }
+            groupedResults[r.surahId].ayahs.push(r);
+        });
+        %>
+        
+        <% Object.values(groupedResults).forEach((group, groupIndex) => { %>
+        <div class="card mb-3 shadow-sm surah-group" data-surah-id="<%= group.surahId %>">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="badge bg-success me-2"><%= group.surahId %></span>
+                    <span class="arabic-text fw-bold"><%= group.surahName %></span>
+                    <span class="text-muted">- <%= group.surahTransliteration %></span>
+                    <% if (group.surahBanglish) { %>
+                    <span class="text-muted">(<%= group.surahBanglish %>)</span>
+                    <% } %>
+                </div>
+                <div>
+                    <span class="badge bg-secondary"><%= group.ayahs.length %> আয়াত</span>
+                    <a href="/surah/<%= group.surahId %>" class="btn btn-sm btn-outline-success ms-2" title="Go to Surah">
+                        <i class="bi bi-arrow-right-circle"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <% group.ayahs.forEach((result, ayahIndex) => { %>
+                <div class="search-result-item border-bottom p-3 <%= ayahIndex === group.ayahs.length - 1 ? 'border-bottom-0' : '' %>">
+                    <!-- Ayah Number Badge -->
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <a href="/surah/<%= result.surahId %>#ayah-<%= result.ayahNumber %>" 
+                           class="badge bg-success text-decoration-none"
+                           title="Go to ayah">
+                            <%= result.surahId %>:<%= result.ayahNumber %>
+                        </a>
+                    </div>
+                    
+                    <!-- Arabic Text with Highlighted Word -->
+                    <div class="arabic-text text-end fs-4 lh-lg mb-3 ayah-arabic-text" dir="rtl">
+                        <%- result.highlightedText %>
+                    </div>
+                    
+                    <!-- Translations -->
+                    <div class="translations-container">
+                        <% Object.entries(result.translations).forEach(([key, value]) => { %>
+                        <% if (value) { %>
+                        <div class="translation-text small text-muted mb-1 translation-item" 
+                             data-translation="<%= key %>"
+                             style="<%= (['mujibur', 'sahih'].includes(key)) ? '' : 'display: none;' %>">
+                            <span class="badge bg-light text-dark me-1"><%= key %></span>
+                            <%= value %>
+                        </div>
+                        <% } %>
+                        <% }) %>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+    
+    <!-- Statistics Card -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="bi bi-bar-chart-fill"></i> অনুসন্ধান পরিসংখ্যান - Search Statistics</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="text-center p-3 bg-light rounded">
+                        <h3 class="text-success mb-0"><%= totalResults %></h3>
+                        <small class="text-muted">মোট আয়াত (Total Ayahs)</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-3 bg-light rounded">
+                        <h3 class="text-primary mb-0"><%= Object.keys(groupedResults).length %></h3>
+                        <small class="text-muted">সূরায় পাওয়া গেছে (Surahs Found)</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-3 bg-light rounded">
+                        <h3 class="text-info mb-0 arabic-text"><%= query %></h3>
+                        <small class="text-muted">অনুসন্ধানকৃত শব্দ (Search Term)</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Surah Distribution -->
+            <div class="mt-4">
+                <h6><i class="bi bi-pie-chart"></i> সূরা অনুযায়ী বিতরণ (Distribution by Surah)</h6>
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                    <% Object.values(groupedResults).forEach(group => { %>
+                    <a href="#" 
+                       class="badge bg-outline-success text-success border border-success text-decoration-none surah-jump-link"
+                       data-surah-id="<%= group.surahId %>"
+                       title="<%= group.surahTransliteration %>">
+                        <%= group.surahTransliteration %> (<%= group.ayahs.length %>)
+                    </a>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+    <% } %>
+</div>
+
+<style>
+    .arabic-highlight {
+        background-color: #ffc107;
+        padding: 0 4px;
+        border-radius: 4px;
+        color: #000;
+    }
+    
+    .dark-mode .arabic-highlight {
+        background-color: #ff9800;
+        color: #000;
+    }
+    
+    .search-result-item:hover {
+        background-color: rgba(25, 135, 84, 0.05);
+    }
+    
+    .dark-mode .search-result-item:hover {
+        background-color: rgba(25, 135, 84, 0.15);
+    }
+    
+    .ayah-arabic-text {
+        font-family: 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif;
+    }
+    
+    .surah-jump-link {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .surah-jump-link:hover {
+        background-color: var(--bs-success) !important;
+        color: white !important;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Translation toggle functionality
+    const translationCheckboxes = document.querySelectorAll('.search-translation-checkbox');
+    
+    translationCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const translationId = this.dataset.translation;
+            const isChecked = this.checked;
+            
+            // Show/hide all translation items with this ID
+            document.querySelectorAll(`.translation-item[data-translation="${translationId}"]`).forEach(item => {
+                item.style.display = isChecked ? 'block' : 'none';
+            });
+        });
+    });
+    
+    // Surah jump links
+    document.querySelectorAll('.surah-jump-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const surahId = this.dataset.surahId;
+            const targetCard = document.querySelector(`.surah-group[data-surah-id="${surahId}"]`);
+            if (targetCard) {
+                targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Flash effect
+                targetCard.classList.add('border-success', 'border-2');
+                setTimeout(() => {
+                    targetCard.classList.remove('border-success', 'border-2');
+                }, 2000);
+            }
+        });
+    });
+});
+</script>

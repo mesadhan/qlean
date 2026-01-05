@@ -3,7 +3,7 @@ import express, { Request, Response } from 'express';
 import ejs from 'ejs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getAllSurahs, getSurahById, searchSurahs, APP_CONFIG } from '../services/quranApi.js';
+import { getAllSurahs, getSurahById, searchSurahs, searchAyahsByArabicWord, APP_CONFIG } from '../services/quranApi.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -128,6 +128,44 @@ router.get('/bookmarks', async (req: Request, res: Response) => {
     title: 'Bookmarks',
     activePage: 'bookmarks'
   });
+});
+
+// Arabic word search page
+router.get('/search/word', async (req: Request, res: Response) => {
+  try {
+    const query = (req.query.q as string || '').trim();
+    
+    // If no query, show empty search page
+    if (!query) {
+      return await renderWithLayout(res, 'search', {
+        title: 'শব্দ অনুসন্ধান - Word Search',
+        activePage: 'search',
+        query: '',
+        results: [],
+        totalResults: 0,
+        config: APP_CONFIG
+      });
+    }
+    
+    // Search for Arabic word across all surahs
+    const results = await searchAyahsByArabicWord(query);
+    
+    await renderWithLayout(res, 'search', {
+      title: `অনুসন্ধান: ${query}`,
+      activePage: 'search',
+      query,
+      results,
+      totalResults: results.length,
+      config: APP_CONFIG
+    });
+  } catch (error) {
+    console.error('Search error:', error);
+    await renderWithLayout(res, 'error', {
+      title: 'Error',
+      activePage: '',
+      error: { title: 'Search Failed', message: 'Could not perform search. Please try again.' }
+    });
+  }
 });
 
 export default router;

@@ -375,6 +375,80 @@ export async function searchSurahs(query: string): Promise<Surah[]> {
   );
 }
 
+// Result interface for Arabic word search
+export interface AyahSearchResult {
+  surahId: number;
+  surahName: string;
+  surahTransliteration: string;
+  surahBanglish: string;
+  ayahNumber: number;
+  arabicText: string;
+  translations: Record<string, string>;
+  highlightedText: string; // Arabic text with the word highlighted
+}
+
+// Normalize Arabic text for comparison (remove diacritics/tashkeel)
+function normalizeArabic(text: string): string {
+  // Remove Arabic diacritical marks (tashkeel) for better matching
+  return text.replace(/[\u064B-\u065F\u0670]/g, '').trim();
+}
+
+// Search for Arabic word across all ayahs in all surahs
+export async function searchAyahsByArabicWord(searchWord: string): Promise<AyahSearchResult[]> {
+  const results: AyahSearchResult[] = [];
+  const normalizedSearch = normalizeArabic(searchWord);
+  
+  // Fetch all surahs (parallel fetch for performance)
+  const surahPromises = [];
+  for (let i = 1; i <= 114; i++) {
+    surahPromises.push(getSurahById(i));
+  }
+  
+  const allSurahs = await Promise.all(surahPromises);
+  
+  for (const surah of allSurahs) {
+    if (!surah || !surah.ayahs) continue;
+    
+    for (const ayah of surah.ayahs) {
+      const normalizedAyahText = normalizeArabic(ayah.text);
+      
+      // Check if the normalized search word exists in the normalized ayah text
+      if (normalizedAyahText.includes(normalizedSearch)) {
+        // Highlight the word in the original Arabic text (preserving diacritics)
+        // Use regex to find and highlight matching words
+        const highlightedText = highlightArabicWord(ayah.text, searchWord);
+        
+        results.push({
+          surahId: surah.id,
+          surahName: surah.name,
+          surahTransliteration: surah.transliteration,
+          surahBanglish: surah.banglish || '',
+          ayahNumber: ayah.number,
+          arabicText: ayah.text,
+          translations: ayah.translations,
+          highlightedText
+        });
+      }
+    }
+  }
+  
+  return results;
+}
+
+// Helper function to highlight Arabic word in text
+function highlightArabicWord(text: string, searchWord: string): string {
+  // Create a pattern that matches the search word with optional diacritics between letters
+  const normalizedSearch = normalizeArabic(searchWord);
+  const letters = [...normalizedSearch];
+  
+  // Build a regex pattern that allows optional diacritics between each letter
+  const diacriticsPattern = '[\u064B-\u065F\u0670]*';
+  const pattern = letters.map(letter => letter + diacriticsPattern).join('');
+  
+  const regex = new RegExp(`(${pattern})`, 'g');
+  return text.replace(regex, '<mark class="arabic-highlight">$1</mark>');
+}
+
 // Clear cache (useful for updates)
 export function clearCache(): void {
   surahCache.clear();
