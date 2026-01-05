@@ -11,7 +11,7 @@
                 <div class="row g-2 align-items-end">
                     <div class="col-md-8 col-lg-6">
                         <label for="searchWord" class="form-label">আরবি শব্দ লিখুন (Enter Arabic word)</label>
-                        <div class="input-group input-group-lg">
+                        <div class="input-group input-group-sm">
                             <input type="text" 
                                    class="form-control arabic-text text-end" 
                                    id="searchWord" 
@@ -20,7 +20,7 @@
                                    placeholder="مثال: الله، الرحمن، الصلاة"
                                    dir="rtl"
                                    autofocus>
-                            <button class="btn btn-success" type="submit">
+                            <button class="btn btn-success btn-sm" type="submit">
                                 <i class="bi bi-search"></i> অনুসন্ধান
                             </button>
                         </div>
@@ -30,7 +30,7 @@
                     </div>
                     <% if (query) { %>
                     <div class="col-auto">
-                        <a href="/search/word" class="btn btn-outline-secondary btn-lg">
+                        <a href="/search/word" class="btn btn-outline-secondary btn-sm">
                             <i class="bi bi-x-circle"></i> Clear
                         </a>
                     </div>
@@ -42,16 +42,16 @@
             <div class="mt-3">
                 <small class="text-muted d-block mb-2">জনপ্রিয় শব্দ (Popular words):</small>
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="/search/word?q=الله" class="btn btn-outline-success btn-sm arabic-text">الله</a>
-                    <a href="/search/word?q=الرحمن" class="btn btn-outline-success btn-sm arabic-text">الرحمن</a>
-                    <a href="/search/word?q=الصلاة" class="btn btn-outline-success btn-sm arabic-text">الصلاة</a>
-                    <a href="/search/word?q=الجنة" class="btn btn-outline-success btn-sm arabic-text">الجنة</a>
-                    <a href="/search/word?q=النار" class="btn btn-outline-success btn-sm arabic-text">النار</a>
-                    <a href="/search/word?q=المؤمنين" class="btn btn-outline-success btn-sm arabic-text">المؤمنين</a>
-                    <a href="/search/word?q=الكافرين" class="btn btn-outline-success btn-sm arabic-text">الكافرين</a>
-                    <a href="/search/word?q=رسول" class="btn btn-outline-success btn-sm arabic-text">رسول</a>
-                    <a href="/search/word?q=نبي" class="btn btn-outline-success btn-sm arabic-text">نبي</a>
-                    <a href="/search/word?q=تقوى" class="btn btn-outline-success btn-sm arabic-text">تقوى</a>
+                    <a href="/search/word?q=الله" class="btn btn-outline-success btn-sm">الله</a>
+                    <a href="/search/word?q=الرحمن" class="btn btn-outline-success btn-sm">الرحمن</a>
+                    <a href="/search/word?q=الصلاة" class="btn btn-outline-success btn-sm">الصلاة</a>
+                    <a href="/search/word?q=الجنة" class="btn btn-outline-success btn-sm">الجنة</a>
+                    <a href="/search/word?q=النار" class="btn btn-outline-success btn-sm">النار</a>
+                    <a href="/search/word?q=المؤمنين" class="btn btn-outline-success btn-sm">المؤمنين</a>
+                    <a href="/search/word?q=الكافرين" class="btn btn-outline-success btn-sm">الكافرين</a>
+                    <a href="/search/word?q=رسول" class="btn btn-outline-success btn-sm">رسول</a>
+                    <a href="/search/word?q=نبي" class="btn btn-outline-success btn-sm">نبي</a>
+                    <a href="/search/word?q=تقوى" class="btn btn-outline-success btn-sm">تقوى</a>
                 </div>
             </div>
         </div>
