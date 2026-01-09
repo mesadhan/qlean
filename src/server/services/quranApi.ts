@@ -536,43 +536,121 @@ function normalizeArabic(text: string): string {
   return text.replace(/[\u064B-\u065F\u0670]/g, '').trim();
 }
 
-// Search for Arabic word across all ayahs in all surahs
+// Search for Arabic word across all ayahs in all surahs (with offline support)
 export async function searchAyahsByArabicWord(searchWord: string): Promise<AyahSearchResult[]> {
   const results: AyahSearchResult[] = [];
   const normalizedSearch = normalizeArabic(searchWord);
   
-  // Fetch all surahs (parallel fetch for performance)
-  const surahPromises = [];
-  for (let i = 1; i <= 114; i++) {
-    surahPromises.push(getSurahById(i));
-  }
-  
-  const allSurahs = await Promise.all(surahPromises);
-  
-  for (const surah of allSurahs) {
-    if (!surah || !surah.ayahs) continue;
+  try {
+    // Fetch all surahs (with offline-first approach)
+    const surahPromises = [];
+    for (let i = 1; i <= 114; i++) {
+      surahPromises.push(getSurahById(i));
+    }
     
-    for (const ayah of surah.ayahs) {
-      const normalizedAyahText = normalizeArabic(ayah.text);
+    const allSurahs = await Promise.all(surahPromises);
+    
+    for (const surah of allSurahs) {
+      if (!surah || !surah.ayahs) continue;
       
-      // Check if the normalized search word exists in the normalized ayah text
-      if (normalizedAyahText.includes(normalizedSearch)) {
-        // Highlight the word in the original Arabic text (preserving diacritics)
-        // Use regex to find and highlight matching words
-        const highlightedText = highlightArabicWord(ayah.text, searchWord);
+      for (const ayah of surah.ayahs) {
+        const normalizedAyahText = normalizeArabic(ayah.text);
         
-        results.push({
-          surahId: surah.id,
-          surahName: surah.name,
-          surahTransliteration: surah.transliteration,
-          surahBanglish: surah.banglish || '',
-          ayahNumber: ayah.number,
-          arabicText: ayah.text,
-          translations: ayah.translations,
-          highlightedText
-        });
+        // Check if the normalized search word exists in the normalized ayah text
+        if (normalizedAyahText.includes(normalizedSearch)) {
+          // Highlight the word in the original Arabic text (preserving diacritics)
+          const highlightedText = highlightArabicWord(ayah.text, searchWord);
+          
+          results.push({
+            surahId: surah.id,
+            surahName: surah.name,
+            surahTransliteration: surah.transliteration,
+            surahBanglish: surah.banglish || '',
+            ayahNumber: ayah.number,
+            arabicText: ayah.text,
+            translations: ayah.translations,
+            highlightedText
+          });
+        }
       }
     }
+    
+    console.log(`✓ Word search: Found ${results.length} results for "${searchWord}"`);
+  } catch (error) {
+    console.error(`✗ Word search failed for "${searchWord}":`, (error as Error).message);
+    // Return empty results instead of crashing
+    return [];
+  }
+  
+  return results;
+}
+
+// New: Fast offline word search (searches only offline translations)
+export async function searchAyahsByArabicWordOffline(searchWord: string): Promise<AyahSearchResult[]> {
+  const results: AyahSearchResult[] = [];
+  const normalizedSearch = normalizeArabic(searchWord);
+  
+  try {
+    const availableOffline = getAvailableOfflineTranslations();
+    
+    // If no offline translations available, return empty
+    if (availableOffline.length === 0) {
+      console.log(`⚠ No offline translations available for word search`);
+      return [];
+    }
+    
+    // Search through all 114 surahs using offline translations only
+    for (let surahId = 1; surahId <= 114; surahId++) {
+      const metadata = SURAH_METADATA[surahId - 1];
+      
+      // Get translations for this surah from offline files
+      const surahTranslations: Record<string, Record<number, string>> = {};
+      
+      // Load all available offline translations for this surah
+      for (const translationId of availableOffline) {
+        const offlineData = loadOfflineTranslation(translationId, surahId);
+        if (offlineData) {
+          surahTranslations[translationId] = offlineData;
+        }
+      }
+      
+      // Search through each ayah
+      for (let ayahNum = 1; ayahNum <= metadata.totalAyahs; ayahNum++) {
+        // Search in offline translations (text is in translations, not in arabic text)
+        for (const [, verses] of Object.entries(surahTranslations)) {
+          const translationText = verses[ayahNum];
+          if (translationText && normalizeArabic(translationText).includes(normalizedSearch)) {
+            // Build translations object for this ayah
+            const translations: Record<string, string> = {};
+            for (const [tId, tVerses] of Object.entries(surahTranslations)) {
+              translations[tId] = tVerses[ayahNum] || '';
+            }
+            
+            // Note: We don't have Arabic text in offline mode, so use translation text
+            const highlightedText = highlightArabicWord(translationText, searchWord);
+            
+            results.push({
+              surahId,
+              surahName: metadata.name,
+              surahTransliteration: metadata.transliteration,
+              surahBanglish: metadata.banglish || '',
+              ayahNumber: ayahNum,
+              arabicText: `[Ayah ${ayahNum}]`, // No Arabic text in offline
+              translations,
+              highlightedText
+            });
+            
+            // Don't add duplicate results for same ayah from different translations
+            break;
+          }
+        }
+      }
+    }
+    
+    console.log(`✓ Offline word search: Found ${results.length} results for "${searchWord}"`);
+  } catch (error) {
+    console.error(`✗ Offline word search failed:`, (error as Error).message);
+    return [];
   }
   
   return results;

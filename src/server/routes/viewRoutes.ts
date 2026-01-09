@@ -3,7 +3,7 @@ import express, { Request, Response } from 'express';
 import ejs from 'ejs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getAllSurahs, getSurahById, searchSurahs, searchAyahsByArabicWord, APP_CONFIG } from '../services/quranApi.js';
+import { getAllSurahs, getSurahById, searchSurahs, searchAyahsByArabicWord, searchAyahsByArabicWordOffline, APP_CONFIG } from '../services/quranApi.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -147,8 +147,18 @@ router.get('/search/word', async (req: Request, res: Response) => {
       });
     }
     
-    // Search for Arabic word across all surahs
-    const results = await searchAyahsByArabicWord(query);
+    // Try to use offline search first (faster, no internet needed)
+    // If offline translations are available, use them
+    let results = await searchAyahsByArabicWordOffline(query);
+    
+    // If offline search found results or we only have offline capability, use them
+    if (results.length > 0) {
+      console.log(`✓ Using offline word search results`);
+    } else {
+      // Offline search returned empty, try full search (uses API fallback)
+      console.log(`ℹ Offline search empty, trying full search with API fallback`);
+      results = await searchAyahsByArabicWord(query);
+    }
     
     await renderWithLayout(res, 'search', {
       title: `অনুসন্ধান: ${query}`,

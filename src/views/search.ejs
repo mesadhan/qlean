@@ -275,6 +275,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Translation toggle functionality
     const translationCheckboxes = document.querySelectorAll('.search-translation-checkbox');
     
+    // Initialize display based on checked state
+    translationCheckboxes.forEach(checkbox => {
+        const translationId = checkbox.dataset.translation;
+        const isChecked = checkbox.checked;
+        
+        // Set initial visibility
+        document.querySelectorAll(`.translation-item[data-translation="${translationId}"]`).forEach(item => {
+            item.style.display = isChecked ? 'block' : 'none';
+        });
+    });
+    
+    // Handle checkbox changes
     translationCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const translationId = this.dataset.translation;
