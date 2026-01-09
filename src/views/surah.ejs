@@ -2,6 +2,137 @@
     <i class="bi bi-arrow-left"></i> Back to Surahs
 </a>
 
+<!-- Settings Sidebar Panel -->
+<div id="settingsPanel" class="settings-panel">
+    <div class="settings-header">
+        <h5 class="mb-0"><i class="bi bi-sliders"></i> Display Settings</h5>
+        <button class="btn-close settings-close" id="settingsPanelClose" aria-label="Close settings"></button>
+    </div>
+    
+    <div class="settings-body">
+        <!-- Quran Font Selection -->
+        <div class="settings-section">
+            <label class="settings-label"><i class="bi bi-type"></i> Quran Font</label>
+            <div class="font-options">
+                <div class="form-check">
+                    <input class="form-check-input quran-font-radio" type="radio" name="quranFont" id="fontTraditional" value="traditional" checked>
+                    <label class="form-check-label" for="fontTraditional">
+                        <span class="font-preview" style="font-family: 'Traditional Arabic', serif;">ق</span>
+                        Traditional
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input quran-font-radio" type="radio" name="quranFont" id="fontUthmani" value="uthmani">
+                    <label class="form-check-label" for="fontUthmani">
+                        <span class="font-preview" style="font-family: 'Scheherazade New', serif;">ق</span>
+                        Uthmani
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input quran-font-radio" type="radio" name="quranFont" id="fontIndoPak" value="indopak">
+                    <label class="form-check-label" for="fontIndoPak">
+                        <span class="font-preview" style="font-family: 'IndoPak', serif;">ق</span>
+                        IndoPak
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input quran-font-radio" type="radio" name="quranFont" id="fontTajweed" value="tajweed">
+                    <label class="form-check-label" for="fontTajweed">
+                        <span class="font-preview" style="font-family: 'Tajweed', serif;">ق</span>
+                        Tajweed
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Arabic Text Size -->
+        <div class="settings-section">
+            <label class="settings-label"><i class="bi bi-aspect-ratio"></i> Arabic Text Size</label>
+            <div class="size-control">
+                <button class="btn-size" id="decreaseSize" title="Decrease size">
+                    <i class="bi bi-dash-circle"></i>
+                </button>
+                <span class="size-display" id="sizeDisplay">100%</span>
+                <button class="btn-size" id="increaseSize" title="Increase size">
+                    <i class="bi bi-plus-circle"></i>
+                </button>
+            </div>
+            <div class="size-preset-buttons">
+                <button class="size-preset" data-size="80">Small</button>
+                <button class="size-preset active" data-size="100">Normal</button>
+                <button class="size-preset" data-size="120">Large</button>
+                <button class="size-preset" data-size="150">Huge</button>
+            </div>
+        </div>
+        
+        <!-- Translation Display -->
+        <div class="settings-section">
+            <label class="settings-label"><i class="bi bi-eye"></i> Translation Display</label>
+            <div class="translation-display-options">
+                <div class="form-check">
+                    <input class="form-check-input translation-display-radio" type="radio" name="translationDisplay" id="displayBoth" value="both" checked>
+                    <label class="form-check-label" for="displayBoth">Show Both</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input translation-display-radio" type="radio" name="translationDisplay" id="displayBengali" value="bengali">
+                    <label class="form-check-label" for="displayBengali">Bengali Only</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input translation-display-radio" type="radio" name="translationDisplay" id="displayEnglish" value="english">
+                    <label class="form-check-label" for="displayEnglish">English Only</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input translation-display-radio" type="radio" name="translationDisplay" id="displayArabicOnly" value="arabic">
+                    <label class="form-check-label" for="displayArabicOnly">Arabic Only</label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Translation Selection (Moved from main card) -->
+        <div class="settings-section">
+            <label class="settings-label"><i class="bi bi-translate"></i> Select Translations</label>
+            <div class="translation-select-options">
+                <div class="translation-language-group">
+                    <h6 class="mb-2 small fw-bold text-success">বাংলা অনুবাদ</h6>
+                    <% config.translationsByLanguage.bangla.forEach((t) => { %>
+                    <div class="form-check form-check-sm">
+                        <input class="form-check-input translation-checkbox" type="checkbox" 
+                               id="settings_bangla<%= t.id.charAt(0).toUpperCase() + t.id.slice(1) %>" 
+                               data-translation="<%= t.id %>" 
+                               data-order="<%= t.order %>"
+                               <%= t.isDefault ? 'checked' : '' %>>
+                        <label class="form-check-label small" for="settings_bangla<%= t.id.charAt(0).toUpperCase() + t.id.slice(1) %>"><%= t.label %></label>
+                    </div>
+                    <% }) %>
+                </div>
+                <div class="translation-language-group mt-2">
+                    <h6 class="mb-2 small fw-bold text-primary">English Translation</h6>
+                    <% config.translationsByLanguage.english.forEach((t) => { %>
+                    <div class="form-check form-check-sm">
+                        <input class="form-check-input translation-checkbox" type="checkbox" 
+                               id="settings_english<%= t.id.charAt(0).toUpperCase() + t.id.slice(1) %>" 
+                               data-translation="<%= t.id %>" 
+                               data-order="<%= t.order %>"
+                               <%= t.isDefault ? 'checked' : '' %>>
+                        <label class="form-check-label small" for="settings_english<%= t.id.charAt(0).toUpperCase() + t.id.slice(1) %>"><%= t.label %></label>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reset Button -->
+        <div class="settings-section">
+            <button class="btn btn-outline-danger w-100" id="resetSettings">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset to Default
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Settings Panel Overlay -->
+<div id="settingsPanelOverlay" class="settings-overlay"></div>
+
 <div class="card mb-4">
     <div class="card-header bg-success text-white">
         <div class="d-flex justify-content-between align-items-center">
@@ -1776,7 +1907,7 @@
     .arabic-text.word-by-word {
         display: flex;
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 6px;
         justify-content: flex-end;
         direction: rtl;
     }
@@ -1786,12 +1917,12 @@
         display: inline-flex;
         flex-direction: column;
         align-items: center;
-        padding: 8px 12px;
-        border-radius: 8px;
+        padding: 6px 10px;
+        border-radius: 6px;
         cursor: pointer;
         transition: all 0.2s ease;
         position: relative;
-        min-width: 50px;
+        min-width: auto;
     }
     
     .quran-word:hover {
@@ -1815,7 +1946,8 @@
     }
     
     .word-arabic {
-        font-size: 1.8rem;
+        font-family: var(--arabic-font);
+        font-size: var(--arabic-text-size);
         line-height: 1.4;
         color: inherit;
     }
@@ -2650,5 +2782,261 @@
                 attributeFilter: ['class']
             });
         }
+    })();
+    
+    // ============================================
+    // SETTINGS PANEL FUNCTIONALITY
+    // ============================================
+    (function() {
+        const settingsPanel = document.getElementById('settingsPanel');
+        const settingsOverlay = document.getElementById('settingsPanelOverlay');
+        const settingsToggle = document.getElementById('settingsToggle');
+        const settingsToggleMobile = document.getElementById('settingsToggleMobile');
+        const settingsPanelClose = document.getElementById('settingsPanelClose');
+        
+        // Default settings
+        const DEFAULT_SETTINGS = {
+            quranFont: 'traditional',
+            arabicTextSize: 100,
+            translationDisplay: 'both'
+        };
+        
+        // Load settings from localStorage
+        function loadSettings() {
+            const saved = localStorage.getItem('surahSettings');
+            return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+        }
+        
+        // Save settings to localStorage
+        function saveSettings(settings) {
+            localStorage.setItem('surahSettings', JSON.stringify(settings));
+        }
+        
+        // Initialize settings on page load
+        function initializeSettings() {
+            const settings = loadSettings();
+            
+            // Set font
+            const fontRadio = document.querySelector(`input[name="quranFont"][value="${settings.quranFont}"]`);
+            if (fontRadio) {
+                fontRadio.checked = true;
+                applyFont(settings.quranFont);
+            }
+            
+            // Set text size
+            updateTextSize(settings.arabicTextSize);
+            
+            // Set translation display
+            const displayRadio = document.querySelector(`input[name="translationDisplay"][value="${settings.translationDisplay}"]`);
+            if (displayRadio) {
+                displayRadio.checked = true;
+                applyTranslationDisplay(settings.translationDisplay);
+            }
+        }
+        
+        // Apply font to Arabic text
+        function applyFont(fontName) {
+            const body = document.body;
+            const fontClass = `arabic-font-${fontName}`;
+            
+            // Remove existing font classes
+            body.classList.remove('arabic-font-traditional', 'arabic-font-uthmani', 'arabic-font-indopak', 'arabic-font-tajweed');
+            
+            // Add new font class
+            if (fontName !== 'traditional') {
+                body.classList.add(fontClass);
+            }
+            
+            // Update CSS variable
+            const fontMap = {
+                'traditional': "'Traditional Arabic', 'Scheherazade', serif",
+                'uthmani': "'Scheherazade New', 'Traditional Arabic', serif",
+                'indopak': "'IndoPak', 'Traditional Arabic', serif",
+                'tajweed': "'Tajweed', 'Traditional Arabic', serif"
+            };
+            
+            document.documentElement.style.setProperty('--arabic-font', fontMap[fontName] || fontMap['traditional']);
+            
+            // Save setting
+            const settings = loadSettings();
+            settings.quranFont = fontName;
+            saveSettings(settings);
+        }
+        
+        // Apply text size
+        function updateTextSize(size) {
+            document.documentElement.style.setProperty('--arabic-text-size', size / 100 * 1.8 + 'rem');
+            
+            // Update size display
+            const sizeDisplay = document.getElementById('sizeDisplay');
+            if (sizeDisplay) {
+                sizeDisplay.textContent = size + '%';
+            }
+            
+            // Update active preset button
+            document.querySelectorAll('.size-preset').forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.dataset.size) === size) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Save setting
+            const settings = loadSettings();
+            settings.arabicTextSize = size;
+            saveSettings(settings);
+        }
+        
+        // Apply translation display option
+        function applyTranslationDisplay(displayMode) {
+            const translations = document.querySelectorAll('.translation-item');
+            
+            translations.forEach(translation => {
+                const language = translation.dataset.language;
+                
+                if (displayMode === 'both') {
+                    translation.style.display = '';
+                } else if (displayMode === 'arabic') {
+                    translation.style.display = 'none';
+                } else if (displayMode === 'bengali' && language === 'english') {
+                    translation.style.display = 'none';
+                } else if (displayMode === 'english' && language === 'bangla') {
+                    translation.style.display = 'none';
+                } else {
+                    translation.style.display = '';
+                }
+            });
+            
+            // Save setting
+            const settings = loadSettings();
+            settings.translationDisplay = displayMode;
+            saveSettings(settings);
+        }
+        
+        // Toggle settings panel
+        function toggleSettingsPanel() {
+            settingsPanel.classList.toggle('active');
+            settingsOverlay.classList.toggle('active');
+        }
+        
+        // Close settings panel
+        function closeSettingsPanel() {
+            settingsPanel.classList.remove('active');
+            settingsOverlay.classList.remove('active');
+        }
+        
+        // Event listeners for opening settings
+        if (settingsToggle) {
+            settingsToggle.addEventListener('click', toggleSettingsPanel);
+        }
+        if (settingsToggleMobile) {
+            settingsToggleMobile.addEventListener('click', function() {
+                toggleSettingsPanel();
+            });
+        }
+        
+        // Close button
+        if (settingsPanelClose) {
+            settingsPanelClose.addEventListener('click', closeSettingsPanel);
+        }
+        
+        // Close on overlay click
+        if (settingsOverlay) {
+            settingsOverlay.addEventListener('click', closeSettingsPanel);
+        }
+        
+        // Close on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSettingsPanel();
+            }
+        });
+        
+        // Font selection
+        document.querySelectorAll('.quran-font-radio').forEach(radio => {
+            radio.addEventListener('change', function() {
+                applyFont(this.value);
+            });
+        });
+        
+        // Text size controls
+        document.getElementById('increaseSize')?.addEventListener('click', function() {
+            const settings = loadSettings();
+            let newSize = Math.min(settings.arabicTextSize + 10, 200);
+            updateTextSize(newSize);
+        });
+        
+        document.getElementById('decreaseSize')?.addEventListener('click', function() {
+            const settings = loadSettings();
+            let newSize = Math.max(settings.arabicTextSize - 10, 50);
+            updateTextSize(newSize);
+        });
+        
+        // Size preset buttons
+        document.querySelectorAll('.size-preset').forEach(btn => {
+            btn.addEventListener('click', function() {
+                updateTextSize(parseInt(this.dataset.size));
+            });
+        });
+        
+        // Translation display options
+        document.querySelectorAll('.translation-display-radio').forEach(radio => {
+            radio.addEventListener('change', function() {
+                applyTranslationDisplay(this.value);
+            });
+        });
+        
+        // Translation selection checkboxes (sync with main card)
+        document.querySelectorAll('.settings-body .translation-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const translationId = this.dataset.translation;
+                const isChecked = this.checked;
+                
+                // Sync with main card checkbox if it exists
+                const mainCheckbox = document.querySelector(`.translation-checkbox[data-translation="${translationId}"]:not(.settings-body .translation-checkbox)`);
+                if (mainCheckbox) {
+                    mainCheckbox.checked = isChecked;
+                    mainCheckbox.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+        
+        // Also sync main card checkboxes to settings panel
+        document.querySelectorAll('.translation-checkbox:not(.settings-body .translation-checkbox)').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const translationId = this.dataset.translation;
+                const isChecked = this.checked;
+                
+                // Sync with settings checkbox
+                const settingsCheckbox = document.querySelector(`.settings-body .translation-checkbox[data-translation="${translationId}"]`);
+                if (settingsCheckbox) {
+                    settingsCheckbox.checked = isChecked;
+                }
+            });
+        });
+        
+        // Reset to default
+        document.getElementById('resetSettings')?.addEventListener('click', function() {
+            if (confirm('Reset all settings to default?')) {
+                localStorage.removeItem('surahSettings');
+                
+                // Reset form
+                document.querySelector('input[name="quranFont"][value="traditional"]').checked = true;
+                document.querySelector('input[name="translationDisplay"][value="both"]').checked = true;
+                
+                // Apply defaults
+                applyFont('traditional');
+                updateTextSize(100);
+                applyTranslationDisplay('both');
+                
+                // Reload translations from main card
+                document.querySelectorAll('.translation-checkbox:not(.settings-body .translation-checkbox)').forEach(checkbox => {
+                    checkbox.dispatchEvent(new Event('change'));
+                });
+            }
+        });
+        
+        // Initialize on load
+        initializeSettings();
     })();
 </script>

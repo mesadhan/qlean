@@ -109,7 +109,7 @@ router.get('/surah/:id', async (req: Request, res: Response) => {
     
     await renderWithLayout(res, 'surah', {
       title: surah.transliteration,
-      activePage: 'surahs',
+      activePage: 'surah',
       surah,
       config: APP_CONFIG
     });
