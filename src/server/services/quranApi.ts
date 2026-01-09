@@ -1,4 +1,15 @@
 import { Surah, Ayah } from '../types/index.js';
+import { 
+  loadOfflineTranslation, 
+  isTranslationOffline, 
+  getAvailableOfflineTranslations,
+  getOfflineTranslationMetadata,
+  initializeOfflinePaths
+} from '../helpers/translationLoader.js';
+import {
+  initializeFontsPaths,
+  getAvailableLocalFonts
+} from '../helpers/fontsLoader.js';
 
 // Quran.com API v4 base URL
 const API_BASE = 'https://api.quran.com/api/v4';
@@ -11,10 +22,14 @@ const API_BASE = 'https://api.quran.com/api/v4';
 
 export interface TranslationEdition {
   id: string;           // Unique identifier used in code
-  apiId: number;        // Quran.com API translation ID
+  apiId?: number;       // Quran.com API translation ID (optional for offline-only)
   label: string;        // Display label in UI
   language: 'bangla' | 'english' | 'urdu';  // Language group
+  author?: string;      // Translation author name
+  translator?: string;  // Who did the translation
   isDefault: boolean;   // Whether checked by default
+  isOffline?: boolean;  // Whether loaded from offline (auto-detected)
+  source?: string;      // Source: "API" or "Offline Bundle"
   order: number;        // Display order (lower number = higher priority)
 }
 
@@ -41,20 +56,20 @@ export const TRANSLATION_EDITIONS: TranslationEdition[] = [
   // 163: Sheikh Mujibur Rahman (Darussalaam)
   // 213: Rawai Al-bayan (Darussalaam)
   // 162: Dr. Abu Bakr Muhammad Zakaria (Darussalaam)
-  { id: 'mujibur', apiId: TRANSLATION_IDS.mujibur, label: 'শেখ মুজিবুর রহমান', language: 'bangla', isDefault: true, order: 1 },
-  { id: 'rawai', apiId: TRANSLATION_IDS.rawai, label: 'রাওয়াই আল-বায়ান', language: 'bangla', isDefault: false, order: 2 },
-  { id: 'taisirul', apiId: TRANSLATION_IDS.taisirul, label: 'তাইসীরুল কুরআন', language: 'bangla', isDefault: false, order: 3 },
-  { id: 'zakaria', apiId: TRANSLATION_IDS.zakaria, label: 'ড. আবু বকর মুহাম্মাদ যাকারিয়া', language: 'bangla', isDefault: false, order: 4 },
+  { id: 'mujibur', apiId: TRANSLATION_IDS.mujibur, label: 'শেখ মুজিবুর রহমান', language: 'bangla', author: 'Sheikh Mujibur Rahman', isDefault: true, order: 1 },
+  { id: 'rawai', apiId: TRANSLATION_IDS.rawai, label: 'রাওয়াই আল-বায়ান', language: 'bangla', author: 'Various Scholars', isDefault: false, order: 2 },
+  { id: 'taisirul', apiId: TRANSLATION_IDS.taisirul, label: 'তাইসীরুল কুরআন', language: 'bangla', author: 'Abul A\'la Maududi', isDefault: false, order: 3 },
+  { id: 'zakaria', apiId: TRANSLATION_IDS.zakaria, label: 'ড. আবু বকর মুহাম্মাদ যাকারিয়া', language: 'bangla', author: 'Dr. Abu Bakr Muhammad Zakaria', isDefault: false, order: 4 },
 
   // English Translations (from Quran.com)
   // 20: Saheeh International
   // 19: M. Pickthall
   // 22: A. Yusuf Ali
   // 203: Al-Hilali & Khan (replacing Arberry which is not available)
-  { id: 'sahih', apiId: TRANSLATION_IDS.sahih, label: 'Sahih International', language: 'english', isDefault: true, order: 1 },
-  { id: 'pickthall', apiId: TRANSLATION_IDS.pickthall, label: 'Pickthall', language: 'english', isDefault: false, order: 2 },
-  { id: 'yusufali', apiId: TRANSLATION_IDS.yusufali, label: 'Yusuf Ali', language: 'english', isDefault: false, order: 3 },
-  { id: 'hilali', apiId: TRANSLATION_IDS.hilali, label: 'Al-Hilali & Khan', language: 'english', isDefault: false, order: 4 },
+  { id: 'sahih', apiId: TRANSLATION_IDS.sahih, label: 'Sahih International', language: 'english', author: 'Various Scholars', isDefault: true, order: 1 },
+  { id: 'pickthall', apiId: TRANSLATION_IDS.pickthall, label: 'Pickthall', language: 'english', author: 'Muhammad Marmaduke Pickthall', isDefault: false, order: 2 },
+  { id: 'yusufali', apiId: TRANSLATION_IDS.yusufali, label: 'Yusuf Ali', language: 'english', author: 'Abdullah Yusuf Ali', isDefault: false, order: 3 },
+  { id: 'hilali', apiId: TRANSLATION_IDS.hilali, label: 'Al-Hilali & Khan', language: 'english', author: 'Al-Hilali & Khan', isDefault: false, order: 4 },
 ];
 
 
@@ -132,6 +147,41 @@ export const APP_CONFIG = {
   // Derived from SURAH_METADATA - used for calculating global ayah numbers
   surahAyahCounts: [] as number[], // Will be populated after SURAH_METADATA is defined
 };
+
+// Initialize offline and fonts managers
+export async function initializeOfflineResources() {
+  try {
+    initializeOfflinePaths();
+    initializeFontsPaths();
+    
+    // Update translations with offline status
+    const availableOffline = getAvailableOfflineTranslations();
+    TRANSLATION_EDITIONS.forEach(edition => {
+      if (availableOffline.includes(edition.id)) {
+        edition.isOffline = true;
+        edition.source = 'Offline Bundle';
+        
+        // Load metadata for offline translation
+        const metadata = getOfflineTranslationMetadata(edition.id);
+        if (metadata) {
+          if (metadata.author) edition.author = metadata.author;
+          if (metadata.translator) edition.translator = metadata.translator;
+        }
+      } else if (edition.apiId) {
+        edition.isOffline = false;
+        edition.source = 'API';
+      }
+    });
+    
+    // Update config with available fonts
+    const availableFonts = getAvailableLocalFonts();
+    console.log(`Offline Manager: ${availableOffline.length} translation(s) available`);
+    console.log(`Fonts Manager: ${availableFonts.length} font(s) available`);
+    
+  } catch (error) {
+    console.error('Error initializing offline resources:', error);
+  }
+}
 
 // Cache for surah data
 const surahCache: Map<number, Surah> = new Map();
@@ -290,44 +340,137 @@ export async function getSurahById(id: number): Promise<Surah | null> {
   }
 
   try {
-    // Build translation IDs string for the API request
-    const allTranslationIds = Object.values(TRANSLATION_IDS).join(',');
-    
-    // Fetch verses with Arabic text and all translations in a single request
-    // Quran.com API v4 format: /verses/by_chapter/{chapter_id}?translations=id1,id2,...&fields=text_uthmani
-    const response = await fetch(
-      `${API_BASE}/verses/by_chapter/${id}?translations=${allTranslationIds}&fields=text_uthmani&per_page=300`
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch surah ${id}: ${response.status}`);
-    }
-
-    const data: any = await response.json();
-    const verses = data.verses || [];
-
     const metadata = SURAH_METADATA[id - 1];
+    const ayahs: Ayah[] = [];
     
-    // Helper to find translation text by resource_id
-    const getTranslation = (translations: any[], resourceId: number): string => {
-      const translation = translations?.find((t: any) => t.resource_id === resourceId);
-      // Remove HTML footnotes like <sup foot_note=xxx>n</sup>
-      return translation?.text?.replace(/<sup[^>]*>.*?<\/sup>/g, '') || '';
-    };
+    // Check if we have offline translations for all required translations
+    const availableOffline = getAvailableOfflineTranslations();
+    const hasAllOfflineTranslations = TRANSLATION_EDITIONS.every(
+      edition => !edition.apiId || availableOffline.includes(edition.id)
+    );
+    
+    // If all translations are offline, skip API call
+    if (hasAllOfflineTranslations && availableOffline.length > 0) {
+      // Load from offline only
+      for (let ayahNum = 1; ayahNum <= metadata.totalAyahs; ayahNum++) {
+        const translations: Record<string, string> = {};
+        
+        TRANSLATION_EDITIONS.forEach(edition => {
+          if (availableOffline.includes(edition.id)) {
+            const offlineData = loadOfflineTranslation(edition.id, id);
+            translations[edition.id] = offlineData?.[ayahNum] || '';
+          }
+        });
+        
+        ayahs.push({
+          number: ayahNum,
+          text: '', // Arabic text not available in offline mode for now
+          translations
+        });
+      }
+      
+      console.log(`✓ Loaded surah ${id} from offline bundle (${ayahs.length} ayahs)`);
+    } else {
+      // Try API, but gracefully handle failures with offline fallback
+      let verses: any[] = [];
+      let apiSuccess = false;
+      
+      try {
+        const allTranslationIds = Object.values(TRANSLATION_IDS).join(',');
+        
+        const response = await fetch(
+          `${API_BASE}/verses/by_chapter/${id}?translations=${allTranslationIds}&fields=text_uthmani&per_page=300`
+        );
 
-    const ayahs: Ayah[] = verses.map((verse: any) => {
-      // Build translations object dynamically from TRANSLATION_EDITIONS
-      const translations: Record<string, string> = {};
-      TRANSLATION_EDITIONS.forEach(edition => {
-        translations[edition.id] = getTranslation(verse.translations, edition.apiId);
+        if (!response.ok) {
+          throw new Error(`API returned ${response.status}`);
+        }
+
+        const data: any = await response.json();
+        verses = data.verses || [];
+        apiSuccess = true;
+        console.log(`✓ Fetched surah ${id} from API`);
+      } catch (apiError) {
+        console.warn(`⚠ API failed for surah ${id}: ${(apiError as Error).message}`);
+        
+        // Try to use any available offline data as fallback
+        if (availableOffline.length > 0) {
+          console.log(`  → Falling back to offline translations for surah ${id}`);
+          for (let ayahNum = 1; ayahNum <= metadata.totalAyahs; ayahNum++) {
+            const translations: Record<string, string> = {};
+            
+            TRANSLATION_EDITIONS.forEach(edition => {
+              if (availableOffline.includes(edition.id)) {
+                const offlineData = loadOfflineTranslation(edition.id, id);
+                translations[edition.id] = offlineData?.[ayahNum] || '';
+              }
+            });
+            
+            ayahs.push({
+              number: ayahNum,
+              text: '',
+              translations
+            });
+          }
+          
+          const surah: Surah = {
+            id,
+            name: metadata.name,
+            transliteration: metadata.transliteration,
+            banglish: metadata.banglish,
+            translation: metadata.translation,
+            type: metadata.type,
+            totalAyahs: metadata.totalAyahs,
+            ayahs
+          };
+
+          surahCache.set(id, surah);
+          return surah;
+        } else {
+          // No offline data available, re-throw the error
+          throw apiError;
+        }
+      }
+      
+      // Helper to find translation text by resource_id
+      const getTranslation = (translations: any[], resourceId: number): string => {
+        const translation = translations?.find((t: any) => t.resource_id === resourceId);
+        // Remove HTML footnotes like <sup foot_note=xxx>n</sup>
+        return translation?.text?.replace(/<sup[^>]*>.*?<\/sup>/g, '') || '';
+      };
+
+      // Process verses from API
+      verses.forEach((verse: any) => {
+        const translations: Record<string, string> = {};
+        
+        // First try offline, then API
+        TRANSLATION_EDITIONS.forEach(edition => {
+          let translationText = '';
+          
+          // Try offline first if available
+          if (availableOffline.includes(edition.id)) {
+            const offlineData = loadOfflineTranslation(edition.id, id);
+            translationText = offlineData?.[verse.verse_number] || '';
+          }
+          
+          // If offline not available, try API
+          if (!translationText && edition.apiId && apiSuccess) {
+            translationText = getTranslation(verse.translations, edition.apiId);
+          }
+          
+          translations[edition.id] = translationText;
+        });
+        
+        ayahs.push({
+          number: verse.verse_number,
+          text: verse.text_uthmani || '',
+          translations
+        });
       });
       
-      return {
-        number: verse.verse_number,
-        text: verse.text_uthmani || '',
-        translations
-      };
-    });
+      // Note: For offline bundle creation, use the createOfflineBundle.ts script
+      // It provides better performance by fetching all translations at once
+    }
 
     const surah: Surah = {
       id,
@@ -345,7 +488,7 @@ export async function getSurahById(id: number): Promise<Surah | null> {
     return surah;
 
   } catch (error) {
-    console.error(`Error fetching surah ${id}:`, error);
+    console.error(`✗ Error fetching surah ${id}:`, (error as Error).message);
 
     // Return metadata without ayahs on error
     const metadata = SURAH_METADATA[id - 1];
@@ -454,3 +597,60 @@ export function clearCache(): void {
   surahCache.clear();
   surahListCache.length = 0;
 }
+
+// ============================================
+// OFFLINE MODE STATUS & MANAGEMENT
+// ============================================
+
+// Get offline mode status
+export interface OfflineStatus {
+  enabled: boolean;
+  availableTranslations: string[];
+  availableFonts: string[];
+  totalTranslations: number;
+  totalFonts: number;
+  bundleInfo: {
+    isComplete: boolean;
+    coverage: number; // percentage
+  };
+}
+
+export function getOfflineStatus(): OfflineStatus {
+  const availableTranslations = getAvailableOfflineTranslations();
+  const availableFonts = getAvailableLocalFonts();
+  
+  // Calculate completeness (all translations available)
+  const isComplete = TRANSLATION_EDITIONS.every(edition => 
+    !edition.apiId || availableTranslations.includes(edition.id)
+  );
+  
+  const coverage = Math.round(
+    (availableTranslations.length / TRANSLATION_EDITIONS.length) * 100
+  );
+  
+  return {
+    enabled: availableTranslations.length > 0,
+    availableTranslations,
+    availableFonts,
+    totalTranslations: availableTranslations.length,
+    totalFonts: availableFonts.length,
+    bundleInfo: {
+      isComplete,
+      coverage
+    }
+  };
+}
+
+// Check if specific translation is available offline
+export function isTranslationAvailableOffline(translationId: string): boolean {
+  return isTranslationOffline(translationId);
+}
+
+// Get all translations with offline status
+export function getTranslationsWithOfflineStatus() {
+  return TRANSLATION_EDITIONS.map(edition => ({
+    ...edition,
+    isOffline: isTranslationOffline(edition.id)
+  }));
+}
+

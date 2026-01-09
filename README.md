@@ -1,18 +1,22 @@
 # QLean - Progressive Web Quran App
 
-A mobile-responsive Progressive Web App (PWA) for reading the Quran with offline support, built with Node.js, Express, TypeScript, Bootstrap 5, and Vitest.
+A mobile-responsive Progressive Web App (PWA) for reading the Quran with **complete offline support**, built with Node.js, Express, TypeScript, Bootstrap 5, and Vitest.
 
 ## Features
 
 - 📱 Mobile-responsive design with Bootstrap 5
 - 🌙 Dark mode support
-- 📴 Offline functionality with Service Worker
+- 📴 **Full offline support** - works without internet connection
+- 🔄 Smart API fallback - uses offline files first, API as backup
 - 🔍 Search in Arabic and Bangla
 - 🔖 Bookmark verses
-- 🌐 Bangla translation
+- 🌐 Multiple Bangla translations
+- 🌎 Multiple English translations
 - ⚡ Fast and lightweight
 - 🧪 Tested with Vitest
 - 🚀 Production-ready with PM2
+- 🎨 Customizable fonts (Traditional, Uthmani, IndoPak, Tajweed)
+- ⚙️ Settings panel for text size and translation display
 
 ## Prerequisites
 
@@ -40,15 +44,34 @@ cp .env.example .env
 # Start development server
 npm run dev
 
+# Create offline bundle (fetch & save all translations locally)
+npm run offline:bundle
+
 # Run tests
 npm test
 
 # Run tests with coverage
-npm run test:coverage
+npm test:coverage
 
 # Build for production
 npm run build
 ```
+
+## Quick Start: Enable Offline Mode
+
+### Option 1: Automatic (Recommended)
+```bash
+# Download all translations and save locally (~10 MB)
+npm run offline:bundle
+
+# Then start the app
+npm run dev
+```
+
+### Option 2: Manual
+Just place translation JSON files in `src/public/assets/data/translations/` and restart the app.
+
+**For detailed setup instructions, see [OFFLINE_SETUP.md](OFFLINE_SETUP.md)**
 
 The app will be available at `http://localhost:3000`
 

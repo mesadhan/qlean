@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import surahRoutes from './routes/surahRoutes';
 import viewRoutes from './routes/viewRoutes';
+import { initializeOfflineResources } from './services/quranApi.js';
 
 dotenv.config();
 
@@ -15,6 +16,15 @@ const __dirname = path.dirname(__filename);
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
+
+// Initialize offline resources (fonts and translations)
+(async () => {
+  try {
+    await initializeOfflineResources();
+  } catch (error) {
+    console.error('Failed to initialize offline resources:', error);
+  }
+})();
 
 // View engine setup
 app.set('view engine', 'ejs');

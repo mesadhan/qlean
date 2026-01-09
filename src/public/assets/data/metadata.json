@@ -1,0 +1,97 @@
+{
+  "translations": {
+    "mujibur": {
+      "label": "শেখ মুজিবুর রহমান",
+      "language": "bangla",
+      "author": "Sheikh Mujibur Rahman",
+      "translator": "Sheikh Mujibur Rahman",
+      "version": "1.0",
+      "year": 2024,
+      "source": "Offline Bundle",
+      "isOffline": true,
+      "lastUpdated": "2024-01-09"
+    },
+    "rawai": {
+      "label": "রাওয়াই আল-বায়ান",
+      "language": "bangla",
+      "author": "Various Scholars",
+      "translator": "Various Scholars",
+      "version": "1.0",
+      "year": 2024,
+      "source": "Offline Bundle",
+      "isOffline": true,
+      "lastUpdated": "2024-01-09"
+    },
+    "taisirul": {
+      "label": "তাইসীরুল কুরআন",
+      "language": "bangla",
+      "author": "Abul A'la Maududi",
+      "translator": "Abul A'la Maududi",
+      "version": "1.0",
+      "year": 2024,
+      "source": "Offline Bundle",
+      "isOffline": true,
+      "lastUpdated": "2024-01-09"
+    },
+    "zakaria": {
+      "label": "ড. আবু বকর মুহাম্মাদ যাকারিয়া",
+      "language": "bangla",
+      "author": "Dr. Abu Bakr Muhammad Zakaria",
+      "translator": "Dr. Abu Bakr Muhammad Zakaria",
+      "version": "1.0",
+      "year": 2024,
+      "source": "Offline Bundle",
+      "isOffline": true,
+      "lastUpdated": "2024-01-09"
+    },
+    "sahih": {
+      "label": "Sahih International",
+      "language": "english",
+      "author": "Various Scholars",
+      "translator": "Various Scholars",
+      "version": "1.0",
+      "year": 2024,
+      "source": "Offline Bundle",
+      "isOffline": true,
+      "lastUpdated": "2024-01-09"
+    },
+    "pickthall": {
+      "label": "Pickthall",
+      "language": "english",
+      "author": "Muhammad Marmaduke Pickthall",
+      "translator": "Muhammad Marmaduke Pickthall",
+      "version": "1.0",
+      "year": 2024,
+      "source": "Offline Bundle",
+      "isOffline": true,
+      "lastUpdated": "2024-01-09"
+    },
+    "yusufali": {
+      "label": "Yusuf Ali",
+      "language": "english",
+      "author": "Abdullah Yusuf Ali",
+      "translator": "Abdullah Yusuf Ali",
+      "version": "1.0",
+      "year": 2024,
+      "source": "Offline Bundle",
+      "isOffline": true,
+      "lastUpdated": "2024-01-09"
+    },
+    "hilali": {
+      "label": "Al-Hilali & Khan",
+      "language": "english",
+      "author": "Al-Hilali & Khan",
+      "translator": "Al-Hilali & Khan",
+      "version": "1.0",
+      "year": 2024,
+      "source": "Offline Bundle",
+      "isOffline": true,
+      "lastUpdated": "2024-01-09"
+    }
+  },
+  "info": {
+    "bundleVersion": "1.0",
+    "createdAt": "2024-01-09",
+    "description": "Offline Quran data bundle with translations and metadata"
+  }
+}
