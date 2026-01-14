@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "QLean Bangla Team - Quran Reader App",
   "main": "dist/server/index.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "nodemon --exec tsx src/server/index.ts",
     "dev2": "tsx watch src/server/index.ts",
