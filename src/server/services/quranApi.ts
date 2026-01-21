@@ -41,7 +41,7 @@ export const TRANSLATION_EDITIONS: TranslationEdition[] = [
   // 163: Sheikh Mujibur Rahman (Darussalaam)
   // 213: Rawai Al-bayan (Darussalaam)
   // 162: Dr. Abu Bakr Muhammad Zakaria (Darussalaam)
-  { id: 'mujibur', apiId: TRANSLATION_IDS.mujibur, label: 'শেখ মুজিবুর রহমান', language: 'bangla', isDefault: true, order: 1 },
+  { id: 'mujibur', apiId: TRANSLATION_IDS.mujibur, label: 'মুজিবুর রহমান', language: 'bangla', isDefault: true, order: 1 },
   { id: 'rawai', apiId: TRANSLATION_IDS.rawai, label: 'রাওয়াই আল-বায়ান', language: 'bangla', isDefault: false, order: 2 },
   { id: 'taisirul', apiId: TRANSLATION_IDS.taisirul, label: 'তাইসীরুল কুরআন', language: 'bangla', isDefault: false, order: 3 },
   { id: 'zakaria', apiId: TRANSLATION_IDS.zakaria, label: 'ড. আবু বকর মুহাম্মাদ যাকারিয়া', language: 'bangla', isDefault: false, order: 4 },

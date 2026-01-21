@@ -32,11 +32,11 @@
                 <button class="btn btn-outline-light btn-sm" id="darkModeToggle" title="Toggle Dark Mode">
                     <i class="bi bi-moon-fill"></i>
                 </button>
-                <% if (typeof activePage !== 'undefined' && activePage === 'surah') { %>
+                <!-- <% if (typeof activePage !== 'undefined' && activePage === 'surah') { %>
                 <button class="btn btn-outline-light btn-sm" id="settingsToggle" title="Display Settings">
                     <i class="bi bi-sliders"></i>
                 </button>
-                <% } %>
+                <% } %> -->
             </div>
         </div>
     </div>
@@ -72,11 +72,6 @@
         <hr class="my-3">
         
         <div class="sidebar-footer">
-            <% if (typeof activePage !== 'undefined' && activePage === 'surah') { %>
-            <button class="btn btn-outline-success w-100 mb-2" id="settingsToggleMobile" title="Display Settings">
-                <i class="bi bi-sliders"></i> Settings
-            </button>
-            <% } %>
             <button class="btn btn-outline-success w-100" id="darkModeToggleMobile" title="Toggle Dark Mode">
                 <i class="bi bi-moon-fill"></i> Dark Mode
             </button>

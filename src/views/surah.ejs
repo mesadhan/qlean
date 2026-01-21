@@ -1,6 +1,12 @@
-<a href="/quran" class="btn btn-outline-secondary mb-4">
-    <i class="bi bi-arrow-left"></i> Back to Surahs
-</a>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="/quran" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to Surah List</a>
+    <% if (typeof activePage !== 'undefined' && activePage === 'surah') { %>
+    <button class="btn btn-outline-success" id="settingsToggleMobile" title="Display Settings">
+        <i class="bi bi-sliders"></i> Settings
+    </button>
+    <% } %>
+</div>
 
 <!-- Settings Sidebar Panel -->
 <div id="settingsPanel" class="settings-panel">
@@ -66,7 +72,7 @@
         </div>
         
         <!-- Translation Display -->
-        <div class="settings-section">
+        <div class="settings-section" style="display: none;">
             <label class="settings-label"><i class="bi bi-eye"></i> Translation Display</label>
             <div class="translation-display-options">
                 <div class="form-check">
@@ -146,7 +152,7 @@
     
     <!-- Translation Selection -->
     <div class="card-body border-bottom">
-        <div class="row g-3">
+        <div class="row g-3 border-bottom" style="display: none;">
             <!-- Bengali Translations -->
             <div class="col-md-6">
                 <h6 class="mb-2"><i class="bi bi-translate text-success me-1"></i> বাংলা অনুবাদ</h6>
@@ -198,7 +204,7 @@
         </div>
         
         <!-- Word-by-Word Toggle -->
-        <div class="mt-3 pt-3 border-top">
+        <div class="mt-3 p-3">
             <div class="form-check form-switch word-by-word-toggle">
                 <input class="form-check-input" type="checkbox" role="switch" id="wordByWordToggle" checked>
                 <label class="form-check-label" for="wordByWordToggle">
@@ -211,72 +217,74 @@
     </div>
     
     <!-- Audio Player Section -->
-    <div class="card-body border-top">
+    <div class="card-body">
         <div class="d-flex flex-column gap-3">
             
-            <!-- Arabic Reciter Selection -->
-            <div class="d-flex align-items-center gap-2 flex-wrap reciter-section" id="arabicReciterSection" data-language="arabic" style="display: none;">
-                <label class="form-label mb-0"><i class="bi bi-person-circle"></i> আরবি কারী:</label>
-                <% if (config.audio.reciters.arabic.length > 1) { %>
-                <select class="form-select form-select-sm reciter-select" id="arabicReciterSelect" data-language="arabic" style="max-width: 280px;">
-                    <% config.audio.reciters.arabic.forEach(r => { %>
-                    <option value="<%= r.id %>" <%= r.isDefault ? 'selected' : '' %>><%= r.name %></option>
-                    <% }) %>
-                </select>
-                <% } else { %>
-                <span class="badge bg-success"><%= config.audio.reciters.arabic[0].name %></span>
-                <% } %>
-            </div>
-            
-            <!-- Urdu Reciter Selection -->
-            <div class="d-flex align-items-center gap-2 flex-wrap reciter-section" id="urduReciterSection" data-language="urdu" style="display: none;">
-                <label class="form-label mb-0"><i class="bi bi-person-circle"></i> উর্দু কারী:</label>
-                <% if (config.audio.reciters.urdu.length > 1) { %>
-                <select class="form-select form-select-sm reciter-select" id="urduReciterSelect" data-language="urdu" style="max-width: 280px;">
-                    <% config.audio.reciters.urdu.forEach(r => { %>
-                    <option value="<%= r.id %>" <%= r.isDefault ? 'selected' : '' %>><%= r.name %></option>
-                    <% }) %>
-                </select>
-                <% } else { %>
-                <span class="badge bg-success"><%= config.audio.reciters.urdu[0].name %></span>
-                <% } %>
-            </div>
-            
-            <!-- English Reciter Selection -->
-            <div class="d-flex align-items-center gap-2 flex-wrap reciter-section" id="englishReciterSection" data-language="english" style="display: none;">
-                <label class="form-label mb-0"><i class="bi bi-person-circle"></i> English Reciter:</label>
-                <% if (config.audio.reciters.english.length > 1) { %>
-                <select class="form-select form-select-sm reciter-select" id="englishReciterSelect" data-language="english" style="max-width: 280px;">
-                    <% config.audio.reciters.english.forEach(r => { %>
-                    <option value="<%= r.id %>" <%= r.isDefault ? 'selected' : '' %>><%= r.name %></option>
-                    <% }) %>
-                </select>
-                <% } else { %>
-                <span class="badge bg-primary"><%= config.audio.reciters.english[0].name %></span>
-                <% } %>
-            </div>
-
-            <!-- Audio Type Selection -->
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <label class="form-label mb-0"><i class="bi bi-translate"></i> Audio Type:</label>
-                <div class="btn-group" role="group">
-                    <% config.audio.types.forEach((type, index) => { %>
-                    <input type="radio" class="btn-check" name="audioType" id="audio<%= type.id.charAt(0).toUpperCase() + type.id.slice(1) %>" value="<%= type.id %>" <%= index === 0 ? 'checked' : '' %>>
-                    <label class="btn btn-outline-success btn-sm" for="audio<%= type.id.charAt(0).toUpperCase() + type.id.slice(1) %>"><%= type.labelBn ? type.labelBn + ' (' + type.label + ')' : type.label %></label>
-                    <% }) %>
+           <div style="display: none;">
+                <!-- Arabic Reciter Selection -->
+                <div class="d-flex align-items-center gap-2 flex-wrap reciter-section" id="arabicReciterSection" data-language="arabic" style="display: none;">
+                    <label class="form-label mb-0"><i class="bi bi-person-circle"></i> আরবি কারী:</label>
+                    <% if (config.audio.reciters.arabic.length > 1) { %>
+                    <select class="form-select form-select-sm reciter-select" id="arabicReciterSelect" data-language="arabic" style="max-width: 280px;">
+                        <% config.audio.reciters.arabic.forEach(r => { %>
+                        <option value="<%= r.id %>" <%= r.isDefault ? 'selected' : '' %>><%= r.name %></option>
+                        <% }) %>
+                    </select>
+                    <% } else { %>
+                    <span class="badge bg-success"><%= config.audio.reciters.arabic[0].name %></span>
+                    <% } %>
                 </div>
-            </div>
-            
-            
-            <!-- Full Surah Player -->
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <button class="btn btn-success" id="playSurahBtn">
-                    <i class="bi bi-play-fill"></i> Play Full Surah
-                </button>
-                <button class="btn btn-outline-secondary" id="stopSurahBtn" style="display: none;">
-                    <i class="bi bi-stop-fill"></i> Stop
-                </button>
-                <span id="nowPlaying" class="text-muted small"></span>
+                
+                <!-- Urdu Reciter Selection -->
+                <div class="d-flex align-items-center gap-2 flex-wrap reciter-section" id="urduReciterSection" data-language="urdu" style="display: none;">
+                    <label class="form-label mb-0"><i class="bi bi-person-circle"></i> উর্দু কারী:</label>
+                    <% if (config.audio.reciters.urdu.length > 1) { %>
+                    <select class="form-select form-select-sm reciter-select" id="urduReciterSelect" data-language="urdu" style="max-width: 280px;">
+                        <% config.audio.reciters.urdu.forEach(r => { %>
+                        <option value="<%= r.id %>" <%= r.isDefault ? 'selected' : '' %>><%= r.name %></option>
+                        <% }) %>
+                    </select>
+                    <% } else { %>
+                    <span class="badge bg-success"><%= config.audio.reciters.urdu[0].name %></span>
+                    <% } %>
+                </div>
+                
+                <!-- English Reciter Selection -->
+                <div class="d-flex align-items-center gap-2 flex-wrap reciter-section" id="englishReciterSection" data-language="english" style="display: none;">
+                    <label class="form-label mb-0"><i class="bi bi-person-circle"></i> English Reciter:</label>
+                    <% if (config.audio.reciters.english.length > 1) { %>
+                    <select class="form-select form-select-sm reciter-select" id="englishReciterSelect" data-language="english" style="max-width: 280px;">
+                        <% config.audio.reciters.english.forEach(r => { %>
+                        <option value="<%= r.id %>" <%= r.isDefault ? 'selected' : '' %>><%= r.name %></option>
+                        <% }) %>
+                    </select>
+                    <% } else { %>
+                    <span class="badge bg-primary"><%= config.audio.reciters.english[0].name %></span>
+                    <% } %>
+                </div>
+
+                <!-- Audio Type Selection -->
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <label class="form-label mb-0"><i class="bi bi-translate"></i> Audio Type:</label>
+                    <div class="btn-group" role="group">
+                        <% config.audio.types.forEach((type, index) => { %>
+                        <input type="radio" class="btn-check" name="audioType" id="audio<%= type.id.charAt(0).toUpperCase() + type.id.slice(1) %>" value="<%= type.id %>" <%= index === 0 ? 'checked' : '' %>>
+                        <label class="btn btn-outline-success btn-sm" for="audio<%= type.id.charAt(0).toUpperCase() + type.id.slice(1) %>"><%= type.labelBn ? type.labelBn + ' (' + type.label + ')' : type.label %></label>
+                        <% }) %>
+                    </div>
+                </div>
+                
+                
+                <!-- Full Surah Player -->
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <button class="btn btn-success" id="playSurahBtn">
+                        <i class="bi bi-play-fill"></i> Play Full Surah
+                    </button>
+                    <button class="btn btn-outline-secondary" id="stopSurahBtn" style="display: none;">
+                        <i class="bi bi-stop-fill"></i> Stop
+                    </button>
+                    <span id="nowPlaying" class="text-muted small"></span>
+                </div>
             </div>
             
             <!-- Audio Element for Full Surah -->
@@ -2400,7 +2408,7 @@
         const translationOrderSelects = document.querySelectorAll('.translation-order-select');
         
         // Load saved preferences
-        const savedPrefs = JSON.parse(localStorage.getItem('translationPrefs') || '{}');
+        const savedPrefs = JSON.parse(localStorage.getItem('translationPrefs') || '{"sahih":false,"mujibur":false,"rawai":true,"taisirul":false,"zakaria":false}');
         const savedOrders = JSON.parse(localStorage.getItem('translationOrders') || '{}');
         
         // Apply saved preferences for checkboxes
@@ -2798,7 +2806,7 @@
         const DEFAULT_SETTINGS = {
             quranFont: 'traditional',
             arabicTextSize: 100,
-            translationDisplay: 'both'
+            translationDisplay: 'bengali'
         };
         
         // Load settings from localStorage
@@ -2891,21 +2899,21 @@
         function applyTranslationDisplay(displayMode) {
             const translations = document.querySelectorAll('.translation-item');
             
-            translations.forEach(translation => {
-                const language = translation.dataset.language;
+            // translations.forEach(translation => {
+            //     const language = translation.dataset.language;
                 
-                if (displayMode === 'both') {
-                    translation.style.display = '';
-                } else if (displayMode === 'arabic') {
-                    translation.style.display = 'none';
-                } else if (displayMode === 'bengali' && language === 'english') {
-                    translation.style.display = 'none';
-                } else if (displayMode === 'english' && language === 'bangla') {
-                    translation.style.display = 'none';
-                } else {
-                    translation.style.display = '';
-                }
-            });
+            //     if (displayMode === 'both') {
+            //         translation.style.display = '';
+            //     } else if (displayMode === 'arabic') {
+            //         translation.style.display = 'none';
+            //     } else if (displayMode === 'bengali' && language === 'english') {
+            //         translation.style.display = 'none';
+            //     } else if (displayMode === 'english' && language === 'bangla') {
+            //         translation.style.display = 'none';
+            //     } else {
+            //         translation.style.display = '';
+            //     }
+            // });
             
             // Save setting
             const settings = loadSettings();
@@ -3022,12 +3030,12 @@
                 
                 // Reset form
                 document.querySelector('input[name="quranFont"][value="traditional"]').checked = true;
-                document.querySelector('input[name="translationDisplay"][value="both"]').checked = true;
+                document.querySelector('input[name="translationDisplay"][value="bengali"]').checked = true;
                 
                 // Apply defaults
                 applyFont('traditional');
                 updateTextSize(100);
-                applyTranslationDisplay('both');
+                applyTranslationDisplay('bengali');
                 
                 // Reload translations from main card
                 document.querySelectorAll('.translation-checkbox:not(.settings-body .translation-checkbox)').forEach(checkbox => {
