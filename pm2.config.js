@@ -1,10 +1,10 @@
 module.exports = {
   apps: [
     {
-      name: "qlean",
+      name: "qlean-dev",
       script: "npm",
       args: "run dev",
-      cwd: "/home/ubuntu/qlean",
+      cwd: "/home/ubuntu/services/qlean",
       
       autorestart: true,
       watch: false,
