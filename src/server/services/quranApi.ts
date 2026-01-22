@@ -326,8 +326,11 @@ export async function getSurahById(id: number): Promise<Surah | null> {
       const translations: Record<string, string> = {};
       TRANSLATION_EDITIONS.forEach(edition => {
         
+        // Handle offline translations separately
         if (edition.isOffline) {
-          translations[edition.id] = JSON.stringify(returnOfflineTranslation(id.toString(), verse.verse_number.toString(), edition.id));
+          translations[edition.id] = JSON.stringify(
+            returnOfflineTranslation(id.toString(), verse.verse_number.toString(), edition.id)?.trim() || ''
+          );
         }else{
           translations[edition.id] = getTranslation(verse.translations, edition.apiId);
         }

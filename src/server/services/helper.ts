@@ -35,10 +35,16 @@ export const initCache = async (shuraId: string, translationEditor: string) => {
   surahCache[shuraId] = translations;
   console.log('debug-offline-surahCache[shuraId]', shuraId, ' Total Ayah: ', surahCache[shuraId].length);
 }
-  
+
+
+// Initialize custom translation cache for surahs 1 to 144
 initCache('1', 'tazqianofs');
 initCache('2', 'tazqianofs');
+initCache('3', 'tazqianofs');
 initCache('4', 'tazqianofs');
+initCache('5', 'tazqianofs');
+initCache('6', 'tazqianofs');
+initCache('7', 'tazqianofs');
 
 export const returnOfflineTranslation = (shuraId: string, verseOrAyahNumber: string, translationEditor: string) => {
   let foundTranslation = shuraId+':'+ verseOrAyahNumber + '';
