@@ -1,6 +1,7 @@
-let surahCache: { [key: string]: any } = {};
+let surahCache: { [key: string]: any } = {}
 
 export const initCache = async (shuraId: string, translationEditor: string) => {
+
 
   // return translation from local file.txt
   const fs = require('fs');

@@ -38,6 +38,36 @@ router.get('/', async (_req: Request, res: Response) => {
   }
 });
 
+router.get('/articles/hadith', async (_req: Request, res: Response) => {
+  try {
+    await renderWithLayout(res, 'hadith', {
+      title: 'হাদীস',
+      activePage: 'hadith'
+    });
+  } catch (error) {
+    await renderWithLayout(res, 'error', {
+      title: 'Error',
+      activePage: '',
+      error: { title: 'Failed to load', message: 'Could not load page. Please try again.' }
+    });
+  }
+});
+
+router.get('/daawath', async (_req: Request, res: Response) => {
+  try {
+    await renderWithLayout(res, 'daawath', {
+      title: 'দাওয়াত',
+      activePage: 'daawath'
+    });
+  } catch (error) {
+    await renderWithLayout(res, 'error', {
+      title: 'Error',
+      activePage: '',
+      error: { title: 'Failed to load', message: 'Could not load page. Please try again.' }
+    });
+  }
+});
+
 // Search surahs (redirect to quran page)
 router.get('/search', async (req: Request, res: Response) => {
   const query = req.query.q as string || '';
