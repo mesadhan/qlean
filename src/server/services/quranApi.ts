@@ -1,4 +1,5 @@
 import { Surah, Ayah } from '../types/index.js';
+import { returnOfflineTranslation } from './helper.js';
 
 // Quran.com API v4 base URL
 const API_BASE = 'https://api.quran.com/api/v4';
@@ -15,6 +16,7 @@ export interface TranslationEdition {
   label: string;        // Display label in UI
   language: 'bangla' | 'english' | 'urdu';  // Language group
   isDefault: boolean;   // Whether checked by default
+  isOffline?: boolean;  // Whether available offline
   order: number;        // Display order (lower number = higher priority)
 }
 
@@ -23,6 +25,9 @@ export interface TranslationEdition {
 // ============================================
 const TRANSLATION_IDS = {
   // Bengali
+  tazqianofs: 999,  // Placeholder ID for তাযকিয়া নফস (offline)
+
+
   mujibur: 163,     // Sheikh Mujibur Rahman (Darussalaam)
   taisirul: 161,    // Taisirul Quran (Tawheed Publication)
   rawai: 213,       // Rawai Al-bayan (Darussalaam)
@@ -41,6 +46,7 @@ export const TRANSLATION_EDITIONS: TranslationEdition[] = [
   // 163: Sheikh Mujibur Rahman (Darussalaam)
   // 213: Rawai Al-bayan (Darussalaam)
   // 162: Dr. Abu Bakr Muhammad Zakaria (Darussalaam)
+  { id: 'tazqianofs', apiId: TRANSLATION_IDS.tazqianofs, label: 'তাযকিয়া নফস', language: 'bangla', isDefault: true, isOffline: true, order: 0 },
   { id: 'mujibur', apiId: TRANSLATION_IDS.mujibur, label: 'মুজিবুর রহমান', language: 'bangla', isDefault: true, order: 1 },
   { id: 'rawai', apiId: TRANSLATION_IDS.rawai, label: 'রাওয়াই আল-বায়ান', language: 'bangla', isDefault: false, order: 2 },
   { id: 'taisirul', apiId: TRANSLATION_IDS.taisirul, label: 'তাইসীরুল কুরআন', language: 'bangla', isDefault: false, order: 3 },
@@ -319,7 +325,13 @@ export async function getSurahById(id: number): Promise<Surah | null> {
       // Build translations object dynamically from TRANSLATION_EDITIONS
       const translations: Record<string, string> = {};
       TRANSLATION_EDITIONS.forEach(edition => {
-        translations[edition.id] = getTranslation(verse.translations, edition.apiId);
+        
+        if (edition.isOffline) {
+          translations[edition.id] = JSON.stringify(returnOfflineTranslation(id.toString(), verse.verse_number.toString(), edition.id));
+        }else{
+          translations[edition.id] = getTranslation(verse.translations, edition.apiId);
+        }
+        
       });
       
       return {

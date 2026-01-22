@@ -1,0 +1,109 @@
+{
+  "id": 1,
+  "name": "الفاتحة",
+  "transliteration": "Al-Fatihah",
+  "banglish": "আল-ফাতিহা",
+  "translation": "সূচনা",
+  "type": "Meccan",
+  "totalAyahs": 7,
+  "ayahs": [
+    {
+      "number": 1,
+      "text": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
+      "translations": {
+        "mujibur": "পরম করুণাময়, অসীম দয়ালু আল্লাহর নামে (শুরু করছি)।",
+        "rawai": "রহমান, রহীম [১] আল্লাহ্‌র নামে [২]",
+        "taisirul": "(আরম্ভ করছি) পরম করুণাময় অসীম দয়াময় আল্লাহর নামে।",
+        "zakaria": "পরম করুণাময় অতি দয়ালু আল্লাহর নামে।",
+        "sahih": "In the name of Allāh, the Entirely Merciful, the Especially Merciful.",
+        "pickthall": "In the name of Allah, the Beneficent, the Merciful.",
+        "yusufali": "In the name of Allah, Most Gracious, Most Merciful.",
+        "hilali": "In the Name of Allâh, the Most Gracious, the Most Merciful"
+      }
+    },
+    {
+      "number": 2,
+      "text": "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ",
+      "translations": {
+        "mujibur": "আল্লাহরই জন্য সমস্ত প্রশংসা, যিনি বিশ্বজগতের রাব্ব।",
+        "rawai": "সকল ‘হাম্‌দ’ [১] আল্লাহ্‌র [২] , যিনি সৃষ্টিকুলের [৩] রব [৪],",
+        "taisirul": "যাবতীয় প্রশংসা জগৎসমূহের প্রতিপালক আল্লাহরই জন্য।",
+        "zakaria": "সমস্ত প্রশংসা আল্লাহর জন্য, যিনি সৃষ্টিকুলের রব।",
+        "sahih": "[All] praise is [due] to Allāh, Lord of the worlds -",
+        "pickthall": "Praise be to Allah, Lord of the Worlds,",
+        "yusufali": "Praise be to Allah, the Cherisher and Sustainer of the worlds;",
+        "hilali": "All the praises and thanks be to Allâh, the Lord of the ‘Âlamîn (mankind, jinn and all that exists)."
+      }
+    },
+    {
+      "number": 3,
+      "text": "ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
+      "translations": {
+        "mujibur": "যিনি পরম দয়ালু, অতিশয় করুণাময়।",
+        "rawai": "দয়াময়, পরম দয়ালু [১],",
+        "taisirul": "যিনি পরম করুণাময় অতি দয়ালু।",
+        "zakaria": "দয়াময়, পরম দয়ালু, পরম করুণাময়, অতি দয়ালু।",
+        "sahih": "The Entirely Merciful, the Especially Merciful,",
+        "pickthall": "The Beneficent, the Merciful.",
+        "yusufali": "Most Gracious, Most Merciful;",
+        "hilali": "The Most Gracious, the Most Merciful."
+      }
+    },
+    {
+      "number": 4,
+      "text": "مَـٰلِكِ يَوْمِ ٱلدِّينِ",
+      "translations": {
+        "mujibur": "যিনি বিচার দিনের মালিক।",
+        "rawai": "বিচার দিনের মালিক [১]।",
+        "taisirul": "যিনি প্রতিফল দিবসের মালিক।",
+        "zakaria": "বিচার দিবসের মালিক।",
+        "sahih": "Sovereign of the Day of Recompense.",
+        "pickthall": "Master of the Day of Judgment,",
+        "yusufali": "Master of the Day of Judgment.",
+        "hilali": "The Only Owner (and the Only Ruling Judge) of the Day of Recompense (i.e. the Day of Resurrection)"
+      }
+    },
+    {
+      "number": 5,
+      "text": "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+      "translations": {
+        "mujibur": "আমরা আপনারই ইবাদাত করছি এবং আপনারই নিকট সাহায্য চাচ্ছি।",
+        "rawai": "আমরা শুধু আপনারই ‘ইবাদাত [১] করি [২], এবং শুধু আপনারই সাহায্য প্রার্থনা করি [৩],",
+        "taisirul": "আমরা কেবল তোমারই ‘ইবাদাত করি এবং কেবলমাত্র তোমারই সাহায্য প্রার্থনা করি।",
+        "zakaria": "আপনারই আমরা ইবাদাত করি এবং আপনারই নিকট আমরা সাহায্য চাই।",
+        "sahih": "It is You we worship and You we ask for help.",
+        "pickthall": "Thee (alone) we worship; Thee (alone) we ask for help.",
+        "yusufali": "Thee do we worship, and Thine aid we seek.",
+        "hilali": "You (Alone) we worship, and You (Alone) we ask for help (for each and everything)."
+      }
+    },
+    {
+      "number": 6,
+      "text": "ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ",
+      "translations": {
+        "mujibur": "আমাদেরকে সরল সঠিক পথ প্রদর্শন করুন।",
+        "rawai": "আমাদেরকে সরল পথের হিদায়াত দিন [১]",
+        "taisirul": "আমাদেরকে সরল সঠিক পথ প্রদর্শন কর ও তার প্রতি অটুট থাকার তাওফীক দান কর।",
+        "zakaria": "আমাদেরকে সরল পথ দেখান। পথের হিদায়াত দিন।",
+        "sahih": "Guide us to the straight path -",
+        "pickthall": "Show us the straight path,",
+        "yusufali": "Show us the straight way,",
+        "hilali": "Guide us to the Straight Way."
+      }
+    },
+    {
+      "number": 7,
+      "text": "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ",
+      "translations": {
+        "mujibur": "তাদের পথ, যাদের প্রতি আপনি অনুগ্রহ করেছেন। তাদের পথে নয়, যাদের প্রতি আপনার গযব বর্ষিত হয়েছে, তাদের পথও নয় যারা পথভ্রষ্ট হয়েছে। আমীন!!",
+        "rawai": "তাদের পথ, যাদেরকে আপনি নি‘আমত দিয়েছেন [১], যাদের উপর আপনার ক্রোধ আপতিত হয়নি [২] এবং যারা পথভ্রষ্টও নয় [৩]",
+        "taisirul": "তাদের পথ, যাদের প্রতি তুমি অনুগ্রহ করেছ। তাদের পথ, যারা গযবপ্রাপ্ত (ইয়াহূদী) ও পথভ্রষ্ট (খ্রিস্টান) নয়।",
+        "zakaria": "তাদের পথ, যাদের উপর আপনি অনুগ্রহ করেছেন। যাদেরকে নিয়ামত দিয়েছেন।যাদের উপর (আপনার) ক্রোধ আপতিত হয়নি এবং যারা পথভ্রষ্টও নয়।",
+        "sahih": "The path of those upon whom You have bestowed favor, not of those who have earned [Your] anger or of those who are astray.",
+        "pickthall": "The path of those whom Thou hast favoured; Not the (path) of those who earn Thine anger nor of those who go astray.",
+        "yusufali": "The way of those on whom Thou hast bestowed Thy Grace, those whose (portion) is not wrath, and who go not astray.",
+        "hilali": "The Way of those on whom You have bestowed Your Grace , not (the way) of those who earned Your Anger  (i.e. those who knew the Truth, but did not follow it) nor of those who went astray (i.e. those who did not follow the Truth out of ignorance and error). , "
+      }
+    }
+  ]
+}
