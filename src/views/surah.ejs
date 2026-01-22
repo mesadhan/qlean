@@ -456,6 +456,9 @@
                 <button class="player-btn" id="autoPlayToggle" title="Auto-play next ayah">
                     <i class="bi bi-collection-play"></i>
                 </button>
+                <button class="player-btn" id="closePlayerBtn" title="Close Player">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
         </div>
         
@@ -910,6 +913,7 @@
     const volumeIcon = document.getElementById('volumeIcon');
     const volumeSlider = document.getElementById('volumeSlider');
     const autoPlayToggle = document.getElementById('autoPlayToggle');
+    const closePlayerBtn = document.getElementById('closePlayerBtn');
     const progressBarContainer = document.getElementById('progressBarContainer');
     const progressBarFill = document.getElementById('progressBarFill');
     const currentTimeDisplay = document.getElementById('currentTime');
@@ -927,6 +931,13 @@
         isAutoPlayEnabled = savedAutoPlay === 'true';
     }
     autoPlayToggle.classList.toggle('active', isAutoPlayEnabled);
+    
+    closePlayerBtn.addEventListener('click', () => {
+        hidePlayerBar();
+        ayahAudio.pause();
+        translationAudio.pause();
+        isPlayingTranslationAfterArabic = false;
+    });
     
     const savedRepeat = localStorage.getItem('repeatMode');
     if (savedRepeat) {
