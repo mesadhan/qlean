@@ -49,5 +49,10 @@ initCache('7', 'tazqianofs');
 
 export const returnOfflineTranslation = (shuraId: string, verseOrAyahNumber: string, translationEditor: string) => {
   let foundTranslation = shuraId+':'+ verseOrAyahNumber + '';
-  return surahCache[shuraId]?.find((item: any) => item?.hasOwnProperty(foundTranslation))[foundTranslation];
+  try {
+    const item = surahCache[shuraId]?.find((item: any) => item?.hasOwnProperty(foundTranslation));
+    return item ? item[foundTranslation] : '';
+  } catch (err) {
+    return '';
+  }
 }
