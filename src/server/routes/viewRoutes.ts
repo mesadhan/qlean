@@ -53,6 +53,21 @@ router.get('/articles/hadith', async (_req: Request, res: Response) => {
   }
 });
 
+router.get('/ibadat/dua', async (_req: Request, res: Response) => {
+  try {
+    await renderWithLayout(res, 'dua', {
+      title: 'দোয়া',
+      activePage: 'dua'
+    });
+  } catch (error) {
+    await renderWithLayout(res, 'error', {
+      title: 'Error',
+      activePage: '',
+      error: { title: 'Failed to load', message: 'Could not load page. Please try again.' }
+    });
+  }
+});
+
 router.get('/daawath', async (_req: Request, res: Response) => {
   try {
     await renderWithLayout(res, 'daawath', {
