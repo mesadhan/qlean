@@ -45,7 +45,22 @@ initCache('3', 'tazqianofs');
 initCache('4', 'tazqianofs');
 initCache('5', 'tazqianofs');
 initCache('6', 'tazqianofs');
-initCache('7', 'tazqianofs');
+initCache('100', 'tazqianofs');
+initCache('101', 'tazqianofs');
+initCache('102', 'tazqianofs');
+initCache('103', 'tazqianofs');
+initCache('104', 'tazqianofs');
+initCache('105', 'tazqianofs');
+initCache('106', 'tazqianofs'); //"106:3.\t problem this show the web
+initCache('107', 'tazqianofs');
+initCache('108', 'tazqianofs');
+initCache('109', 'tazqianofs');
+initCache('110', 'tazqianofs');
+initCache('111', 'tazqianofs');
+initCache('112', 'tazqianofs');
+initCache('113', 'tazqianofs');
+initCache('114', 'tazqianofs');
+
 
 export const returnOfflineTranslation = (shuraId: string, verseOrAyahNumber: string, translationEditor: string) => {
   let foundTranslation = shuraId+':'+ verseOrAyahNumber + '';
