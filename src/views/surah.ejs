@@ -1,3 +1,4 @@
+<div class="container my-4">
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <a href="/quran" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to Surah List</a>
@@ -2186,79 +2187,29 @@
 </style>
 
 <script>
-    // Pagination functionality
+    // Pagination and ayah highlight for /surah/2:22 (no ?page, no hash)
     (function() {
         const ayahItems = document.querySelectorAll('.ayah-item');
-        
-        // Handle hash-based ayah highlighting for surahs with 20 or fewer ayahs (no pagination)
-        if (ayahItems.length <= 20) {
-            const hash = window.location.hash;
-            if (hash && hash.startsWith('#ayah-')) {
-                const ayahNumber = parseInt(hash.replace('#ayah-', ''));
-                setTimeout(() => {
-                    const ayahCard = document.getElementById(`ayah-${ayahNumber}`);
-                    if (ayahCard) {
-                        // Scroll to the ayah
-                        ayahCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        
-                        // Add highlight effect
-                        ayahCard.classList.add('shared-highlight');
-                        
-                        // Remove highlight after a few seconds
-                        setTimeout(() => {
-                            ayahCard.classList.remove('shared-highlight');
-                        }, 5000);
-                    }
-                }, 300);
-            }
-            return; // No pagination needed
-        }
-        
         const perPageSelect = document.getElementById('ayahsPerPage');
         const pageInfo = document.getElementById('pageInfo');
         const paginationTop = document.getElementById('paginationTop');
         const paginationBottom = document.getElementById('paginationBottom');
-        
         let currentPage = 1;
         let itemsPerPage = 20;
-        
-        // Load saved preference
         const savedPerPage = localStorage.getItem('ayahsPerPage');
         if (savedPerPage) {
             perPageSelect.value = savedPerPage;
             itemsPerPage = savedPerPage === 'all' ? ayahItems.length : parseInt(savedPerPage);
         }
-        
-        // Get page from URL
-        function getPageFromUrl() {
-            const params = new URLSearchParams(window.location.search);
-            const page = parseInt(params.get('page'));
-            return page && page > 0 ? page : 1;
-        }
-        
-        // Update URL with page number
-        function updateUrl(page) {
-            const url = new URL(window.location);
-            if (page > 1) {
-                url.searchParams.set('page', page);
-            } else {
-                url.searchParams.delete('page');
-            }
-            window.history.pushState({page: page}, '', url);
-        }
-        
         function getTotalPages() {
             return Math.ceil(ayahItems.length / itemsPerPage);
         }
-        
-        function showPage(page, updateHistory = true) {
+        function showPage(page) {
             const totalPages = getTotalPages();
-            // Clamp page to valid range
             page = Math.max(1, Math.min(page, totalPages));
             currentPage = page;
             const start = (page - 1) * itemsPerPage;
             const end = start + itemsPerPage;
-            
             ayahItems.forEach((item, index) => {
                 if (itemsPerPage === ayahItems.length || (index >= start && index < end)) {
                     item.classList.remove('hidden');
@@ -2266,19 +2217,10 @@
                     item.classList.add('hidden');
                 }
             });
-            
             updatePageInfo();
             renderPagination();
-            
-            // Update URL
-            if (updateHistory) {
-                updateUrl(page);
-            }
-            
-            // Scroll to top of ayahs
             document.getElementById('ayahsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-        
         function updatePageInfo() {
             const totalPages = getTotalPages();
             if (itemsPerPage === ayahItems.length) {
@@ -2289,7 +2231,6 @@
                 pageInfo.textContent = `${start}-${end} / ${ayahItems.length} আয়াত (পেজ ${currentPage}/${totalPages})`;
             }
         }
-        
         function renderPagination() {
             const totalPages = getTotalPages();
             if (totalPages <= 1) {
@@ -2297,52 +2238,32 @@
                 paginationBottom.innerHTML = '';
                 return;
             }
-            
             let html = '';
-            
-            // Previous button
-            html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                <a class="page-link" data-page="${currentPage - 1}">&laquo;</a>
-            </li>`;
-            
-            // Page numbers with ellipsis
+            html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><a class="page-link" data-page="${currentPage - 1}">&laquo;</a></li>`;
             const maxVisible = 5;
             let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
             let endPage = Math.min(totalPages, startPage + maxVisible - 1);
-            
             if (endPage - startPage < maxVisible - 1) {
                 startPage = Math.max(1, endPage - maxVisible + 1);
             }
-            
             if (startPage > 1) {
                 html += `<li class="page-item"><a class="page-link" data-page="1">1</a></li>`;
                 if (startPage > 2) {
                     html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
                 }
             }
-            
             for (let i = startPage; i <= endPage; i++) {
-                html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
-                    <a class="page-link" data-page="${i}">${i}</a>
-                </li>`;
+                html += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" data-page="${i}">${i}</a></li>`;
             }
-            
             if (endPage < totalPages) {
                 if (endPage < totalPages - 1) {
                     html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
                 }
                 html += `<li class="page-item"><a class="page-link" data-page="${totalPages}">${totalPages}</a></li>`;
             }
-            
-            // Next button
-            html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-                <a class="page-link" data-page="${currentPage + 1}">&raquo;</a>
-            </li>`;
-            
+            html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}"><a class="page-link" data-page="${currentPage + 1}">&raquo;</a></li>`;
             paginationTop.innerHTML = html;
             paginationBottom.innerHTML = html;
-            
-            // Add click handlers
             document.querySelectorAll('.pagination .page-link[data-page]').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -2353,8 +2274,6 @@
                 });
             });
         }
-        
-        // Handle per-page change
         perPageSelect.addEventListener('change', () => {
             const value = perPageSelect.value;
             localStorage.setItem('ayahsPerPage', value);
@@ -2362,55 +2281,36 @@
             currentPage = 1;
             showPage(1);
         });
-        
-        // Handle browser back/forward
-        window.addEventListener('popstate', (e) => {
-            const page = e.state?.page || getPageFromUrl();
-            showPage(page, false);
-        });
-        
-        // Initialize with page from URL or navigate to ayah from hash
-        const hash = window.location.hash;
-        if (hash && hash.startsWith('#ayah-')) {
-            const ayahNumber = parseInt(hash.replace('#ayah-', ''));
-            
-            // Find the index of this ayah in the ayahItems NodeList
+        // Only highlight if ayahParam is present (from server)
+        <% if (typeof ayahParam !== 'undefined' && ayahParam) { %>
+        (function() {
+            const ayahNumber = <%= ayahParam %>;
             let ayahIndex = -1;
             ayahItems.forEach((item, index) => {
                 if (parseInt(item.dataset.ayahNumber) === ayahNumber) {
                     ayahIndex = index;
                 }
             });
-            
             if (ayahIndex >= 0) {
-                // Calculate which page this ayah is on
                 const targetPage = Math.floor(ayahIndex / itemsPerPage) + 1;
-                showPage(targetPage, false);
-                
-                // Highlight the ayah after a short delay
+                showPage(targetPage);
                 setTimeout(() => {
                     const ayahCard = document.getElementById(`ayah-${ayahNumber}`);
                     if (ayahCard) {
-                        // Scroll to the ayah
                         ayahCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        
-                        // Add highlight effect
                         ayahCard.classList.add('shared-highlight');
-                        
-                        // Remove highlight after a few seconds
                         setTimeout(() => {
                             ayahCard.classList.remove('shared-highlight');
                         }, 5000);
                     }
-                }, 300);
+                }, 350);
             } else {
-                const initialPage = getPageFromUrl();
-                showPage(initialPage, false);
+                showPage(1);
             }
-        } else {
-            const initialPage = getPageFromUrl();
-            showPage(initialPage, false);
-        }
+        })();
+        <% } else { %>
+        showPage(1);
+        <% } %>
     })();
     
     // Translation visibility and ordering
@@ -3059,3 +2959,5 @@
         initializeSettings();
     })();
 </script>
+
+</div>

@@ -133,6 +133,9 @@ router.get('/quran/search', async (req: Request, res: Response) => {
 router.get('/surah/:id', async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
+
+    console.log('debug-message', id);
+    
     
     if (isNaN(id) || id < 1 || id > 114) {
       return await renderWithLayout(res, 'error', {

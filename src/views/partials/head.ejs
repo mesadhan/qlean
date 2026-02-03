@@ -13,11 +13,19 @@
 <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
 
 <style>
+    
     :root {
         --arabic-font: 'Traditional Arabic', 'Scheherazade', serif;
         --arabic-text-size: 1.8rem;
+        --card-bg: rgba(255,255,255,0.6);
     }
     
+    /* [data-theme="light"] {
+    --dark-bg: #f4f4f4;
+    --card-bg: rgba(255,255,255,0.6);
+    --text: #111;
+    } */
+
     /* ============================================
        QURAN FONT FAMILIES
        ============================================ */
@@ -42,6 +50,9 @@
     body {
         min-height: 100vh;
         padding-top: 56px;
+         font-family: 'Poppins', sans-serif;
+        background: radial-gradient(circle at top, #0d1b2a, #000814 80%);
+        color: #fff;
     }
     
     .arabic-text {
@@ -489,4 +500,74 @@
             right: -260px;
         }
     }
+
+     /* ANIMATIONS */
+    @keyframes fadeDown {
+        from {opacity:0; transform:translateY(-30px);}
+        to {opacity:1; transform:translateY(0);}
+    }
+    @keyframes fadeUp {
+        from {opacity:0; transform:translateY(30px);}
+        to {opacity:1; transform:translateY(0);}
+    }
+
+    /* HERO SECTION */
+    .hero {
+        margin: 30px 18px;
+        text-align: center;
+        background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.8)),url('/image.png');
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 65vh;
+        /* padding: 19px; */
+        border-radius: 20px;
+        /* border-bottom-right-radius: 60px; */
+    }
+
+    .hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        color: #d4af37;
+        animation: fadeDown 1.2s ease;
+    }
+
+    .hero p {
+        opacity: 0.85;
+        margin-top: 10px;
+        animation: fadeUp 1.2s ease;
+    }
+
+    .hero .btn {
+        margin-top: 25px;
+        padding: 12px 28px;
+        border-radius: 30px;
+        /* background: linear-gradient(45deg, #d4af37, #b8860b); */
+        border: none;
+        font-weight: 500;
+        animation: fadeUp 1.4s ease;
+    }
+
+    /* GLASS CARDS */
+    .feature-card2 {
+        /* background: radial-gradient(circle at top, rgba(212,175,55,0.45), rgba(212,175,55,0.15) 40%, transparent 70%); */
+        /* background: radial-gradient(circle at top, rgba(212,175,55,0.45), rgba(212,175,55,0.15) 48%, transparent 113%); */
+        background: radial-gradient(circle at top, rgb(19 16 5 / 45%), rgba(212, 175, 55, 0.15) 48%, transparent 100%);
+        /* background-color: rgba(255,255,255,0.05); */
+        backdrop-filter: blur(12px);
+        border-radius: 18px;
+        padding: 30px;
+        text-align: center;
+        border: 1px solid rgba(255, 215, 120, 0.25);
+        transition: .4s;
+    }
+    .feature-card2:hover {
+        transform:translateY(-8px);
+        box-shadow:0 0 25px rgba(212,175,55,0.3);
+    }
+
+    .feature-icon { font-size:38px; color:var(--gold); margin-bottom:15px; }
+
+   
+
 </style>

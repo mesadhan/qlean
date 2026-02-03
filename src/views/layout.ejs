@@ -6,12 +6,29 @@
 <body>
     <%- include('partials/navbar', { activePage: typeof activePage !== 'undefined' ? activePage : '' }) %>
     
-    <main class="container py-4">
+    <main class="">
         <%- content %>
     </main>
     
     <%- include('partials/footer') %>
     
     <%- include('partials/scripts') %>
+    <style>
+    .goto-float-btn{position:fixed;bottom:2rem;right:2rem;z-index:1050;width:56px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:50%;box-shadow:0 2px 8px #0002;transition:box-shadow .2s;}
+    .goto-slide-wrap{position:fixed;bottom:2rem;right:2rem;z-index:1051;display:flex;align-items:center;gap:.5rem;}
+    .goto-slide{width:0;opacity:0;transition:width .3s cubic-bezier(.4,0,.2,1),opacity .2s;overflow:hidden;box-shadow:0 2px 8px #0002;border-radius:2rem;background:#fff;}
+    .goto-slide.open{width:180px;opacity:1;padding:0 .75rem;}
+    .goto-slide input{border:none;outline:none;width:100%;padding:.5rem 0;background:transparent;}
+    .goto-slide input.is-invalid{background:#ffeaea;}
+    @media(max-width:600px){.goto-slide.open{width:120px;}}
+    </style>
+    <div class="goto-slide-wrap">
+      <form id="gotoForm" class="goto-slide" autocomplete="off" onsubmit="return false;">
+        <input id="gotoInput" type="text" placeholder="2:255" pattern="^\d{1,3}:\d{1,3}$" aria-label="Sura:Ayah">
+      </form>
+      <button id="gotoShortcutBtn" type="button" class="btn btn-primary goto-float-btn" aria-label="Go to Sura:Ayah">
+        <svg width="28" height="28" fill="currentColor" viewBox="0 0 16 16"><path d="M11 6a5 5 0 1 1-10 0 5 5 0 0 1 10 0zm-1.293 6.707a1 1 0 0 1-1.414 0l-3.387-3.387A6.978 6.978 0 0 1 1 6a7 7 0 1 1 7 7c-1.657 0-3.182-.672-4.293-1.707l3.387 3.387a1 1 0 0 1 1.414 0z"/></svg>
+      </button>
+    </div>
 </body>
 </html>

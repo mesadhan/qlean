@@ -54,3 +54,15 @@
         link.addEventListener('click', closeMobileSidebar);
     });
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var btn=document.getElementById('gotoShortcutBtn'),slide=document.getElementById('gotoForm'),input=document.getElementById('gotoInput');
+  if(!btn||!slide||!input)return;
+  btn.onclick=function(){slide.classList.toggle('open');if(slide.classList.contains('open')){input.focus();input.select();}};
+  input.onkeydown=function(e){if(e.key==='Escape'){slide.classList.remove('open');btn.focus();}};
+  slide.onsubmit=function(){go();};
+  input.onkeydown=function(e){if(e.key==='Enter'){go();}else if(e.key==='Escape'){slide.classList.remove('open');btn.focus();}};
+  function go(){var v=input.value.trim(),r=v.match(/^(\d{1,3}):(\d{1,3})$/);if(r)window.location.href='/surah/'+r[1]+'?ayah='+r[2];else{input.classList.add('is-invalid');setTimeout(function(){input.classList.remove('is-invalid');},1200);}}
+});
+</script>
