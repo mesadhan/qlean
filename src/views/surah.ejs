@@ -2885,6 +2885,7 @@
         // Apply text size
         function updateTextSize(size) {
             document.documentElement.style.setProperty('--arabic-text-size', size / 100 * 1.8 + 'rem');
+            document.documentElement.style.setProperty('--translation-text', size / 100 * 1.1 + 'rem');
             
             // Update size display
             const sizeDisplay = document.getElementById('sizeDisplay');
